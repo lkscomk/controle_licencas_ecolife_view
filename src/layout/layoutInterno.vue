@@ -9,15 +9,8 @@
       <v-app-bar-nav-icon
         @click.stop="drawer = !drawer"
       />
-      <div class="d-flex align-center">
-        <v-img
-          class="shrink mx-2"
-          contain
-          src="@/assets/logoUmbrellaBranca.png"
-          transition="scale-transition"
-          width="120"
-          @click="abrirJenela('/tela-principal')"
-        />
+      <div class="headline font-weight-regular d-flex align-center">
+        Ecolife
       </div>
       <v-spacer />
 
@@ -172,7 +165,7 @@ export default {
       this.atualizarData()
     }, 200)
     setTimeout(async () => {
-      await this.buscarAcessos(this.perfil)
+      // await this.buscarAcessos(this.perfil)
       await this.buscarImagem()
     }, 200)
   },

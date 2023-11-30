@@ -132,7 +132,7 @@
                       cols="12"
                     >
                       <div class="text-center mt-3">
-                        Ainda não tem conta? <a @click="abrirJenela('/cadastro')">Cadastre-se</a>
+                        Ainda não tem conta? Entre em contato com o RH
                       </div>
                     </v-col>
                   </v-row>
@@ -183,7 +183,7 @@ export default {
           senha: this.formulario.senha || null
         })
         if (res && !res.erro) {
-          this.abrirJenela('/tela-principal')
+          this.abrirJenela('/home')
         }
         this.loading = false
       }

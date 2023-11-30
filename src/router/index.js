@@ -4,46 +4,11 @@ Vue.use(VueRouter)
 
 const routes = [
   {
-    path: '/',
-    component: () => import('@/layout/layoutExterno.vue'),
-    children: [
-      {
-        path: '/',
-        name: 'home',
-        component: () => import('@/views/home/index.vue')
-      }
-    ],
-    beforeEnter: (to, from, next) => {
-      if (localStorage.getItem('umbrella:token')) {
-        next('/tela-principal')
-      } else {
-        localStorage.removeItem('umbrella:token')
-        localStorage.removeItem('umbrella:nome')
-        localStorage.removeItem('umbrella:login')
-        localStorage.removeItem('umbrella:email')
-        localStorage.removeItem('umbrella:perfil')
-        next()
-      }
-    }
-  },
-  {
     path: '/login',
-    component: () => import('@/layout/layoutLoginCadastro.vue'),
-    children: [
-      {
-        path: '/cadastro',
-        name: 'cadastro',
-        component: () => import('@/views/cadastro/index.vue')
-      },
-      {
-        path: '/login',
-        name: 'login',
-        component: () => import('@/views/login/index.vue')
-      }
-    ],
+    component: () => import('@/views/login/index.vue'),
     beforeEnter: (to, from, next) => {
       if (localStorage.getItem('umbrella:token')) {
-        next('/tela-principal')
+        next('/home')
       } else {
         localStorage.removeItem('umbrella:token')
         localStorage.removeItem('umbrella:nome')
@@ -59,9 +24,9 @@ const routes = [
     component: () => import('@/layout/layoutInterno.vue'),
     children: [
       {
-        path: '/tela-principal',
-        name: 'telaprincipal',
-        component: () => import('@/views/tela_principal/index.vue')
+        path: '/home',
+        name: 'home',
+        component: () => import('@/views/home/index.vue')
       },
       {
         path: '/tela-designer',
