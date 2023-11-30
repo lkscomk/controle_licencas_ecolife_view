@@ -29,36 +29,6 @@ const routes = [
         component: () => import('@/views/home/index.vue')
       },
       {
-        path: '/tela-designer',
-        name: 'telaEnviadoDesigner',
-        component: () => import('@/views/tela_enviado_designer/index.vue')
-      },
-      {
-        path: '/portfolio',
-        name: 'portfolio',
-        component: () => import('@/views/portfolio/index.vue')
-      },
-      {
-        path: '/meus-pedidos',
-        name: 'meusPedidos',
-        component: () => import('@/views/meus_pedidos/index.vue')
-      },
-      {
-        path: '/escolher-designer',
-        name: 'escolherDesigner',
-        component: () => import('@/views/escolher_designer/index.vue')
-      },
-      {
-        path: '/pedido',
-        name: 'Pedido',
-        component: () => import('@/views/pedido/index.vue')
-      },
-      {
-        path: '/finalizar-pedido',
-        name: 'Finalizar Pedido',
-        component: () => import('@/views/finalizar_pedido/index.vue')
-      },
-      {
         path: '/perfil',
         name: 'Perfil',
         component: () => import('@/views/informacoes_perfil/index.vue')
@@ -72,6 +42,11 @@ const routes = [
         path: '/usuarios',
         name: 'Usuários',
         component: () => import('../views/usuarios/index.vue')
+      },
+      {
+        path: '/licencas',
+        name: 'Licenças',
+        component: () => import('../views/licencas/index.vue')
       },
       {
         path: '/acessos',

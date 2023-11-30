@@ -165,7 +165,7 @@ export default {
       this.atualizarData()
     }, 200)
     setTimeout(async () => {
-      // await this.buscarAcessos(this.perfil)
+      await this.buscarAcessos(this.perfil)
       await this.buscarImagem()
     }, 200)
   },
