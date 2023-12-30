@@ -1,295 +1,232 @@
 <template>
   <pagina
     :loading="loading"
+    :modal="modal"
     subtitulo="Página de Manutenção de Opções"
     titulo="Opções"
+    :mais-opcoes="formulario.id ? maisOpcoes : null"
+    :titulo-formulario="controle.editar ? 'Editar Registro' : controle.inserir ? 'Adicionar Registro' : 'Exibir Registro'"
+    @voltar="resetFormulario()"
   >
-    <!-- listagem -->
-    <v-form @submit.prevent="''">
-      <v-container
-        class="my-0 py-0"
-        fluid
-      >
-        <v-row dense>
-          <v-col cols="12">
-            <filtro
-              :options="optionsFilter"
-              @adicionar="controle.inserir = true, modal = true, formulario.item = encontrarProximoItem(registros), formulario.grupo = filtro.grupo"
-              @pesquisar="listarRegistro()"
-            >
-              <template slot="filtros">
-                <v-container
-                  class="my-0 py-0"
-                  fluid
-                >
-                  <v-row dense>
-                    <v-col
-                      xl="3"
-                      lg="3"
-                      md="10"
-                      sm="12"
-                      cols="12"
-                    >
-                      <v-autocomplete
-                        v-model="filtro.grupo"
-                        :items="dropdownGrupos"
-                        hide-details
-                        dense
-                        item-value="item"
-                        item-text="descricao"
-                        label="Grupo"
-                        outlined
-                        @change="listarRegistro()"
-                      />
-                    </v-col>
-                    <v-col
-                      xl="4"
-                      lg="4"
-                      md="10"
-                      sm="12"
-                      cols="12"
-                    >
-                      <v-text-field
-                        v-model="filtro.descricao"
-                        hide-details
-                        dense
-                        label="Descrição"
-                        outlined
-                      />
-                    </v-col>
-                  </v-row>
-                </v-container>
-              </template>
-            </filtro>
-          </v-col>
-          <v-col cols="12">
-            <tabela
-              :colunas="colunas"
-              :registros="registros"
-              exibir
-              @exibir="exibirRegistro($event)"
-            />
-          </v-col>
-        </v-row>
-      </v-container>
-    </v-form>
-
-    <!-- exibir item -->
-    <v-dialog
-      v-model="modal"
-      persistent
-      max-width="800px"
-    >
-      <v-card>
-        <v-toolbar
-          :class="$vuetify.theme.dark ? '' : 'grey--text text--darken-2'"
-          :color="$vuetify.theme.dark ? 'accent' : 'white'"
-          class="font-weight-bold"
-          flat
-          height="40"
+    <template slot="listagem">
+      <v-form @submit.prevent="''">
+        <v-container
+          class="my-0 py-0"
+          fluid
         >
-          <v-btn
-            color="error"
-            data-cy="btnFechar"
-            icon
-            small
-            title="Voltar"
-            @click="modal = false, resetFormulario()"
-          >
-            <v-icon dark>
-              mdi-chevron-left
-            </v-icon>
-          </v-btn>
-          <v-toolbar-title class="px-2">
-            {{ controle.editar ? 'Editar Registro' : controle.inserir ? 'Adicionar Registro' : 'Exibir Registro' }}
-          </v-toolbar-title>
-        </v-toolbar>
-
-        <v-spacer />
-
-        <v-menu
-          offset-y
-          left
-        >
-          <template v-slot:activator="{ on }">
-            <v-btn
-              id="pg-btn-mais-opcoes"
-              class="mx-0"
-              small
-              icon
-              v-on="on"
-            >
-              <v-icon>
-                mdi-dots-vertical
-              </v-icon>
-            </v-btn>
-          </template>
-          <v-list>
-            <v-list-item @click="excluirRegistro()">
-              <v-list-item-icon class="mr-3">
-                <v-icon color="error'">
-                  mdi-cancel
-                </v-icon>
-              </v-list-item-icon>
-              <v-list-item-content>
-                <v-list-item-title>
-                  Excluir
-                </v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
-          </v-list>
-        </v-menu>
-        <v-card-text class="ma-0 pa-0 px-2">
-          <v-form @submit.prevent="''">
-            <validation-observer ref="observer">
-              <v-container
-                fluid
-                grid-list-xs
+          <v-row dense>
+            <v-col cols="12">
+              <filtro
+                :options="optionsFilter"
+                @adicionar="controle.inserir = true, modal = true, formulario.item = encontrarProximoItem(registros), formulario.grupo = filtro.grupo"
+                @pesquisar="listarRegistro()"
               >
-                <v-row dense>
-                  <v-col
-                    v-if="formulario.id"
-                    xl="1"
-                    lg="1"
-                    md="1"
-                    sm="3"
-                    cols="12"
+                <template slot="filtros">
+                  <v-container
+                    class="my-0 py-0"
+                    fluid
                   >
-                    <v-text-field
-                      v-model="formulario.id"
-                      hide-details
-                      disabled
-                      dense
-                      label="Id"
-                      outlined
-                    />
-                  </v-col>
-                  <v-col
-                    :xl="formulario.id ? 4 : 5"
-                    :lg="formulario.id ? 4 : 5"
-                    :md="formulario.id ? 4 : 5"
-                    :sm="formulario.id ? 6 : 5"
-                    cols="12"
-                  >
-                    <v-autocomplete
-                      v-model="formulario.grupo"
-                      :items="dropdownGrupos"
-                      disabled
-                      hide-details
-                      dense
-                      item-value="item"
-                      item-text="descricao"
-                      label="Grupo*"
-                      outlined
-                    />
-                  </v-col>
-                  <v-col
-                    xl="2"
-                    lg="2"
-                    md="2"
-                    sm="2"
-                    cols="12"
-                  >
-                    <v-text-field
-                      v-model="formulario.item"
-                      hide-details
-                      disabled
-                      dense
-                      label="Item*"
-                      outlined
-                    />
-                  </v-col>
-                  <v-col
-                    xl="5"
-                    lg="5"
-                    md="5"
-                    sm="5"
-                    cols="12"
-                  >
-                    <validation-provider
-                      v-slot="{ errors }"
-                      name="Descrição"
-                      vid="descricao"
-                      rules="required"
-                    >
-                      <v-text-field
-                        v-model="formularioDescricao"
-                        :error-messages="errors"
-                        :hide-details="!errors.length"
-                        :disabled="controle.exibir"
-                        dense
-                        label="Descrição*"
-                        outlined
-                      />
-                    </validation-provider>
-                  </v-col>
-                  <v-col
-                    v-if="formulario.id"
-                    xl="3"
-                    lg="3"
-                    md="3"
-                    sm="3"
-                    cols="12"
-                  >
-                    <v-text-field
-                      v-model="formulario.created_by"
-                      hide-details
-                      disabled
-                      dense
-                      label="Criado Por"
-                      outlined
-                    />
-                  </v-col>
-                  <v-col
-                    v-if="formulario.id"
-                    xl="4"
-                    lg="4"
-                    md="4"
-                    sm="4"
-                    cols="12"
-                  >
-                    <v-text-field
-                      v-model="formulario.created_at"
-                      hide-details
-                      disabled
-                      dense
-                      label="Criado Em"
-                      outlined
-                    />
-                  </v-col>
-                  <v-col cols="12">
-                    <small>* Campos Obrigatórios</small>
-                  </v-col>
-                </v-row>
-              </v-container>
-            </validation-observer>
-          </v-form>
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer />
-          <v-btn
-            v-if="!!(!controle.exibir && (controle.inserir || controle.editar))"
-            color="success"
-            @click="salvarRegistro()"
+                    <v-row dense>
+                      <v-col
+                        xl="3"
+                        lg="3"
+                        md="10"
+                        sm="12"
+                        cols="12"
+                      >
+                        <v-autocomplete
+                          v-model="filtro.grupo"
+                          :items="dropdownGrupos"
+                          hide-details
+                          dense
+                          item-value="item"
+                          item-text="descricao"
+                          label="Grupo"
+                          outlined
+                          @change="listarRegistro()"
+                        />
+                      </v-col>
+                      <v-col
+                        xl="4"
+                        lg="4"
+                        md="10"
+                        sm="12"
+                        cols="12"
+                      >
+                        <v-text-field
+                          v-model="filtro.descricao"
+                          hide-details
+                          dense
+                          label="Descrição"
+                          outlined
+                        />
+                      </v-col>
+                    </v-row>
+                  </v-container>
+                </template>
+              </filtro>
+            </v-col>
+            <v-col cols="12">
+              <tabela
+                :colunas="colunas"
+                :registros="registros"
+                exibir
+                @exibir="exibirRegistro($event)"
+              />
+            </v-col>
+          </v-row>
+        </v-container>
+      </v-form>
+    </template>
+
+    <template slot="formulario">
+      <v-form @submit.prevent="''">
+        <validation-observer ref="observer">
+          <v-container
+            fluid
+            grid-list-xs
           >
-            Salvar
-          </v-btn>
-          <v-btn
-            v-if="!!(controle.exibir && !controle.inserir)"
-            color="success"
-            @click="controle.editar = true, controle.exibir = false"
-          >
-            Editar
-          </v-btn>
-          <v-btn
-            color="error"
-            @click="modal = false, resetFormulario()"
-          >
-            Fechar
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+            <v-row dense>
+              <v-col
+                v-if="formulario.id"
+                xl="1"
+                lg="1"
+                md="1"
+                sm="3"
+                cols="12"
+              >
+                <v-text-field
+                  v-model="formulario.id"
+                  hide-details
+                  disabled
+                  dense
+                  label="Id"
+                  outlined
+                />
+              </v-col>
+              <v-col
+                :xl="formulario.id ? 4 : 5"
+                :lg="formulario.id ? 4 : 5"
+                :md="formulario.id ? 4 : 5"
+                :sm="formulario.id ? 6 : 5"
+                cols="12"
+              >
+                <v-autocomplete
+                  v-model="formulario.grupo"
+                  :items="dropdownGrupos"
+                  disabled
+                  hide-details
+                  dense
+                  item-value="item"
+                  item-text="descricao"
+                  label="Grupo*"
+                  outlined
+                />
+              </v-col>
+              <v-col
+                xl="2"
+                lg="2"
+                md="2"
+                sm="2"
+                cols="12"
+              >
+                <v-text-field
+                  v-model="formulario.item"
+                  hide-details
+                  disabled
+                  dense
+                  label="Item*"
+                  outlined
+                />
+              </v-col>
+              <v-col
+                xl="5"
+                lg="5"
+                md="5"
+                sm="5"
+                cols="12"
+              >
+                <validation-provider
+                  v-slot="{ errors }"
+                  name="Descrição"
+                  vid="descricao"
+                  rules="required"
+                >
+                  <v-text-field
+                    v-model="formularioDescricao"
+                    :error-messages="errors"
+                    :hide-details="!errors.length"
+                    :disabled="controle.exibir"
+                    dense
+                    label="Descrição*"
+                    outlined
+                  />
+                </validation-provider>
+              </v-col>
+              <v-col
+                v-if="formulario.id"
+                xl="3"
+                lg="3"
+                md="3"
+                sm="3"
+                cols="12"
+              >
+                <v-text-field
+                  v-model="formulario.created_by"
+                  hide-details
+                  disabled
+                  dense
+                  label="Criado Por"
+                  outlined
+                />
+              </v-col>
+              <v-col
+                v-if="formulario.id"
+                xl="4"
+                lg="4"
+                md="4"
+                sm="4"
+                cols="12"
+              >
+                <v-text-field
+                  v-model="formulario.created_at"
+                  hide-details
+                  disabled
+                  dense
+                  label="Criado Em"
+                  outlined
+                />
+              </v-col>
+            </v-row>
+          </v-container>
+        </validation-observer>
+      </v-form>
+    </template>
+    <template slot="botoes">
+      <v-btn
+        v-if="!!(!controle.exibir && (controle.inserir || controle.editar))"
+        color="success"
+        smallsd
+        @click="salvarRegistro()"
+      >
+        Salvar
+      </v-btn>
+      <v-btn
+        v-if="!!(controle.exibir && !controle.inserir)"
+        color="success"
+        small
+        @click="controle.editar = true, controle.exibir = false"
+      >
+        Editar
+      </v-btn>
+      <v-btn
+        color="error"
+        small
+        @click="modal = false, resetFormulario()"
+      >
+        Fechar
+      </v-btn>
+    </template>
   </pagina>
 </template>
 
@@ -324,7 +261,7 @@ export default {
         text: 'Descrição Grupo',
         align: 'start',
         sortable: false,
-        value: 'descricaoGrupo'
+        value: 'descricao_grupo'
       },
       {
         text: 'Item',
@@ -393,6 +330,16 @@ export default {
         adicionar: true,
         values: !!(this.filtro.descricao || this.filtro.grupo)
       }
+    },
+    maisOpcoes () {
+      return [
+        {
+          acao: 'excluir',
+          color: 'error',
+          icone: 'mdi-delete',
+          titulo: 'Excluir'
+        }
+      ]
     }
   },
   async created () {
@@ -494,6 +441,7 @@ export default {
       this.controle.exibir = true
     },
     async resetFormulario () {
+      this.loading = true
       await this.buscarDropdownGrupos(1) // GRUPOS DE OPÇOES
       this.modal = false
       this.controle = {
@@ -509,6 +457,7 @@ export default {
         grupo: null,
         descricao: null
       }
+      this.loading = false
     }
   }
 }

@@ -1,334 +1,318 @@
 <template>
   <pagina
     :loading="loading"
+    :modal="modal"
     subtitulo="Página de Manutenção de Usuários"
     titulo="Usuários"
+    :mais-opcoes="formulario.id ? maisOpcoes : null"
+    :titulo-formulario="controle.editar ? 'Editar Registro' : controle.inserir ? 'Adicionar Registro' : 'Exibir Registro'"
+    @voltar="modal = false, resetFormulario()"
   >
-    <v-form @submit.prevent="''">
-      <v-container
-        class="my-0 py-0"
-        fluid
-      >
-        <v-row dense>
-          <v-col cols="12">
-            <filtro
-              :options="optionsFilter"
-              @clearFilters="limparFiltros()"
-              @pesquisar="listarRegistro()"
-            >
-              <template slot="filtros">
-                <v-container
-                  class="my-0 py-0"
-                  fluid
-                >
-                  <v-row dense>
-                    <v-col
-                      xl="1"
-                      lg="1"
-                      md="4"
-                      sm="12"
-                      cols="12"
-                    >
-                      <v-text-field
-                        v-model="filtro.id"
-                        hide-details
-                        dense
-                        label="Id"
-                        outlined
-                      />
-                    </v-col>
-                    <v-col
-                      xl="3"
-                      lg="3"
-                      md="8"
-                      sm="12"
-                      cols="12"
-                    >
-                      <v-text-field
-                        v-model="filtro.nome"
-                        hide-details
-                        dense
-                        label="Nome"
-                        outlined
-                      />
-                    </v-col>
-                    <v-col
-                      xl="2"
-                      lg="2"
-                      md="4"
-                      sm="12"
-                      cols="12"
-                    >
-                      <selecao-all
-                        v-model="filtro.tipo"
-                        :items="dropdownTiposUsuarios"
-                        hide-details
-                        dense
-                        item-value="item"
-                        item-text="descricao"
-                        label="Tipo"
-                        outlined
-                      />
-                    </v-col>
-                    <v-col
-                      xl="3"
-                      lg="3"
-                      md="8"
-                      sm="12"
-                      cols="12"
-                    >
-                      <v-text-field
-                        v-model="filtro.email"
-                        hide-details
-                        dense
-                        label="Email"
-                        outlined
-                      />
-                    </v-col>
-                    <v-col
-                      xl="3"
-                      lg="3"
-                      md="8"
-                      sm="12"
-                      cols="12"
-                    >
-                      <v-text-field
-                        v-model="filtro.cpf"
-                        hide-details
-                        dense
-                        label="CPF"
-                        outlined
-                      />
-                    </v-col>
-                  </v-row>
-                </v-container>
-              </template>
-            </filtro>
-          </v-col>
-          <v-col cols="12">
-            <tabela
-              :colunas="colunas"
-              :registros="registros"
-              exibir
-              @exibir="exibirRegistro($event)"
-            />
-          </v-col>
-        </v-row>
-      </v-container>
-    </v-form>
-    <v-dialog
-      v-model="modal"
-      persistent
-      max-width="1000px"
-    >
-      <v-card>
-        <v-card-title>
-          {{ controle.editar ? 'Editar Registro' : controle.inserir ? 'Adicionar Registro' : 'Exibir Registro' }}
-        </v-card-title>
-        <v-card-text class="ma-0 pa-0 px-2">
-          <v-form @submit.prevent="''">
-            <validation-observer ref="observer">
-              <v-container
-                class="my-0 py-0"
-                fluid
+    <template slot="listagem">
+      <v-form @submit.prevent="''">
+        <v-container
+          class="my-0 py-0"
+          fluid
+        >
+          <v-row dense>
+            <v-col cols="12">
+              <filtro
+                :options="optionsFilter"
+                @adicionar="modal = true, controle.inserir = true"
+                @clearFilters="limparFiltros()"
+                @pesquisar="listarRegistro()"
               >
-                <v-row dense>
-                  <v-col
-                    xl="2"
-                    lg="2"
-                    md="2"
-                    sm="2"
-                    cols="12"
+                <template slot="filtros">
+                  <v-container
+                    class="my-0 py-0"
+                    fluid
                   >
-                    <v-text-field
-                      v-model="formulario.id"
-                      disabled
-                      hide-details
-                      dense
-                      label="Id"
-                      outlined
-                    />
-                  </v-col>
-                  <v-col
-                    xl="2"
-                    lg="2"
-                    md="2"
-                    sm="4"
-                    cols="12"
-                  >
-                    <v-text-field
-                      v-model="formulario.login"
-                      disabled
-                      hide-details
-                      dense
-                      label="Login"
-                      outlined
-                    />
-                  </v-col>
-                  <v-col
-                    xl="4"
-                    lg="4"
-                    md="4"
-                    sm="6"
-                    cols="12"
-                  >
-                    <validation-provider
-                      v-slot="{ errors }"
-                      name="Nome"
-                      vid="nome"
-                      rules="required"
-                    >
-                      <v-text-field
-                        v-model="formularioNome"
-                        :error-messages="errors"
-                        :hide-details="!errors.length"
-                        :disabled="controle.exibir"
-                        dense
-                        label="Nome"
-                        outlined
-                      />
-                    </validation-provider>
-                  </v-col>
-                  <v-col
-                    xl="4"
-                    lg="4"
-                    md="4"
-                    sm="4"
-                    cols="12"
-                  >
-                    <validation-provider
-                      v-slot="{ errors }"
-                      name="Tipo"
-                      vid="tipo"
-                      rules="required"
-                    >
-                      <v-autocomplete
-                        v-model="formulario.tipo"
-                        :items="dropdownTiposUsuarios"
-                        :error-messages="errors"
-                        :hide-details="!errors.length"
-                        :disabled="controle.exibir"
-                        dense
-                        item-value="item"
-                        item-text="descricao"
-                        label="Tipo"
-                        outlined
-                      />
-                    </validation-provider>
-                  </v-col>
-                  <v-col
-                    xl="4"
-                    lg="4"
-                    md="4"
-                    sm="8"
-                    cols="12"
-                  >
-                    <v-text-field
-                      v-model="formulario.email"
-                      disabled
-                      hide-details
-                      dense
-                      label="Email"
-                      outlined
-                    />
-                  </v-col>
-                  <v-col
-                    xl="3"
-                    lg="3"
-                    md="3"
-                    sm="4"
-                    cols="12"
-                  >
-                    <validation-provider
-                      v-slot="{ errors }"
-                      name="Data de Nascimento"
-                      vid="dataNascimento"
-                      rules="required"
-                    >
-                      <date-selector
-                        ref="dataSelector"
-                        v-model="formulario.dataNascimento"
-                        :error-messages="errors"
-                        :hide-details="!errors.length"
-                        :disabled="controle.exibir"
-                        dense
-                        label="Data de Nascimento"
-                        outlined
-                        readonly
-                        clearable
-                      />
-                    </validation-provider>
-                  </v-col>
-                  <v-col
-                    xl="2"
-                    lg="2"
-                    md="2"
-                    sm="4"
-                    cols="12"
-                  >
-                    <validation-provider
-                      v-slot="{ errors }"
-                      name="CPF"
-                      vid="cpf"
-                      rules="required|numeric|cpf"
-                    >
-                      <v-text-field
-                        v-model="formulario.cpf"
-                        :error-messages="errors"
-                        :hide-details="!errors.length"
-                        :disabled="controle.exibir"
-                        dense
-                        label="CPF"
-                        outlined
-                      />
-                    </validation-provider>
-                  </v-col>
-                  <v-col
-                    xl="3"
-                    lg="3"
-                    md="3"
-                    sm="4"
-                    cols="12"
-                  >
-                    <v-text-field
-                      v-model="formulario.created_at"
-                      disabled
-                      hide-details
-                      dense
-                      label="Criado Em"
-                      outlined
-                    />
-                  </v-col>
-                </v-row>
-              </v-container>
-            </validation-observer>
-          </v-form>
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer />
-          <v-btn
-            v-if="!!(!controle.exibir && (controle.inserir || controle.editar))"
-            color="success"
-            @click="editarRegistro()"
+                    <v-row dense>
+                      <v-col
+                        xl="1"
+                        lg="1"
+                        md="4"
+                        sm="12"
+                        cols="12"
+                      >
+                        <v-text-field
+                          v-model="filtro.id"
+                          hide-details
+                          dense
+                          label="Id"
+                          outlined
+                        />
+                      </v-col>
+                      <v-col
+                        xl="3"
+                        lg="3"
+                        md="8"
+                        sm="12"
+                        cols="12"
+                      >
+                        <v-text-field
+                          v-model="filtro.nome"
+                          hide-details
+                          dense
+                          label="Nome"
+                          outlined
+                        />
+                      </v-col>
+                      <v-col
+                        xl="2"
+                        lg="2"
+                        md="4"
+                        sm="12"
+                        cols="12"
+                      >
+                        <selecao-all
+                          v-model="filtro.tipo"
+                          :items="dropdownTiposUsuarios"
+                          hide-details
+                          dense
+                          item-value="item"
+                          item-text="descricao"
+                          label="Tipo"
+                          outlined
+                        />
+                      </v-col>
+                      <v-col
+                        xl="3"
+                        lg="3"
+                        md="8"
+                        sm="12"
+                        cols="12"
+                      >
+                        <v-text-field
+                          v-model="filtro.email"
+                          hide-details
+                          dense
+                          label="Email"
+                          outlined
+                        />
+                      </v-col>
+                      <v-col
+                        xl="3"
+                        lg="3"
+                        md="8"
+                        sm="12"
+                        cols="12"
+                      >
+                        <v-text-field
+                          v-model="filtro.cpf"
+                          hide-details
+                          dense
+                          label="CPF"
+                          outlined
+                        />
+                      </v-col>
+                    </v-row>
+                  </v-container>
+                </template>
+              </filtro>
+            </v-col>
+            <v-col cols="12">
+              <tabela
+                :colunas="colunas"
+                :registros="registros"
+                exibir
+                @exibir="exibirRegistro($event)"
+              />
+            </v-col>
+          </v-row>
+        </v-container>
+      </v-form>
+    </template>
+    <template slot="formulario">
+      <v-form
+        ref="form"
+        @submit.prevent="''"
+      >
+        <validation-observer ref="observer">
+          <v-container
+            fluid
+            grid-list-xs
           >
-            Salvar
-          </v-btn>
-          <v-btn
-            v-if="!!(controle.exibir && !controle.inserir)"
-            color="success"
-            @click="controle.editar = true, controle.exibir = false"
-          >
-            Editar
-          </v-btn>
-          <v-btn
-            color="error"
-            @click="modal = false, resetFormulario()"
-          >
-            Fechar
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+            <v-row dense>
+              <v-col
+                xl="1"
+                lg="1"
+                md="1"
+                sm="12"
+                cols="12"
+              >
+                <validation-provider
+                  v-slot="{ errors }"
+                  name="Id"
+                  vid="id"
+                >
+                  <v-text-field
+                    v-model="formulario.id"
+                    :error-messages="errors"
+                    :hide-details="!errors.length"
+                    disabled
+                    dense
+                    label="Id"
+                    outlined
+                  />
+                </validation-provider>
+              </v-col>
+              <v-col
+                xl="5"
+                lg="5"
+                md="5"
+                sm="12"
+                cols="12"
+              >
+                <validation-provider
+                  v-slot="{ errors }"
+                  name="Nome"
+                  vid="nome"
+                  rules="required"
+                >
+                  <v-text-field
+                    v-model="formulario.nome"
+                    :disabled="controle.exibir"
+                    :error-messages="errors"
+                    :hide-details="!errors.length"
+                    dense
+                    label="Nome"
+                    outlined
+                  />
+                </validation-provider>
+              </v-col>
+              <v-col
+                xl="6"
+                lg="6"
+                md="6"
+                sm="12"
+                cols="12"
+              >
+                <validation-provider
+                  v-slot="{ errors }"
+                  name="Email"
+                  vid="email"
+                  rules="required|email"
+                >
+                  <v-text-field
+                    v-model="formulario.email"
+                    :disabled="controle.exibir"
+                    :error-messages="errors"
+                    :hide-details="!errors.length"
+                    dense
+                    label="Email"
+                    outlined
+                  />
+                </validation-provider>
+              </v-col>
+              <v-col
+                xl="4"
+                lg="4"
+                md="4"
+                sm="12"
+                cols="12"
+              >
+                <validation-provider
+                  v-slot="{ errors }"
+                  name="Data de Nascimento"
+                  vid="dataNascimento"
+                  rules="required"
+                >
+                  <date-selector
+                    v-model="formulario.dataNascimento"
+                    :disabled="controle.exibir"
+                    :error-messages="errors"
+                    :hide-details="!errors.length"
+                    dense
+                    label="Data de Nascimento"
+                    outlined
+                    readonly
+                    clearable
+                  />
+                </validation-provider>
+              </v-col>
+              <v-col
+                xl="4"
+                lg="4"
+                md="4"
+                sm="12"
+                cols="12"
+              >
+                <validation-provider
+                  v-slot="{ errors }"
+                  name="CPF"
+                  vid="cpf"
+                  rules="required|numeric|cpf"
+                >
+                  <v-text-field
+                    v-model="formulario.cpf"
+                    :disabled="controle.exibir"
+                    :error-messages="errors"
+                    :hide-details="!errors.length"
+                    dense
+                    label="CPF"
+                    outlined
+                  />
+                </validation-provider>
+              </v-col>
+              <v-col
+                xl="4"
+                lg="4"
+                md="4"
+                sm="12"
+                cols="12"
+              >
+                <validation-provider
+                  v-slot="{ errors }"
+                  name="Tipo de Usuário"
+                  vid="empresaOrigem"
+                  rules="required"
+                >
+                  <v-autocomplete
+                    v-model="formulario.tipoUsuarioId"
+                    :disabled="controle.exibir"
+                    :items="dropdownTiposUsuarios"
+                    :error-messages="errors"
+                    :hide-details="!errors.length"
+                    dense
+                    item-value="item"
+                    item-text="descricao"
+                    label="Tipo de Usuário"
+                    class="required"
+                    outlined
+                  />
+                </validation-provider>
+              </v-col>
+            </v-row>
+          </v-container>
+        </validation-observer>
+      </v-form>
+    </template>
+    <template slot="botoes">
+      <v-btn
+        v-if="!!(!controle.exibir && (controle.inserir || controle.editar))"
+        color="success"
+        small
+        @click="salvarRegistro()"
+      >
+        Salvar
+      </v-btn>
+      <v-btn
+        v-if="!!(controle.exibir && !controle.inserir)"
+        color="success"
+        small
+        @click="controle.editar = true, controle.exibir = false"
+      >
+        Editar
+      </v-btn>
+      <v-btn
+        color="error"
+        small
+        @click="modal = false, resetFormulario()"
+      >
+        Voltar
+      </v-btn>
+    </template>
   </pagina>
 </template>
 
@@ -400,7 +384,7 @@ export default {
       id: null,
       nome: null,
       login: null,
-      tipo: null,
+      tipoUsuarioId: null,
       dataNascimento: null,
       email: null,
       cpf: null,
@@ -435,20 +419,24 @@ export default {
     },
     optionsFilter () {
       return {
-        adicionar: false,
+        adicionar: true,
         values: this.filtroValor
       }
     },
-    optionsFilterRelacionamento () {
-      return {
-        adicionar: true,
-        values: !!(this.filtroRelacionamento.descricao)
-      }
+    maisOpcoes () {
+      return [
+        {
+          acao: 'excluir',
+          color: 'error',
+          icone: 'mdi-delete',
+          titulo: 'Excluir'
+        }
+      ]
     }
   },
   async created () {
-    await this.buscarDropdownTiposUsuarios(2) // TIPOS USUARIOS
     this.listarRegistro()
+    await this.buscarDropdownTiposUsuarios(2) // TIPOS USUARIOS
   },
   methods: {
     ...mapMutations('usuarios', [
@@ -458,7 +446,7 @@ export default {
       'listar',
       'exibir',
       'editar',
-      'listarRelacionamento',
+      'salvar',
       'buscarDropdownTiposUsuarios'
     ]),
     async listarRegistro () {
@@ -491,20 +479,23 @@ export default {
       this.loading = false
       this.controle.exibir = true
     },
-    async editarRegistro () {
+    async salvarRegistro () {
       if (await this.$refs.observer.validate()) {
         this.loading = true
 
         const form = {
           id: this.formulario.id || undefined,
           nome: this.formulario.nome || undefined,
-          tipo: this.formulario.tipo || undefined,
+          tipoUsuarioId: this.formulario.tipoUsuarioId || undefined,
           email: this.formulario.email || undefined,
+          dataNascimento: this.formulario.dataNascimento || null,
           data_nascimento: this.formulario.dataNascimento || undefined,
           cpf: this.formulario.cpf || undefined
         }
 
-        const res = await this.editar(form)
+        let res
+        if (form.id) res = await this.editar(form)
+        else res = await this.salvar(form)
         if (res && !res.erro) {
           this.modal = false
           this.listarRegistro()
@@ -523,6 +514,11 @@ export default {
         email: null,
         cpf: null,
         created_at: null
+      }
+      this.controle = {
+        exibir: false,
+        editar: false,
+        inserir: false
       }
     },
     limparFiltros () {

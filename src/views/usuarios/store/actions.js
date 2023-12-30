@@ -56,6 +56,16 @@ export const listarRelacionamento = async ({ commit }, filtros) => {
   }
 }
 
+export const salvar = async ({ commit }, dados) => {
+  try {
+    const res = await axios.post('/usuario', dados)
+
+    return res.data
+  } catch (error) {
+    return null
+  }
+}
+
 export const editar = async ({ commit }, dados) => {
   try {
     const res = await axios.put('/usuario/' + dados.id, dados)
