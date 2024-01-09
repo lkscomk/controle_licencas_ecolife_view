@@ -1,8 +1,9 @@
 /* eslint-disable  */
 
 import { localize, ValidationObserver, ValidationProvider, extend, setInteractionMode } from 'vee-validate'
-import{ alpha, confirmed, email, length, max, max_value, min, min_value, numeric, required } from 'vee-validate/dist/rules'
+import{ alpha, confirmed, date, email, length, max, max_value, min, min_value, numeric, required } from 'vee-validate/dist/rules'
 import Vue from 'vue'
+import dayjs from 'dayjs'
 import br from 'vee-validate/dist/locale/pt_BR'
 
 extend('alpha', alpha)
@@ -15,6 +16,22 @@ extend('min', min)
 extend('min_value', min_value)
 extend('numeric', numeric)
 extend('required', required)
+
+setInteractionMode('eager')
+
+extend('data', {
+    ...date,
+    validate: (value) => {
+      const data = dayjs(value, 'DD/MM/YYYY', true); // O terceiro parâmetro (true) ativa o modo estrito
+  
+      // Verifica se a data é válida
+      if (data.isValid()) {
+        return true; // A data é válida
+      } else {
+        return '{_field_} não é uma data válida'; // Mensagem de erro
+      }
+    }
+});
 
 extend('cpf', value => {
   let cpf = value.replace(/[^\d]/g, '') // Remove caracteres não numéricos

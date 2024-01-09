@@ -49,6 +49,11 @@ const routes = [
         component: () => import('../views/licencas/index.vue')
       },
       {
+        path: '/empresas',
+        name: 'Empresas',
+        component: () => import('../views/empresas/index.vue')
+      },
+      {
         path: '/acessos',
         name: 'Acessos',
         component: () => import('../views/acessos/index.vue')

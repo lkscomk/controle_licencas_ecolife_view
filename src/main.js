@@ -8,6 +8,7 @@ import store from './store'
 import '@/plugins/validate'
 import vuetify from './plugins/vuetify'
 import '@mdi/font/css/materialdesignicons.css'
+import VueMask from 'v-mask'
 
 Vue.config.productionTip = false
 
@@ -18,6 +19,8 @@ Vue.component('tabela', () => import('./components/tabela'))
 Vue.component('filtro', () => import('./components/filtro'))
 Vue.component('pagina', () => import('./components/pagina'))
 Vue.component('loading', () => import('./components/loading'))
+
+Vue.use(VueMask)
 
 new Vue({
   router,

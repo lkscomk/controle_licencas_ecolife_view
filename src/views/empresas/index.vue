@@ -2,8 +2,8 @@
   <pagina
     :loading="loading"
     :modal="modal"
-    subtitulo="Página de Manutenção de Usuários"
-    titulo="Usuários"
+    subtitulo="Página de Manutenção de Empresas"
+    titulo="Empresas"
     :mais-opcoes="formulario.id ? maisOpcoes : null"
     :titulo-formulario="controle.editar ? 'Editar Registro' : controle.inserir ? 'Adicionar Registro' : 'Exibir Registro'"
     @voltar="modal = false, resetFormulario()"

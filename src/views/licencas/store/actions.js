@@ -1,11 +1,11 @@
 import axios from '@/plugins/axios_local'
 
-export const buscarDropdownTiposUsuarios = async ({ commit }, grupo) => {
+export const buscarDropdownGrupos = async ({ commit }, grupo) => {
   try {
     const res = await axios.get('/sistema/opcoes/' + grupo)
 
     if (!res.data.erro) {
-      commit('dropdownTiposUsuarios', res.data)
+      commit('dropdownGrupos', res.data)
     }
 
     return res.data
@@ -16,7 +16,7 @@ export const buscarDropdownTiposUsuarios = async ({ commit }, grupo) => {
 
 export const listar = async ({ commit }, filtros) => {
   try {
-    const res = await axios.get('/usuario', {
+    const res = await axios.get('/opcoes', {
       params: filtros
     })
 
@@ -32,7 +32,7 @@ export const listar = async ({ commit }, filtros) => {
 
 export const exibir = async ({ commit }, id) => {
   try {
-    const res = await axios.get('/usuario/' + id)
+    const res = await axios.get('/opcoes/' + id)
 
     return res.data
   } catch (error) {
@@ -42,7 +42,7 @@ export const exibir = async ({ commit }, id) => {
 
 export const listarRelacionamento = async ({ commit }, filtros) => {
   try {
-    const res = await axios.get('/usuario', {
+    const res = await axios.get('/opcoes', {
       params: filtros
     })
 
@@ -56,9 +56,29 @@ export const listarRelacionamento = async ({ commit }, filtros) => {
   }
 }
 
+export const salvar = async ({ commit }, dados) => {
+  try {
+    const res = await axios.post('/opcoes', dados)
+
+    return res.data
+  } catch (error) {
+    return null
+  }
+}
+
 export const editar = async ({ commit }, dados) => {
   try {
-    const res = await axios.put('/usuario/' + dados.id, dados)
+    const res = await axios.put('/opcoes/' + dados.id, dados)
+
+    return res.data
+  } catch (error) {
+    return null
+  }
+}
+
+export const excluir = async ({ commit }, id) => {
+  try {
+    const res = await axios.delete('/opcoes/' + id)
 
     return res.data
   } catch (error) {
