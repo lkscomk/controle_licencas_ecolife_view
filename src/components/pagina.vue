@@ -30,6 +30,12 @@
       dense
     >
       <v-col
+        cols="12"
+        class="pb-0 mb-0"
+      >
+        <slot />
+      </v-col>
+      <v-col
         v-if="!modal"
         cols="12"
         class="pb-0 mb-0"
@@ -94,7 +100,7 @@
                   v-for="(opcao, i) in maisOpcoes"
                   :key="i"
                   :disabled="!!opcao.disabled"
-                  @click="item.acao ? $emit(item.acao) : $emit('input')"
+                  @click="opcao.acao ? $emit(opcao.acao) : $emit('input')"
                 >
                   <v-list-item-icon class="mr-3">
                     <v-icon :color="opcao.color || 'primary'">
@@ -143,8 +149,13 @@
 </template>
 
 <script>
+import loading from './loading.vue'
 export default {
   name: 'ComponentePagina',
+
+  components: {
+    loading
+  },
 
   props: {
     subtitulo: {

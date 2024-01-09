@@ -7,6 +7,7 @@
     :mais-opcoes="formulario.id ? maisOpcoes : null"
     :titulo-formulario="controle.editar ? 'Editar Registro' : controle.inserir ? 'Adicionar Registro' : 'Exibir Registro'"
     @voltar="modal = false, resetFormulario()"
+    @excluir="excluirRegistro()"
   >
     <template slot="listagem">
       <v-form @submit.prevent="''">
@@ -339,7 +340,7 @@ export default {
       ]
     }
   },
-  async created () {
+  created () {
     this.listarRegistro()
   },
   methods: {
@@ -398,9 +399,12 @@ export default {
         else res = await this.salvar(form)
 
         if (res && !res.erro) {
-          this.modal = false
-          this.resetFormulario()
-          this.listarRegistro()
+          this.controle = {
+            exibir: true,
+            editar: false,
+            inserir: false
+          }
+          this.exibirRegistro(res.id)
           await this.buscarAcessos(this.perfil)
         }
         this.loading = false
