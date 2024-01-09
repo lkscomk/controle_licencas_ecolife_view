@@ -11,31 +11,31 @@
       >
         <v-img
           v-if="$vuetify.breakpoint.name === 'xl'"
-          src="@/assets/logotipo.png"
+          src="@/assets/logoEcolife.png"
           max-width="400px"
           contain
         />
         <v-img
           v-else-if="$vuetify.breakpoint.name === 'lg'"
-          src="@/assets/logotipo.png"
+          src="@/assets/logoEcolife.png"
           max-width="350px"
           contain
         />
         <v-img
           v-else-if="$vuetify.breakpoint.name === 'md'"
-          src="@/assets/logotipo.png"
+          src="@/assets/logoEcolife.png"
           max-width="300px"
           contain
         />
         <v-img
           v-else-if="$vuetify.breakpoint.name === 'sm'"
-          src="@/assets/logotipo.png"
+          src="@/assets/logoEcolife.png"
           max-width="250px"
           contain
         />
         <v-img
           v-else
-          src="@/assets/logotipo.png"
+          src="@/assets/logoEcolife.png"
           max-width="200px"
           contain
         />
@@ -183,7 +183,7 @@ export default {
           senha: this.formulario.senha || null
         })
         if (res && !res.erro) {
-          this.abrirJenela('/home')
+          this.abrirJenela('/')
         }
         this.loading = false
       }

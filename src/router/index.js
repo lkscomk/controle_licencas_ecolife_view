@@ -8,7 +8,7 @@ const routes = [
     component: () => import('@/views/login/index.vue'),
     beforeEnter: (to, from, next) => {
       if (localStorage.getItem('umbrella:token')) {
-        next('/home')
+        next('/')
       } else {
         localStorage.removeItem('umbrella:token')
         localStorage.removeItem('umbrella:nome')
@@ -24,7 +24,7 @@ const routes = [
     component: () => import('@/layout/layoutInterno.vue'),
     children: [
       {
-        path: '/home',
+        path: '/',
         name: 'home',
         component: () => import('@/views/home/index.vue')
       },

@@ -10,7 +10,7 @@
       >
         <v-img
           max-width="40%"
-          :src="require('@/assets/logoUmbrella.png')"
+          :src="require('@/assets/logoEcolife.png')"
           class="my-3"
         />
       </v-col>

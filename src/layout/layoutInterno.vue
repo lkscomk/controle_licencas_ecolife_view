@@ -9,7 +9,10 @@
       <v-app-bar-nav-icon
         @click.stop="drawer = !drawer"
       />
-      <div class="headline font-weight-regular d-flex align-center">
+      <div
+        class="headline font-weight-regular d-flex align-center"
+        @click="abrirJenela('/')"
+      >
         Ecolife
       </div>
       <v-spacer />
@@ -121,7 +124,7 @@
           {{ dataAtual }}
         </span>
         <strong v-if="!$vuetify.breakpoint.mobile">
-          Umbrella Designer
+          developed by Umbrella
         </strong>
         <span v-if="!$vuetify.breakpoint.mobile">
           - Versão
@@ -166,7 +169,7 @@ export default {
     }, 200)
     setTimeout(async () => {
       await this.buscarAcessos(this.perfil)
-      await this.buscarImagem()
+      // await this.buscarImagem()
     }, 200)
   },
 
