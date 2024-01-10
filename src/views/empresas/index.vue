@@ -32,8 +32,8 @@
                       <v-col
                         xl="1"
                         lg="1"
-                        md="4"
-                        sm="12"
+                        md="1"
+                        sm="1"
                         cols="12"
                       >
                         <v-text-field
@@ -45,6 +45,55 @@
                         />
                       </v-col>
                       <v-col
+                        xl="2"
+                        lg="2"
+                        md="2"
+                        sm="2"
+                        cols="12"
+                      >
+                        <v-text-field
+                          v-model="filtro.cnpj"
+                          hide-details
+                          dense
+                          label="CNPJ"
+                          outlined
+                        />
+                      </v-col>
+                      <v-col
+                        xl="2"
+                        lg="2"
+                        md="2"
+                        sm="2"
+                        cols="12"
+                      >
+                        <selecao-all
+                          v-model="filtro.status"
+                          :items="dropdownStatusEmpresa"
+                          hide-details
+                          dense
+                          item-value="item"
+                          item-text="descricao"
+                          label="Status"
+                          outlined
+                        />
+                      </v-col>
+                      <v-col
+                        xl="2"
+                        lg="2"
+                        md="2"
+                        sm="12"
+                        cols="12"
+                      >
+                        <v-text-field
+                          v-model="filtro.nomeFantasia"
+                          v-uppercase
+                          hide-details
+                          dense
+                          label="Nome Fantasia"
+                          outlined
+                        />
+                      </v-col>
+                      <v-col
                         xl="3"
                         lg="3"
                         md="8"
@@ -52,10 +101,11 @@
                         cols="12"
                       >
                         <v-text-field
-                          v-model="filtro.nome"
+                          v-model="filtro.razaoSocial"
+                          v-uppercase
                           hide-details
                           dense
-                          label="Nome"
+                          label="Razão Social"
                           outlined
                         />
                       </v-col>
@@ -67,43 +117,13 @@
                         cols="12"
                       >
                         <selecao-all
-                          v-model="filtro.tipo"
-                          :items="dropdownTiposUsuarios"
+                          v-model="filtro.porte"
+                          :items="dropdownPortesEmpresa"
                           hide-details
                           dense
                           item-value="item"
                           item-text="descricao"
-                          label="Tipo"
-                          outlined
-                        />
-                      </v-col>
-                      <v-col
-                        xl="3"
-                        lg="3"
-                        md="8"
-                        sm="12"
-                        cols="12"
-                      >
-                        <v-text-field
-                          v-model="filtro.email"
-                          hide-details
-                          dense
-                          label="Email"
-                          outlined
-                        />
-                      </v-col>
-                      <v-col
-                        xl="3"
-                        lg="3"
-                        md="8"
-                        sm="12"
-                        cols="12"
-                      >
-                        <v-text-field
-                          v-model="filtro.cpf"
-                          hide-details
-                          dense
-                          label="CPF"
+                          label="Porte"
                           outlined
                         />
                       </v-col>
@@ -350,42 +370,49 @@ export default {
         value: 'id'
       },
       {
-        text: 'Nome',
+        text: 'CNPJ',
         align: 'start',
         sortable: false,
-        value: 'nome'
+        value: 'cnpj'
       },
       {
-        text: 'Tipo',
+        text: 'Status',
         align: 'start',
         sortable: false,
-        value: 'tipo'
+        value: 'status_descricao'
       },
       {
-        text: 'Email',
+        text: 'Nome Fantasia',
         align: 'start',
         sortable: false,
-        value: 'email'
+        value: 'nome_fantasia'
       },
       {
-        text: 'CPF',
+        text: 'Razão Social',
         align: 'start',
         sortable: false,
-        value: 'cpf'
+        value: 'razao_social'
       },
       {
-        text: 'Criado Em',
+        text: 'Data Cadastro',
         align: 'start',
         sortable: false,
-        value: 'created_at'
+        value: 'data_cadastro'
+      },
+      {
+        text: 'Porte',
+        align: 'start',
+        sortable: false,
+        value: 'porte_descricao'
       }
     ],
     filtro: {
       id: null,
-      tipo: [],
-      nome: null,
-      email: null,
-      cpf: null
+      cnpj: null,
+      status: [],
+      nomeFantasia: null,
+      razaoSocial: null,
+      porte: []
     },
     controle: {
       exibir: false,
@@ -405,28 +432,24 @@ export default {
     modal: false
   }),
   computed: {
-    ...mapState('usuarios', [
+    ...mapState('empresa', [
       'registros',
       'registrosRelacionamento',
-      'dropdownTiposUsuarios'
+      'dropdownStatusEmpresa',
+      'dropdownPortesEmpresa'
     ]),
-    formularioNome: {
-      get () {
-        return this.formulario.nome ? this.formulario.nome.toUpperCase() : this.formulario.nome
-      },
-      set (valor) {
-        this.formulario.nome = valor.toUpperCase()
-      }
-    },
     filtroValor () {
       return !!(
-        (this.filtro.tipo
-          ? this.filtro.tipo.length
-          : null) ||
-        this.filtro.nome ||
-        this.filtro.email ||
         this.filtro.id ||
-        this.filtro.cpf
+        this.filtro.cnpj ||
+        (this.filtro.status
+          ? this.filtro.status.length
+          : null) ||
+        this.filtro.nomeFantasia ||
+        this.filtro.razaoSocial ||
+        (this.filtro.porte
+          ? this.filtro.porte.length
+          : null)
       )
     },
     optionsFilter () {
@@ -448,28 +471,31 @@ export default {
   },
   async created () {
     this.listarRegistro()
-    await this.buscarDropdownTiposUsuarios(2) // TIPOS USUARIOS
+    await this.buscarDropdownPortesEmpresa()
+    await this.buscarDropdownStatusEmpresa()
   },
   methods: {
-    ...mapMutations('usuarios', [
+    ...mapMutations('empresa', [
       'setRegistrosRelacionamento'
     ]),
-    ...mapActions('usuarios', [
+    ...mapActions('empresa', [
       'listar',
       'exibir',
       'editar',
       'salvar',
       'excluir',
-      'buscarDropdownTiposUsuarios'
+      'buscarDropdownPortesEmpresa',
+      'buscarDropdownStatusEmpresa'
     ]),
     async listarRegistro () {
       this.loading = true
       await this.listar({
         id: this.filtro.id || null,
-        tipo: this.filtro.tipo && this.filtro.tipo.length ? this.filtro.tipo : null,
-        nome: this.filtro.nome || null,
-        email: this.filtro.email || null,
-        cpf: this.filtro.cpf || null
+        cnpj: this.filtro.cnpj || null,
+        status: this.filtro.status && this.filtro.status.length ? this.filtro.status : null,
+        nomeFantasia: this.filtro.nomeFantasia || null,
+        razaoSocial: this.filtro.razaoSocial || null,
+        porteEmpresa: this.filtro.porte && this.filtro.porte.length ? this.filtro.porte : null
       })
       this.loading = false
     },

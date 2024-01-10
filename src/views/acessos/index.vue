@@ -72,7 +72,10 @@
             fluid
           >
             <v-row dense>
-              <v-col cols="1">
+              <v-col
+                v-if="formulario.id"
+                cols="1"
+              >
                 <v-text-field
                   v-model="formulario.id"
                   hide-details
@@ -85,6 +88,7 @@
               <v-col cols="3">
                 <v-text-field
                   v-model="formulario.nome"
+                  v-uppercase
                   :disabled="controle.exibir"
                   hide-details
                   dense
@@ -102,7 +106,10 @@
                   outlined
                 />
               </v-col>
-              <v-col cols="2">
+              <v-col
+                v-if="formulario.id"
+                cols="2"
+              >
                 <v-text-field
                   v-model="formulario.created_by"
                   disabled
@@ -112,7 +119,10 @@
                   outlined
                 />
               </v-col>
-              <v-col cols="3">
+              <v-col
+                v-if="formulario.id"
+                cols="3"
+              >
                 <v-text-field
                   v-model="formulario.created_at"
                   disabled

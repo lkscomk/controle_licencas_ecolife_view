@@ -1,12 +1,17 @@
 import day from '@/plugins/dayjs'
+import { filter } from 'vue-input-facade'
 
 export default {
-  dropdownTiposUsuarios (state, param) {
-    state.dropdownTiposUsuarios = param
+  dropdownPortesEmpresa (state, param) {
+    state.dropdownPortesEmpresa = param
+  },
+  dropdownStatusEmpresa (state, param) {
+    state.dropdownStatusEmpresa = param
   },
   setRegistros (state, param) {
     param.forEach(element => {
-      element.created_at = element.created_at ? day(element.created_at).format('DD/MM/YYYY HH:mm:ss') : null
+      element.data_cadastro = element.data_cadastro ? day(element.data_cadastro).format('DD/MM/YYYY') : null
+      element.cnpj = filter(element.cnpj, ['##.###.###/####-##'])
     })
     state.registros = param
   }

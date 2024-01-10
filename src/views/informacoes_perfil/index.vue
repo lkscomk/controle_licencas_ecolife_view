@@ -94,7 +94,8 @@
                     rules="required"
                   >
                     <v-text-field
-                      v-model="formularioNome"
+                      v-model="formulario.nome"
+                      v-uppercase
                       :error-messages="errors"
                       :hide-details="!errors.length"
                       :disabled="controle.exibir"
@@ -305,15 +306,7 @@ export default {
   computed: {
     ...mapState('perfil', [
       'dropdownTipoUsuario'
-    ]),
-    formularioNome: {
-      get () {
-        return this.formulario.nome ? this.formulario.nome.toUpperCase() : this.formulario.nome
-      },
-      set (valor) {
-        this.formulario.nome = valor.toUpperCase()
-      }
-    }
+    ])
   },
   async created () {
     await this.buscarDropdownTipoUsuario(2) // TIPOS DE PERFIS

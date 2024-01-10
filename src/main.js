@@ -22,6 +22,15 @@ Vue.component('loading', () => import('./components/loading'))
 
 Vue.use(VueMask)
 
+Vue.directive('uppercase', {
+  bind (el, binding, vnode) {
+    el.addEventListener('input', function (event) {
+      event.target.value = event.target.value.toUpperCase()
+      vnode.context.$data[vnode.data.model.expression] = event.target.value
+    })
+  }
+})
+
 new Vue({
   router,
   store,

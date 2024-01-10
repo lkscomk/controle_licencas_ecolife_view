@@ -1,11 +1,25 @@
 import axios from '@/plugins/axios_local'
 
-export const buscarDropdownTiposUsuarios = async ({ commit }, grupo) => {
+export const buscarDropdownStatusEmpresa = async ({ commit }) => {
   try {
-    const res = await axios.get('/sistema/opcoes/' + grupo)
+    const res = await axios.get('/sistema/opcoes/4')
 
     if (!res.data.erro) {
-      commit('dropdownTiposUsuarios', res.data)
+      commit('dropdownStatusEmpresa', res.data)
+    }
+
+    return res.data
+  } catch (error) {
+    return null
+  }
+}
+
+export const buscarDropdownPortesEmpresa = async ({ commit }) => {
+  try {
+    const res = await axios.get('/sistema/opcoes/5')
+
+    if (!res.data.erro) {
+      commit('dropdownPortesEmpresa', res.data)
     }
 
     return res.data
@@ -16,7 +30,7 @@ export const buscarDropdownTiposUsuarios = async ({ commit }, grupo) => {
 
 export const listar = async ({ commit }, filtros) => {
   try {
-    const res = await axios.get('/usuario', {
+    const res = await axios.get('/empresa', {
       params: filtros
     })
 

@@ -38,6 +38,7 @@
                       >
                         <v-text-field
                           v-model="filtro.id"
+                          v-mask="'#####'"
                           hide-details
                           dense
                           label="Código"
@@ -53,6 +54,7 @@
                       >
                         <v-text-field
                           v-model="filtro.nome"
+                          v-uppercase
                           hide-details
                           dense
                           label="Nome"
@@ -174,6 +176,7 @@
                 >
                   <v-text-field
                     v-model="formulario.nome"
+                    v-uppercase
                     :disabled="controle.exibir"
                     :error-messages="errors"
                     :hide-details="!errors.length"
@@ -220,17 +223,6 @@
                   vid="dataNascimento"
                   rules="required|data"
                 >
-                  <!-- <date-selector
-                    v-model="formulario.dataNascimento"
-                    :disabled="controle.exibir"
-                    :error-messages="errors"
-                    :hide-details="!errors.length"
-                    dense
-                    label="Data de Nascimento"
-                    outlined
-                    readonly
-                    clearable
-                  /> -->
                   <v-text-field
                     v-model="formulario.dataNascimento"
                     v-mask="'##/##/####'"
@@ -254,10 +246,11 @@
                   v-slot="{ errors }"
                   name="CPF"
                   vid="cpf"
-                  rules="required|numeric|cpf"
+                  rules="required|cpf"
                 >
                   <v-text-field
                     v-model="formulario.cpf"
+                    v-mask="'###.###.###-##'"
                     :disabled="controle.exibir"
                     :error-messages="errors"
                     :hide-details="!errors.length"
@@ -410,14 +403,6 @@ export default {
       'registrosRelacionamento',
       'dropdownTiposUsuarios'
     ]),
-    formularioNome: {
-      get () {
-        return this.formulario.nome ? this.formulario.nome.toUpperCase() : this.formulario.nome
-      },
-      set (valor) {
-        this.formulario.nome = valor.toUpperCase()
-      }
-    },
     filtroValor () {
       return !!(
         (this.filtro.tipo

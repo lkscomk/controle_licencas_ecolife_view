@@ -55,6 +55,7 @@
                       >
                         <v-text-field
                           v-model="filtro.descricao"
+                          v-uppercase
                           hide-details
                           dense
                           label="Descrição"
@@ -153,7 +154,8 @@
                   rules="required"
                 >
                   <v-text-field
-                    v-model="formularioDescricao"
+                    v-model="formulario.descricao"
+                    v-uppercase
                     :error-messages="errors"
                     :hide-details="!errors.length"
                     :disabled="controle.exibir"
@@ -206,7 +208,7 @@
       <v-btn
         v-if="!!(!controle.exibir && (controle.inserir || controle.editar))"
         color="success"
-        smallsd
+        small
         @click="salvarRegistro()"
       >
         Salvar
@@ -317,14 +319,6 @@ export default {
       'registrosRelacionamento',
       'dropdownGrupos'
     ]),
-    formularioDescricao: {
-      get () {
-        return this.formulario.descricao ? this.formulario.descricao.toUpperCase() : this.formulario.descricao
-      },
-      set (valor) {
-        this.formulario.descricao = valor.toUpperCase()
-      }
-    },
     optionsFilter () {
       return {
         adicionar: true,
@@ -429,7 +423,7 @@ export default {
       if (res && !res.erro) {
         this.formulario = {
           id: res.id || null,
-          created_at: res.created_at || null,
+          created_at: res.created_at ? this.$day(res.created_at).format('DD/MM/YYYY HH:mm:ss') : null,
           created_by: res.created_by || null,
           item: res.item || null,
           grupo: res.grupo || null,

@@ -6,6 +6,7 @@ import licencas from '../views/licencas/store'
 import opcoes from '../views/opcoes/store'
 import usuarios from '../views/usuarios/store'
 import acessos from '../views/acessos/store'
+import empresa from '../views/empresas/store'
 
 Vue.use(Vuex)
 
@@ -24,6 +25,7 @@ export default new Vuex.Store({
     licencas,
     opcoes,
     usuarios,
-    acessos
+    acessos,
+    empresa
   }
 })
