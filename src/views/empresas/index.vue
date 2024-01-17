@@ -19,7 +19,7 @@
             <v-col cols="12">
               <filtro
                 :options="optionsFilter"
-                @adicionar="modal = true, controle.inserir = true"
+                @adicionar="modal = true, controle.inserir = true, formulario.status = enumStatusEmpresas.digitacao"
                 @clearFilters="limparFiltros()"
                 @pesquisar="listarRegistro()"
               >
@@ -180,140 +180,230 @@
                 </validation-provider>
               </v-col>
               <v-col
-                :xl="formulario.id ? 5 : 6"
-                :lg="formulario.id ? 5 : 6"
-                :md="formulario.id ? 5 : 6"
+                :xl="formulario.id ? 2 : 3"
+                :lg="formulario.id ? 2 : 3"
+                :md="formulario.id ? 2 : 3"
                 sm="12"
                 cols="12"
               >
                 <validation-provider
                   v-slot="{ errors }"
-                  name="Nome"
-                  vid="nome"
+                  name="CNPJ"
+                  vid="cnpj"
                   rules="required"
                 >
                   <v-text-field
-                    v-model="formulario.nome"
+                    v-model="formulario.cnpj"
+                    v-mask="'##.###.###/####-##'"
                     :disabled="controle.exibir"
                     :error-messages="errors"
                     :hide-details="!errors.length"
                     dense
-                    label="Nome"
+                    label="CNPJ*"
                     outlined
                   />
                 </validation-provider>
               </v-col>
               <v-col
-                xl="6"
-                lg="6"
-                md="6"
+                xl="2"
+                lg="2"
+                md="2"
+                sm="12"
+                cols="12"
+              >
+                <v-autocomplete
+                  v-model="formulario.status"
+                  disabled
+                  :items="dropdownStatusEmpresa"
+                  hide-details
+                  dense
+                  item-value="item"
+                  item-text="descricao"
+                  label="Status Empresa"
+                  outlined
+                />
+              </v-col>
+              <v-col
+                xl="3"
+                lg="3"
+                md="3"
                 sm="12"
                 cols="12"
               >
                 <validation-provider
                   v-slot="{ errors }"
-                  name="Email"
-                  vid="email"
-                  rules="required|email"
+                  name="Nome Fantasia"
+                  vid="nomeFantasia"
+                  rules="required"
                 >
                   <v-text-field
-                    v-model="formulario.email"
+                    v-model="formulario.nomeFantasia"
+                    v-uppercase
                     :disabled="controle.exibir"
                     :error-messages="errors"
                     :hide-details="!errors.length"
                     dense
-                    label="Email"
+                    label="Nome Fantasia*"
                     outlined
                   />
                 </validation-provider>
               </v-col>
               <v-col
-                xl="4"
-                lg="4"
-                md="4"
+                xl="2"
+                lg="2"
+                md="2"
                 sm="12"
                 cols="12"
               >
                 <validation-provider
                   v-slot="{ errors }"
-                  name="Data de Nascimento"
-                  vid="dataNascimento"
+                  name="Razão Social"
+                  vid="razaoSocial"
+                  rules="required"
+                >
+                  <v-text-field
+                    v-model="formulario.razaoSocial"
+                    v-uppercase
+                    :disabled="controle.exibir"
+                    :error-messages="errors"
+                    :hide-details="!errors.length"
+                    dense
+                    label="Razão Social*"
+                    outlined
+                  />
+                </validation-provider>
+              </v-col>
+              <v-col
+                xl="2"
+                lg="2"
+                md="2"
+                sm="12"
+                cols="12"
+              >
+                <validation-provider
+                  v-slot="{ errors }"
+                  name="Data de Cadastro"
+                  vid="dataCadastro"
                   rules="required|data"
                 >
-                  <!-- <date-selector
-                    v-model="formulario.dataNascimento"
-                    :disabled="controle.exibir"
-                    :error-messages="errors"
-                    :hide-details="!errors.length"
-                    dense
-                    label="Data de Nascimento"
-                    outlined
-                    readonly
-                    clearable
-                  /> -->
                   <v-text-field
-                    v-model="formulario.dataNascimento"
+                    v-model="formulario.dataCadastro"
                     v-mask="'##/##/####'"
                     :disabled="controle.exibir"
                     :error-messages="errors"
                     :hide-details="!errors.length"
                     dense
-                    label="Data Nascimento"
+                    label="Data de Cadastro*"
                     outlined
                   />
                 </validation-provider>
               </v-col>
               <v-col
-                xl="4"
-                lg="4"
-                md="4"
+                xl="2"
+                lg="2"
+                md="2"
                 sm="12"
                 cols="12"
               >
                 <validation-provider
                   v-slot="{ errors }"
-                  name="CPF"
-                  vid="cpf"
-                  rules="required|numeric|cpf"
+                  name="Incrição Estadual"
+                  vid="inscricaoEstadual"
+                  rules="required"
                 >
                   <v-text-field
-                    v-model="formulario.cpf"
+                    v-model="formulario.inscricaoEstadual"
                     :disabled="controle.exibir"
                     :error-messages="errors"
                     :hide-details="!errors.length"
                     dense
-                    label="CPF"
+                    label="Incrição Estadual*"
                     outlined
                   />
                 </validation-provider>
               </v-col>
               <v-col
-                xl="4"
-                lg="4"
-                md="4"
+                xl="2"
+                lg="2"
+                md="2"
                 sm="12"
                 cols="12"
               >
                 <validation-provider
                   v-slot="{ errors }"
-                  name="Tipo de Usuário"
-                  vid="empresaOrigem"
+                  name="Incrição Municipal"
+                  vid="inscricaoMunicipal"
                   rules="required"
                 >
-                  <v-autocomplete
-                    v-model="formulario.tipoUsuarioId"
+                  <v-text-field
+                    v-model="formulario.inscricaoMunicipal"
                     :disabled="controle.exibir"
-                    :items="dropdownTiposUsuarios"
+                    :error-messages="errors"
+                    :hide-details="!errors.length"
+                    dense
+                    label="Incrição Municipal*"
+                    outlined
+                  />
+                </validation-provider>
+              </v-col>
+              <v-col
+                xl="2"
+                lg="2"
+                md="2"
+                sm="12"
+                cols="12"
+              >
+                <validation-provider
+                  v-slot="{ errors }"
+                  name="Porte"
+                  rules="required"
+                  vid="porte"
+                >
+                  <v-autocomplete
+                    v-model="formulario.porte"
+                    :items="dropdownPortesEmpresa"
+                    :disabled="controle.exibir"
                     :error-messages="errors"
                     :hide-details="!errors.length"
                     dense
                     item-value="item"
                     item-text="descricao"
-                    label="Tipo de Usuário"
-                    class="required"
+                    label="Porte*"
                     outlined
                   />
                 </validation-provider>
+              </v-col>
+              <v-col
+                xl="2"
+                lg="2"
+                md="2"
+                sm="12"
+                cols="12"
+              >
+                <v-text-field
+                  v-model="formulario.created_by"
+                  disabled
+                  hide-details
+                  dense
+                  label="Criado Por*"
+                  outlined
+                />
+              </v-col>
+              <v-col
+                xl="2"
+                lg="2"
+                md="2"
+                sm="12"
+                cols="12"
+              >
+                <v-text-field
+                  v-model="formulario.created_at"
+                  disabled
+                  hide-details
+                  dense
+                  label="Criado Em*"
+                  outlined
+                />
               </v-col>
             </v-row>
           </v-container>
@@ -327,6 +417,12 @@
         small
         @click="salvarRegistro()"
       >
+        <v-icon
+          left
+          size="20"
+        >
+          mdi-content-save
+        </v-icon>
         Salvar
       </v-btn>
       <v-btn
@@ -335,6 +431,12 @@
         small
         @click="controle.editar = true, controle.exibir = false"
       >
+        <v-icon
+          left
+          size="20"
+        >
+          mdi-pencil
+        </v-icon>
         Editar
       </v-btn>
       <v-btn
@@ -342,6 +444,12 @@
         small
         @click="modal = false, resetFormulario()"
       >
+        <v-icon
+          left
+          size="20"
+        >
+          mdi-cancel
+        </v-icon>
         Voltar
       </v-btn>
     </template>
@@ -406,6 +514,9 @@ export default {
         value: 'porte_descricao'
       }
     ],
+    enumStatusEmpresas: {
+      digitacao: 1
+    },
     filtro: {
       id: null,
       cnpj: null,
@@ -421,13 +532,16 @@ export default {
     },
     formulario: {
       id: null,
-      nome: null,
-      login: null,
-      tipoUsuarioId: null,
-      dataNascimento: null,
-      email: null,
-      cpf: null,
-      created_at: null
+      cnpj: null,
+      status: null,
+      nomeFantasia: null,
+      razaoSocial: null,
+      dataCadastro: null,
+      inscricaoEstadual: null,
+      inscricaoMunicipal: null,
+      porte: null,
+      created_at: null,
+      created_by: null
     },
     modal: false
   }),
@@ -505,18 +619,21 @@ export default {
       if (res && !res.erro) {
         this.formulario = {
           id: res.id || null,
-          nome: res.nome || null,
-          login: `${res.id}-${res.nome.split(' ')[0]}`,
-          tipoUsuarioId: res.tipo_usuario_id || null,
-          dataNascimento: res.data_nascimento ? this.$day(res.data_nascimento).format('DD/MM/YYYY') : null,
-          email: res.email || null,
-          cpf: res.cpf || null,
+          cnpj: res.cnpj || null,
+          status: res.status_empresa_id || null,
+          nomeFantasia: res.nome_fantasia || null,
+          razaoSocial: res.razao_social || null,
+          dataCadastro: res.data_cadastro ? this.$day(res.data_cadastro).format('DD/MM/YYYY') : null,
+          inscricaoEstadual: res.inscricao_estadual || null,
+          inscricao_municipal: res.inscricao_municipal || null,
+          porte: res.porte_empresa_id || null,
+          created_by: res.created_by || null,
           created_at: res.created_at ? this.$day(res.created_at).format('DD/MM/YYYY HH:mm:ss') : null
         }
       }
       this.modal = true
-      this.loading = false
       this.controle.exibir = true
+      this.loading = false
     },
     async salvarRegistro () {
       if (await this.$refs.observer.validate()) {
@@ -524,11 +641,13 @@ export default {
 
         const form = {
           id: this.formulario.id || undefined,
-          nome: this.formulario.nome || undefined,
-          tipoUsuarioId: this.formulario.tipoUsuarioId || undefined,
-          email: this.formulario.email || undefined,
-          dataNascimento: this.formulario.dataNascimento ? this.$day(this.formulario.dataNascimento, 'DD/MM/YYYY').format('YYYY-MM-DD') : null,
-          cpf: this.formulario.cpf || undefined
+          cnpj: this.formulario.cnpj || undefined,
+          nomeFantasia: this.formulario.nomeFantasia || undefined,
+          razaoSocial: this.formulario.razaoSocial || undefined,
+          inscricaoEstadual: this.formulario.inscricaoEstadual || undefined,
+          inscricaoMunicipal: this.formulario.inscricaoMunicipal || undefined,
+          porte: this.formulario.porte || undefined,
+          dataCadastro: this.formulario.dataCadastro ? this.$day(this.formulario.dataCadastro, 'DD/MM/YYYY').format('YYYY-MM-DD') : null
         }
 
         let res
@@ -559,13 +678,16 @@ export default {
       this.$refs.observer.reset()
       this.formulario = {
         id: null,
-        nome: null,
-        login: null,
-        tipo: null,
-        dataNascimento: null,
-        email: null,
-        cpf: null,
-        created_at: null
+        cnpj: null,
+        status: null,
+        nomeFantasia: null,
+        razaoSocial: null,
+        dataCadastro: null,
+        inscricaoEstadual: null,
+        inscricaoMunicipal: null,
+        porte: null,
+        created_at: null,
+        created_by: null
       }
       this.controle = {
         exibir: false,
@@ -577,10 +699,11 @@ export default {
     limparFiltros () {
       this.filtro = {
         id: null,
-        tipo: [],
-        nome: null,
-        email: null,
-        cpf: null
+        cnpj: null,
+        status: [],
+        nomeFantasia: null,
+        razaoSocial: null,
+        porte: []
       }
     }
   }

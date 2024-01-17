@@ -6,7 +6,7 @@
     titulo="Usuários"
     :mais-opcoes="formulario.id ? maisOpcoes : null"
     :titulo-formulario="controle.editar ? 'Editar Registro' : controle.inserir ? 'Adicionar Registro' : 'Exibir Registro'"
-    @voltar="modal = false, resetFormulario()"
+    @voltar="modal = false, resetFormulario(), listarRegistro()"
     @excluir="excluirRegistro()"
   >
     <template slot="listagem">
@@ -127,10 +127,7 @@
       </v-form>
     </template>
     <template slot="formulario">
-      <v-form
-        ref="form"
-        @submit.prevent="''"
-      >
+      <v-form @submit.prevent="''">
         <validation-observer ref="observer">
           <v-container
             fluid
@@ -145,34 +142,27 @@
                 sm="12"
                 cols="12"
               >
-                <validation-provider
-                  v-slot="{ errors }"
-                  name="Id"
-                  vid="id"
-                >
-                  <v-text-field
-                    v-model="formulario.id"
-                    :error-messages="errors"
-                    :hide-details="!errors.length"
-                    disabled
-                    dense
-                    label="Código"
-                    outlined
-                  />
-                </validation-provider>
+                <v-text-field
+                  v-model="formulario.id"
+                  hide-details
+                  disabled
+                  dense
+                  label="Código"
+                  outlined
+                />
               </v-col>
               <v-col
-                :xl="formulario.id ? 5 : 6"
-                :lg="formulario.id ? 5 : 6"
-                :md="formulario.id ? 5 : 6"
+                :xl="formulario.id ? 3 : 4"
+                :lg="formulario.id ? 3 : 4"
+                :md="formulario.id ? 3 : 4"
                 sm="12"
                 cols="12"
               >
                 <validation-provider
                   v-slot="{ errors }"
                   name="Nome"
-                  vid="nome"
                   rules="required"
+                  vid="nome"
                 >
                   <v-text-field
                     v-model="formulario.nome"
@@ -181,23 +171,23 @@
                     :error-messages="errors"
                     :hide-details="!errors.length"
                     dense
-                    label="Nome"
+                    label="Nome*"
                     outlined
                   />
                 </validation-provider>
               </v-col>
               <v-col
-                xl="6"
-                lg="6"
-                md="6"
+                xl="3"
+                lg="3"
+                md="3"
                 sm="12"
                 cols="12"
               >
                 <validation-provider
                   v-slot="{ errors }"
                   name="Email"
-                  vid="email"
                   rules="required|email"
+                  vid="email"
                 >
                   <v-text-field
                     v-model="formulario.email"
@@ -205,23 +195,23 @@
                     :error-messages="errors"
                     :hide-details="!errors.length"
                     dense
-                    label="Email"
+                    label="Email*"
                     outlined
                   />
                 </validation-provider>
               </v-col>
               <v-col
-                xl="4"
-                lg="4"
-                md="4"
+                xl="2"
+                lg="2"
+                md="2"
                 sm="12"
                 cols="12"
               >
                 <validation-provider
                   v-slot="{ errors }"
                   name="Data de Nascimento"
+                  rules="required"
                   vid="dataNascimento"
-                  rules="required|data"
                 >
                   <v-text-field
                     v-model="formulario.dataNascimento"
@@ -230,23 +220,23 @@
                     :error-messages="errors"
                     :hide-details="!errors.length"
                     dense
-                    label="Data Nascimento"
+                    label="Data Nascimento*"
                     outlined
                   />
                 </validation-provider>
               </v-col>
               <v-col
-                xl="4"
-                lg="4"
-                md="4"
+                xl="1"
+                lg="1"
+                md="1"
                 sm="12"
                 cols="12"
               >
                 <validation-provider
                   v-slot="{ errors }"
                   name="CPF"
-                  vid="cpf"
                   rules="required|cpf"
+                  vid="cpf"
                 >
                   <v-text-field
                     v-model="formulario.cpf"
@@ -255,23 +245,23 @@
                     :error-messages="errors"
                     :hide-details="!errors.length"
                     dense
-                    label="CPF"
+                    label="CPF*"
                     outlined
                   />
                 </validation-provider>
               </v-col>
               <v-col
-                xl="4"
-                lg="4"
-                md="4"
+                xl="2"
+                lg="2"
+                md="2"
                 sm="12"
                 cols="12"
               >
                 <validation-provider
                   v-slot="{ errors }"
                   name="Tipo de Usuário"
-                  vid="empresaOrigem"
                   rules="required"
+                  vid="tipoUsuarioId"
                 >
                   <v-autocomplete
                     v-model="formulario.tipoUsuarioId"
@@ -282,11 +272,27 @@
                     dense
                     item-value="item"
                     item-text="descricao"
-                    label="Tipo de Usuário"
-                    class="required"
+                    label="Tipo de Usuário*"
                     outlined
                   />
                 </validation-provider>
+              </v-col>
+              <v-col
+                v-if="formulario.id"
+                xl="2"
+                lg="2"
+                md="2"
+                sm="12"
+                cols="12"
+              >
+                <v-text-field
+                  v-model="formulario.created_at"
+                  disabled
+                  hide-details
+                  dense
+                  label="Criado Em"
+                  outlined
+                />
               </v-col>
             </v-row>
           </v-container>
@@ -300,6 +306,12 @@
         small
         @click="salvarRegistro()"
       >
+        <v-icon
+          left
+          size="20"
+        >
+          mdi-content-save
+        </v-icon>
         Salvar
       </v-btn>
       <v-btn
@@ -308,13 +320,25 @@
         small
         @click="controle.editar = true, controle.exibir = false"
       >
+        <v-icon
+          left
+          size="20"
+        >
+          mdi-pencil
+        </v-icon>
         Editar
       </v-btn>
       <v-btn
         color="error"
         small
-        @click="modal = false, resetFormulario()"
+        @click="modal = false, resetFormulario(), listarRegistro()"
       >
+        <v-icon
+          left
+          size="20"
+        >
+          mdi-cancel
+        </v-icon>
         Voltar
       </v-btn>
     </template>
@@ -474,8 +498,8 @@ export default {
         }
       }
       this.modal = true
-      this.loading = false
       this.controle.exibir = true
+      this.loading = false
     },
     async salvarRegistro () {
       if (await this.$refs.observer.validate()) {
@@ -487,22 +511,23 @@ export default {
           tipoUsuarioId: this.formulario.tipoUsuarioId || undefined,
           email: this.formulario.email || undefined,
           dataNascimento: this.formulario.dataNascimento ? this.$day(this.formulario.dataNascimento, 'DD/MM/YYYY').format('YYYY-MM-DD') : null,
-          cpf: this.formulario.cpf || undefined
+          cpf: this.formulario.cpf ? String(this.formulario.cpf).match(/\d/g).join('') : undefined
         }
 
         let res
         if (form.id) res = await this.editar(form)
         else res = await this.salvar(form)
         if (res && !res.erro) {
+          this.exibirRegistro(res.id)
           this.controle = {
             exibir: true,
             editar: false,
             inserir: false
           }
-          this.exibirRegistro(res.id)
+          this.$refs.observer.reset()
         }
-        this.loading = false
       }
+      this.loading = false
     },
     async excluirRegistro () {
       this.loading = true
@@ -515,12 +540,11 @@ export default {
       this.loading = false
     },
     resetFormulario () {
-      this.$refs.observer.reset()
       this.formulario = {
         id: null,
         nome: null,
         login: null,
-        tipo: null,
+        tipoUsuarioId: null,
         dataNascimento: null,
         email: null,
         cpf: null,
@@ -531,7 +555,6 @@ export default {
         editar: false,
         inserir: false
       }
-      this.listarRegistro()
     },
     limparFiltros () {
       this.filtro = {

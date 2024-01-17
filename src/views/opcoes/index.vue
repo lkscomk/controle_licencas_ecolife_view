@@ -211,6 +211,12 @@
         small
         @click="salvarRegistro()"
       >
+        <v-icon
+          left
+          size="20"
+        >
+          mdi-content-save
+        </v-icon>
         Salvar
       </v-btn>
       <v-btn
@@ -219,6 +225,12 @@
         small
         @click="controle.editar = true, controle.exibir = false"
       >
+        <v-icon
+          left
+          size="20"
+        >
+          mdi-pencil
+        </v-icon>
         Editar
       </v-btn>
       <v-btn
@@ -226,7 +238,13 @@
         small
         @click="modal = false, resetFormulario()"
       >
-        Fechar
+        <v-icon
+          left
+          size="20"
+        >
+          mdi-cancel
+        </v-icon>
+        Voltar
       </v-btn>
     </template>
   </pagina>

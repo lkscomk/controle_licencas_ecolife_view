@@ -86,25 +86,60 @@
                 />
               </v-col>
               <v-col cols="3">
-                <v-text-field
-                  v-model="formulario.nome"
-                  v-uppercase
-                  :disabled="controle.exibir"
-                  hide-details
-                  dense
-                  label="Nome"
-                  outlined
-                />
+                <validation-provider
+                  v-slot="{ errors }"
+                  name="Nome"
+                  vid="nome"
+                  rules="required"
+                >
+                  <v-text-field
+                    v-model="formulario.nome"
+                    v-uppercase
+                    :disabled="controle.exibir"
+                    :error-messages="errors"
+                    :hide-details="!errors.length"
+                    dense
+                    label="Nome*"
+                    outlined
+                  />
+                </validation-provider>
               </v-col>
               <v-col cols="3">
-                <v-text-field
-                  v-model="formulario.url"
-                  :disabled="controle.exibir"
-                  hide-details
-                  dense
-                  label="Url"
-                  outlined
-                />
+                <validation-provider
+                  v-slot="{ errors }"
+                  name="Url"
+                  vid="url"
+                  rules="required"
+                >
+                  <v-text-field
+                    v-model="formulario.url"
+                    :disabled="controle.exibir"
+                    :error-messages="errors"
+                    :hide-details="!errors.length"
+                    dense
+                    label="Url*"
+                    outlined
+                  />
+                </validation-provider>
+              </v-col>
+              <v-col cols="3">
+                <validation-provider
+                  v-slot="{ errors }"
+                  name="Icone"
+                  vid="icone"
+                  rules="required"
+                >
+                  <v-text-field
+                    v-model="formulario.icone"
+                    :disabled="controle.exibir"
+                    :error-messages="errors"
+                    :hide-details="!errors.length"
+                    :append-icon="formulario.icone"
+                    dense
+                    label="Icone*"
+                    outlined
+                  />
+                </validation-provider>
               </v-col>
               <v-col
                 v-if="formulario.id"
@@ -144,6 +179,12 @@
         small
         @click="salvarRegistro()"
       >
+        <v-icon
+          left
+          size="20"
+        >
+          mdi-content-save
+        </v-icon>
         Salvar
       </v-btn>
       <v-btn
@@ -152,6 +193,12 @@
         small
         @click="controle.editar = true, controle.exibir = false"
       >
+        <v-icon
+          left
+          size="20"
+        >
+          mdi-pencil
+        </v-icon>
         Editar
       </v-btn>
       <v-btn
@@ -159,7 +206,13 @@
         small
         @click="modal = false, resetFormulario()"
       >
-        Fechar
+        <v-icon
+          left
+          size="20"
+        >
+          mdi-cancel
+        </v-icon>
+        Voltar
       </v-btn>
     </template>
     <template
@@ -235,6 +288,12 @@ export default {
         align: 'start',
         sortable: false,
         value: 'id'
+      },
+      {
+        text: 'Icone',
+        align: 'start',
+        sortable: false,
+        value: 'icone'
       },
       {
         text: 'Nome',
@@ -384,6 +443,7 @@ export default {
         this.formulario = {
           id: res.id,
           nome: res.nome,
+          icone: res.icone,
           url: res.url,
           created_at: res.created_at ? this.$day(res.created_at).format('DD/MM/YYYY HH:mm:ss') : null,
           created_by: res.created_by
@@ -391,8 +451,8 @@ export default {
         this.listarRegistroTipos()
         await this.buscarDropdownGrupos(2) // tipos de usuarios
       }
-      this.controle.exibir = true
       this.modal = true
+      this.controle.exibir = true
       this.loading = false
     },
     async salvarRegistro () {
@@ -400,6 +460,7 @@ export default {
         this.loading = true
         const form = {
           id: this.formulario.id || null,
+          icone: this.formulario.icone || null,
           nome: this.formulario.nome || null,
           url: this.formulario.url || null
         }
@@ -468,6 +529,7 @@ export default {
       this.formulario = {
         id: null,
         nome: null,
+        icone: null,
         url: null,
         created_at: null,
         created_by: null
@@ -480,6 +542,7 @@ export default {
         editar: false,
         inserir: false
       }
+      this.listarRegistro()
     }
   }
 }

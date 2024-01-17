@@ -91,7 +91,14 @@
             :key="index"
             @click="abrirJenela(tela.url)"
           >
-            <v-list-item-title>{{ tela.nome }}</v-list-item-title>
+            <v-list-item-icon class="mr-3">
+              <v-icon color="primary">
+                {{ tela.icone }}
+              </v-icon>
+            </v-list-item-icon>
+            <v-list-item-content>
+              <v-list-item-title>{{ tela.nome }}</v-list-item-title>
+            </v-list-item-content>
           </v-list-item>
 
           <v-list-item @click="deslogar()">

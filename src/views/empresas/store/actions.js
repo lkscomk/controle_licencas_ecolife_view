@@ -46,7 +46,7 @@ export const listar = async ({ commit }, filtros) => {
 
 export const exibir = async ({ commit }, id) => {
   try {
-    const res = await axios.get('/usuario/' + id)
+    const res = await axios.get('/empresa/' + id)
 
     return res.data
   } catch (error) {
@@ -82,7 +82,7 @@ export const excluir = async ({ commit }, id) => {
 
 export const salvar = async ({ commit }, dados) => {
   try {
-    const res = await axios.post('/usuario', dados)
+    const res = await axios.post('/empresa', dados)
 
     return res.data
   } catch (error) {
