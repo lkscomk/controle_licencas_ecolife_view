@@ -4,22 +4,6 @@ Vue.use(VueRouter)
 
 const routes = [
   {
-    path: '/login',
-    component: () => import('@/views/login/index.vue'),
-    beforeEnter: (to, from, next) => {
-      if (localStorage.getItem('umbrella:token')) {
-        next('/')
-      } else {
-        localStorage.removeItem('umbrella:token')
-        localStorage.removeItem('umbrella:nome')
-        localStorage.removeItem('umbrella:login')
-        localStorage.removeItem('umbrella:email')
-        localStorage.removeItem('umbrella:perfil')
-        next()
-      }
-    }
-  },
-  {
     path: '/',
     component: () => import('@/layout/layoutInterno.vue'),
     children: [
@@ -65,6 +49,29 @@ const routes = [
       } else {
         Vue.prototype.$notificacao('Usuário não autenticado', 'atencao')
         next('/login')
+      }
+    }
+  },
+  {
+    path: '/login',
+    component: () => import('@/views/login/index.vue'),
+    children: [
+      {
+        path: '',
+        name: 'Login',
+        component: () => import('@/views/login/index.vue')
+      }
+    ],
+    beforeEnter: (to, from, next) => {
+      if (localStorage.getItem('umbrella:token')) {
+        next('/')
+      } else {
+        localStorage.removeItem('umbrella:token')
+        localStorage.removeItem('umbrella:nome')
+        localStorage.removeItem('umbrella:login')
+        localStorage.removeItem('umbrella:email')
+        localStorage.removeItem('umbrella:perfil')
+        next()
       }
     }
   },
