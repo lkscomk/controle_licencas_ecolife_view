@@ -100,7 +100,7 @@
                       :hide-details="!errors.length"
                       :disabled="controle.exibir"
                       dense
-                      label="Nome"
+                      label="Nome*"
                       outlined
                     />
                   </validation-provider>
@@ -131,20 +131,18 @@
                   <validation-provider
                     v-slot="{ errors }"
                     name="Data de Nascimento"
-                    vid="dataNascimento"
                     rules="required"
+                    vid="dataNascimento"
                   >
-                    <date-selector
-                      ref="dataSelector"
+                    <v-text-field
                       v-model="formulario.dataNascimento"
+                      v-mask="'##/##/####'"
+                      :disabled="controle.exibir"
                       :error-messages="errors"
                       :hide-details="!errors.length"
-                      :disabled="controle.exibir"
                       dense
-                      label="Data de Nascimento"
+                      label="Data Nascimento*"
                       outlined
-                      readonly
-                      clearable
                     />
                   </validation-provider>
                 </v-col>
@@ -159,15 +157,16 @@
                     v-slot="{ errors }"
                     name="CPF"
                     vid="cpf"
-                    rules="required|min:11|numeric"
+                    rules="required"
                   >
                     <v-text-field
                       v-model="formulario.cpf"
+                      v-mask="'###.###.###-##'"
                       :error-messages="errors"
                       :hide-details="!errors.length"
                       :disabled="controle.exibir"
                       dense
-                      label="CPF"
+                      label="CPF*"
                       outlined
                     />
                   </validation-provider>
@@ -296,7 +295,7 @@ export default {
       tipoUsuarioId: null
     },
     controle: {
-      exibir: false,
+      exibir: true,
       editar: false,
       inserir: false
     },
@@ -309,8 +308,8 @@ export default {
     ])
   },
   async created () {
-    await this.buscarDropdownTipoUsuario(2) // TIPOS DE PERFIS
     this.buscarPerfilUsuario()
+    await this.buscarDropdownTipoUsuario()
   },
   methods: {
     ...mapActions('perfil', [
@@ -333,7 +332,7 @@ export default {
           nome: res.nome || null,
           senha: res.senha || null,
           email: res.email || null,
-          dataNascimento: res.data_nascimento || null,
+          dataNascimento: res.data_nascimento ? this.$day(res.data_nascimento).format('DD/MM/YYYY') : null,
           criadoEm: res.created_at ? this.$day(res.created_at).format('DD/MM/YYYY HH:mm:ss') : null,
           tipoUsuarioId: res.tipo_usuario_id || null,
           cpf: res.cpf || null
@@ -349,6 +348,15 @@ export default {
     },
     async salvarPerfilUsuario () {
       if (await this.$refs.observer.validate()) {
+        const dataNascimento = this.$dataValidade(this.formulario.dataNascimento)
+        const cpf = this.$cpfValidate(this.formulario.cpf)
+        const email = this.$emailValidade(this.formulario.email)
+        if (dataNascimento || email || cpf) {
+          if (dataNascimento) this.$refs.observer.setErrors({ dataNascimento: [dataNascimento] })
+          if (email) this.$refs.observer.setErrors({ email: [email] })
+          if (cpf) this.$refs.observer.setErrors({ cpf: [cpf] })
+          return
+        }
         this.loading = true
         const res = await this.salvarUsuario({
           id: this.formulario.id || null,

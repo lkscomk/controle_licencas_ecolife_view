@@ -6,7 +6,7 @@ const Axios = axios.create({
   baseURL: `${process.env.VUE_APP_URL}/api`,
   headers: {
     Authorization: 'Bearer ' + localStorage.getItem('umbrella:token'),
-    login: localStorage.getItem('umbrella:login') ? window.atob(localStorage.getItem('umbrella:login')) : ''
+    'X-Login': localStorage.getItem('umbrella:login') ? window.atob(localStorage.getItem('umbrella:login')) : ''
   }
 })
 

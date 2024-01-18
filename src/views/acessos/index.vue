@@ -20,6 +20,7 @@
               <filtro
                 :options="optionsFilter"
                 @pesquisar="listarRegistro()"
+                @clearFilters="limparFiltros()"
                 @adicionar="modal = true, controle.inserir = true"
               >
                 <template slot="filtros">
@@ -28,18 +29,32 @@
                     fluid
                   >
                     <v-row dense>
-                      <v-col cols="3">
+                      <v-col
+                        xl="2"
+                        lg="2"
+                        md="4"
+                        sm="12"
+                        cols="12"
+                      >
                         <v-text-field
-                          v-model="filtro.codigo"
+                          v-model="filtro.id"
+                          v-mask="'#########'"
                           hide-details
                           dense
                           label="Id"
                           outlined
                         />
                       </v-col>
-                      <v-col cols="3">
+                      <v-col
+                        xl="4"
+                        lg="4"
+                        md="4"
+                        sm="12"
+                        cols="12"
+                      >
                         <v-text-field
                           v-model="filtro.nome"
+                          v-uppercase
                           hide-details
                           dense
                           label="Nome"
@@ -395,7 +410,7 @@ export default {
     optionsFilter () {
       return {
         adicionar: true,
-        values: !!(this.filtro.descricao)
+        values: !!(this.filtro.id || this.filtro.nome)
       }
     },
     maisOpcoes () {
@@ -430,7 +445,7 @@ export default {
     async listarRegistro () {
       this.loading = true
       await this.listar({
-        codigo: this.filtro.codigo || null,
+        id: this.filtro.id || null,
         nome: this.filtro.nome || null
       })
       this.loading = false
@@ -543,6 +558,12 @@ export default {
         inserir: false
       }
       this.listarRegistro()
+    },
+    limparFiltros () {
+      this.filtro = {
+        id: null,
+        nome: null
+      }
     }
   }
 }

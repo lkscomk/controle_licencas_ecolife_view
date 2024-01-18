@@ -18,6 +18,7 @@
             <v-col cols="12">
               <filtro
                 :options="optionsFilter"
+                @clearFilters="limparFiltros()"
                 @adicionar="controle.inserir = true, modal = true, formulario.item = encontrarProximoItem(registros), formulario.grupo = filtro.grupo"
                 @pesquisar="listarRegistro()"
               >
@@ -470,6 +471,12 @@ export default {
         descricao: null
       }
       this.loading = false
+    },
+    limparFiltros () {
+      this.filtro = {
+        grupo: 1,
+        descricao: null
+      }
     }
   }
 }

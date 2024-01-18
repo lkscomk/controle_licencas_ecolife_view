@@ -3,6 +3,7 @@ import '@/plugins/notificacao'
 import Vue from 'vue'
 import App from './App.vue'
 import '@/plugins/dayjs'
+import '@/plugins/validacoes'
 import router from './router'
 import store from './store'
 import '@/plugins/validate'
@@ -35,5 +36,5 @@ new Vue({
   router,
   store,
   vuetify,
-  render: function (h) { return h(App) }
+  render: h => h(App)
 }).$mount('#app')

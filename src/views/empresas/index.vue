@@ -32,12 +32,13 @@
                       <v-col
                         xl="1"
                         lg="1"
-                        md="1"
-                        sm="1"
+                        md="4"
+                        sm="4"
                         cols="12"
                       >
                         <v-text-field
                           v-model="filtro.id"
+                          v-mask="'###########'"
                           hide-details
                           dense
                           label="Código"
@@ -47,12 +48,13 @@
                       <v-col
                         xl="2"
                         lg="2"
-                        md="2"
-                        sm="2"
+                        md="4"
+                        sm="4"
                         cols="12"
                       >
                         <v-text-field
                           v-model="filtro.cnpj"
+                          v-mask="'##.###.###/####-##'"
                           hide-details
                           dense
                           label="CNPJ"
@@ -62,8 +64,8 @@
                       <v-col
                         xl="2"
                         lg="2"
-                        md="2"
-                        sm="2"
+                        md="4"
+                        sm="4"
                         cols="12"
                       >
                         <selecao-all
@@ -80,7 +82,7 @@
                       <v-col
                         xl="2"
                         lg="2"
-                        md="2"
+                        md="4"
                         sm="12"
                         cols="12"
                       >
@@ -96,7 +98,7 @@
                       <v-col
                         xl="3"
                         lg="3"
-                        md="8"
+                        md="4"
                         sm="12"
                         cols="12"
                       >
@@ -144,6 +146,7 @@
         </v-container>
       </v-form>
     </template>
+
     <template slot="formulario">
       <v-form
         ref="form"
@@ -160,7 +163,7 @@
                 xl="1"
                 lg="1"
                 md="1"
-                sm="12"
+                sm="4"
                 cols="12"
               >
                 <validation-provider
@@ -183,7 +186,7 @@
                 :xl="formulario.id ? 2 : 3"
                 :lg="formulario.id ? 2 : 3"
                 :md="formulario.id ? 2 : 3"
-                sm="12"
+                sm="4"
                 cols="12"
               >
                 <validation-provider
@@ -208,7 +211,7 @@
                 xl="2"
                 lg="2"
                 md="2"
-                sm="12"
+                sm="4"
                 cols="12"
               >
                 <v-autocomplete
@@ -226,22 +229,23 @@
               <v-col
                 xl="3"
                 lg="3"
-                md="3"
-                sm="12"
+                md="7"
+                sm="6"
                 cols="12"
               >
                 <validation-provider
                   v-slot="{ errors }"
                   name="Nome Fantasia"
                   vid="nomeFantasia"
-                  rules="required"
+                  rules="required|max:100"
                 >
                   <v-text-field
                     v-model="formulario.nomeFantasia"
                     v-uppercase
                     :disabled="controle.exibir"
                     :error-messages="errors"
-                    :hide-details="!errors.length"
+                    :hide-details="!(errors.length || (formulario.nomeFantasia && formulario.nomeFantasia.length > 0) && !controle.exibir)"
+                    :counter="100"
                     dense
                     label="Nome Fantasia*"
                     outlined
@@ -251,22 +255,23 @@
               <v-col
                 xl="2"
                 lg="2"
-                md="2"
-                sm="12"
+                md="4"
+                sm="6"
                 cols="12"
               >
                 <validation-provider
                   v-slot="{ errors }"
                   name="Razão Social"
                   vid="razaoSocial"
-                  rules="required"
+                  rules="required|max:100"
                 >
                   <v-text-field
                     v-model="formulario.razaoSocial"
                     v-uppercase
                     :disabled="controle.exibir"
                     :error-messages="errors"
-                    :hide-details="!errors.length"
+                    :hide-details="!(errors.length || (formulario.razaoSocial && formulario.razaoSocial.length > 0) && !controle.exibir)"
+                    :counter="100"
                     dense
                     label="Razão Social*"
                     outlined
@@ -277,14 +282,14 @@
                 xl="2"
                 lg="2"
                 md="2"
-                sm="12"
+                sm="4"
                 cols="12"
               >
                 <validation-provider
                   v-slot="{ errors }"
                   name="Data de Cadastro"
                   vid="dataCadastro"
-                  rules="required|data"
+                  rules="required"
                 >
                   <v-text-field
                     v-model="formulario.dataCadastro"
@@ -301,8 +306,8 @@
               <v-col
                 xl="2"
                 lg="2"
-                md="2"
-                sm="12"
+                md="3"
+                sm="4"
                 cols="12"
               >
                 <validation-provider
@@ -325,8 +330,8 @@
               <v-col
                 xl="2"
                 lg="2"
-                md="2"
-                sm="12"
+                md="3"
+                sm="4"
                 cols="12"
               >
                 <validation-provider
@@ -347,9 +352,9 @@
                 </validation-provider>
               </v-col>
               <v-col
-                xl="2"
-                lg="2"
-                md="2"
+                xl="3"
+                lg="3"
+                md="6"
                 sm="12"
                 cols="12"
               >
@@ -374,10 +379,145 @@
                 </validation-provider>
               </v-col>
               <v-col
+                cols="12"
+              >
+                Endereço Principal
+              </v-col>
+              <v-col
+                xl="1"
+                lg="2"
+                md="3"
+                sm="6"
+                cols="12"
+              >
+                <validation-provider
+                  v-slot="{ errors }"
+                  name="CEP"
+                  vid="cep"
+                  rules="required"
+                >
+                  <v-text-field
+                    v-model="formulario.cep"
+                    v-mask="'#####-###'"
+                    :disabled="controle.exibir"
+                    :error-messages="errors"
+                    :hide-details="!errors.length"
+                    dense
+                    label="CEP*"
+                    outlined
+                  />
+                </validation-provider>
+              </v-col>
+              <v-col
                 xl="2"
                 lg="2"
-                md="2"
+                md="3"
+                sm="6"
+                cols="12"
+              >
+                <validation-provider
+                  v-slot="{ errors }"
+                  name="Logradouro"
+                  vid="logradouro"
+                  rules="required|max:100"
+                >
+                  <v-text-field
+                    v-model="formulario.logradouro"
+                    v-uppercase
+                    :disabled="controle.exibir"
+                    :error-messages="errors"
+                    :hide-details="!(errors.length || (formulario.logradouro && formulario.logradouro.length > 0) && !controle.exibir)"
+                    :counter="100"
+                    dense
+                    label="Logradouro*"
+                    outlined
+                  />
+                </validation-provider>
+              </v-col>
+              <v-col
+                xl="1"
+                lg="2"
+                md="3"
+                sm="6"
+                cols="12"
+              >
+                <validation-provider
+                  v-slot="{ errors }"
+                  name="Número"
+                  vid="enderecoNumero"
+                  rules="required"
+                >
+                  <v-text-field
+                    v-model="formulario.enderecoNumero"
+                    v-mask="'##########'"
+                    :disabled="controle.exibir"
+                    :error-messages="errors"
+                    :hide-details="!errors.length"
+                    dense
+                    label="Número*"
+                    outlined
+                  />
+                </validation-provider>
+              </v-col>
+              <v-col
+                xl="2"
+                lg="2"
+                md="3"
+                sm="6"
+                cols="12"
+              >
+                <validation-provider
+                  v-slot="{ errors }"
+                  name="Bairro"
+                  vid="bairro"
+                  rules="required|max:100"
+                >
+                  <v-text-field
+                    v-model="formulario.bairro"
+                    v-uppercase
+                    :disabled="controle.exibir"
+                    :error-messages="errors"
+                    :hide-details="!(errors.length || (formulario.bairro && formulario.bairro.length > 0) && !controle.exibir)"
+                    :counter="100"
+                    dense
+                    label="Bairro*"
+                    outlined
+                  />
+                </validation-provider>
+              </v-col>
+              <v-col
+                xl="6"
+                lg="4"
+                md="12"
                 sm="12"
+                cols="12"
+              >
+                <validation-provider
+                  v-slot="{ errors }"
+                  name="Complemento"
+                  vid="complemento"
+                  rules="max:100"
+                >
+                  <v-text-field
+                    v-model="formulario.complemento"
+                    v-uppercase
+                    :disabled="controle.exibir"
+                    :error-messages="errors"
+                    :hide-details="!(errors.length || (formulario.complemento && formulario.complemento.length > 0) && !controle.exibir)"
+                    :counter="100"
+                    dense
+                    label="Complemento*"
+                    outlined
+                  />
+                </validation-provider>
+              </v-col>
+
+              <v-col
+                v-if="formulario.id"
+                xl="2"
+                lg="2"
+                md="3"
+                sm="6"
                 cols="12"
               >
                 <v-text-field
@@ -390,10 +530,11 @@
                 />
               </v-col>
               <v-col
+                v-if="formulario.id"
                 xl="2"
                 lg="2"
-                md="2"
-                sm="12"
+                md="3"
+                sm="6"
                 cols="12"
               >
                 <v-text-field
@@ -410,6 +551,7 @@
         </validation-observer>
       </v-form>
     </template>
+
     <template slot="botoes">
       <v-btn
         v-if="!!(!controle.exibir && (controle.inserir || controle.editar))"
@@ -540,6 +682,11 @@ export default {
       inscricaoEstadual: null,
       inscricaoMunicipal: null,
       porte: null,
+      cep: null,
+      logradouro: null,
+      enderecoNumero: null,
+      complemento: null,
+      bairro: null,
       created_at: null,
       created_by: null
     },
@@ -605,7 +752,7 @@ export default {
       this.loading = true
       await this.listar({
         id: this.filtro.id || null,
-        cnpj: this.filtro.cnpj || null,
+        cnpj: this.filtro.cnpj ? String(this.filtro.cnpj).match(/\d/g).join('') : undefined,
         status: this.filtro.status && this.filtro.status.length ? this.filtro.status : null,
         nomeFantasia: this.filtro.nomeFantasia || null,
         razaoSocial: this.filtro.razaoSocial || null,
@@ -625,8 +772,13 @@ export default {
           razaoSocial: res.razao_social || null,
           dataCadastro: res.data_cadastro ? this.$day(res.data_cadastro).format('DD/MM/YYYY') : null,
           inscricaoEstadual: res.inscricao_estadual || null,
-          inscricao_municipal: res.inscricao_municipal || null,
+          inscricaoMunicipal: res.inscricao_municipal || null,
           porte: res.porte_empresa_id || null,
+          cep: res.cep || null,
+          logradouro: res.logradouro || null,
+          enderecoNumero: res.numero || null,
+          complemento: res.complemento || null,
+          bairro: res.bairro || null,
           created_by: res.created_by || null,
           created_at: res.created_at ? this.$day(res.created_at).format('DD/MM/YYYY HH:mm:ss') : null
         }
@@ -637,28 +789,34 @@ export default {
     },
     async salvarRegistro () {
       if (await this.$refs.observer.validate()) {
+        const dataCadastro = this.$dataValidade(this.formulario.dataCadastro)
+        if (dataCadastro) {
+          if (dataCadastro) this.$refs.observer.setErrors({ dataCadastro: [dataCadastro] })
+          return
+        }
         this.loading = true
 
         const form = {
           id: this.formulario.id || undefined,
-          cnpj: this.formulario.cnpj || undefined,
+          cnpj: this.formulario.cnpj ? String(this.formulario.cnpj).match(/\d/g).join('') : undefined,
           nomeFantasia: this.formulario.nomeFantasia || undefined,
           razaoSocial: this.formulario.razaoSocial || undefined,
           inscricaoEstadual: this.formulario.inscricaoEstadual || undefined,
           inscricaoMunicipal: this.formulario.inscricaoMunicipal || undefined,
           porte: this.formulario.porte || undefined,
-          dataCadastro: this.formulario.dataCadastro ? this.$day(this.formulario.dataCadastro, 'DD/MM/YYYY').format('YYYY-MM-DD') : null
+          dataCadastro: this.formulario.dataCadastro ? this.$day(this.formulario.dataCadastro, 'DD/MM/YYYY').format('YYYY-MM-DD') : undefined,
+          cep: this.formulario.cep ? String(this.formulario.cep).match(/\d/g).join('') : undefined,
+          logradouro: this.formulario.logradouro || undefined,
+          enderecoNumero: this.formulario.enderecoNumero || undefined,
+          complemento: this.formulario.complemento || undefined,
+          bairro: this.formulario.bairro || undefined
         }
 
         let res
         if (form.id) res = await this.editar(form)
         else res = await this.salvar(form)
         if (res && !res.erro) {
-          this.controle = {
-            exibir: true,
-            editar: false,
-            inserir: false
-          }
+          this.modal = false
           this.exibirRegistro(res.id)
         }
         this.loading = false

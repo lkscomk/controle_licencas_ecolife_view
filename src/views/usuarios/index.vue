@@ -6,7 +6,7 @@
     titulo="Usuários"
     :mais-opcoes="formulario.id ? maisOpcoes : null"
     :titulo-formulario="controle.editar ? 'Editar Registro' : controle.inserir ? 'Adicionar Registro' : 'Exibir Registro'"
-    @voltar="modal = false, resetFormulario(), listarRegistro()"
+    @voltar="resetFormulario()"
     @excluir="excluirRegistro()"
   >
     <template slot="listagem">
@@ -103,6 +103,7 @@
                       >
                         <v-text-field
                           v-model="filtro.cpf"
+                          v-mask="'###.###.###-##'"
                           hide-details
                           dense
                           label="CPF"
@@ -161,7 +162,7 @@
                 <validation-provider
                   v-slot="{ errors }"
                   name="Nome"
-                  rules="required"
+                  rules="required|max:100"
                   vid="nome"
                 >
                   <v-text-field
@@ -169,7 +170,8 @@
                     v-uppercase
                     :disabled="controle.exibir"
                     :error-messages="errors"
-                    :hide-details="!errors.length"
+                    :hide-details="!(errors.length || (formulario.nome && formulario.nome.length > 0) && !controle.exibir)"
+                    :counter="100"
                     dense
                     label="Nome*"
                     outlined
@@ -186,14 +188,15 @@
                 <validation-provider
                   v-slot="{ errors }"
                   name="Email"
-                  rules="required|email"
+                  rules="required|max:100"
                   vid="email"
                 >
                   <v-text-field
                     v-model="formulario.email"
                     :disabled="controle.exibir"
                     :error-messages="errors"
-                    :hide-details="!errors.length"
+                    :hide-details="!(errors.length || (formulario.email && formulario.email.length > 0) && !controle.exibir)"
+                    :counter="100"
                     dense
                     label="Email*"
                     outlined
@@ -235,7 +238,7 @@
                 <validation-provider
                   v-slot="{ errors }"
                   name="CPF"
-                  rules="required|cpf"
+                  rules="required"
                   vid="cpf"
                 >
                   <v-text-field
@@ -260,7 +263,7 @@
                 <validation-provider
                   v-slot="{ errors }"
                   name="Tipo de Usuário"
-                  rules="required"
+                  rules=""
                   vid="tipoUsuarioId"
                 >
                   <v-autocomplete
@@ -331,7 +334,7 @@
       <v-btn
         color="error"
         small
-        @click="modal = false, resetFormulario(), listarRegistro()"
+        @click="resetFormulario()"
       >
         <v-icon
           left
@@ -478,7 +481,7 @@ export default {
         tipo: this.filtro.tipo && this.filtro.tipo.length ? this.filtro.tipo : null,
         nome: this.filtro.nome || null,
         email: this.filtro.email || null,
-        cpf: this.filtro.cpf || null
+        cpf: this.filtro.cpf ? String(this.filtro.cpf).match(/\d/g).join('') : undefined
       })
       this.loading = false
     },
@@ -503,6 +506,15 @@ export default {
     },
     async salvarRegistro () {
       if (await this.$refs.observer.validate()) {
+        const dataNascimento = this.$dataValidade(this.formulario.dataNascimento)
+        const cpf = this.$cpfValidate(this.formulario.cpf)
+        const email = this.$emailValidade(this.formulario.email)
+        if (dataNascimento || email || cpf) {
+          if (dataNascimento) this.$refs.observer.setErrors({ dataNascimento: [dataNascimento] })
+          if (email) this.$refs.observer.setErrors({ email: [email] })
+          if (cpf) this.$refs.observer.setErrors({ cpf: [cpf] })
+          return
+        }
         this.loading = true
 
         const form = {
@@ -518,13 +530,8 @@ export default {
         if (form.id) res = await this.editar(form)
         else res = await this.salvar(form)
         if (res && !res.erro) {
+          this.modal = false
           this.exibirRegistro(res.id)
-          this.controle = {
-            exibir: true,
-            editar: false,
-            inserir: false
-          }
-          this.$refs.observer.reset()
         }
       }
       this.loading = false
@@ -533,13 +540,12 @@ export default {
       this.loading = true
       const res = await this.excluir(this.formulario.id)
       if (res && !res.erro) {
-        this.modal = false
         this.resetFormulario()
-        this.listarRegistro()
       }
       this.loading = false
     },
     resetFormulario () {
+      this.$refs.observer.reset()
       this.formulario = {
         id: null,
         nome: null,
@@ -555,6 +561,8 @@ export default {
         editar: false,
         inserir: false
       }
+      this.modal = false
+      this.listarRegistro()
     },
     limparFiltros () {
       this.filtro = {

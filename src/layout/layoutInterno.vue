@@ -102,9 +102,16 @@
           </v-list-item>
 
           <v-list-item @click="deslogar()">
+            <v-list-item-icon class="mr-3">
+              <v-icon color="error">
+                mdi-logout
+              </v-icon>
+            </v-list-item-icon>
+            <v-list-item-content>
             <v-list-item-title>
               Sair
             </v-list-item-title>
+          </v-list-item-content>
           </v-list-item>
         </v-list-item-group>
       </v-list>

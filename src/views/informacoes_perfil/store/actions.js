@@ -2,7 +2,7 @@ import axios from '@/plugins/axios_local'
 
 export const buscarDropdownTipoUsuario = async ({ commit }, grupo) => {
   try {
-    const res = await axios.get('/sistema/opcoes/' + grupo)
+    const res = await axios.get('/sistema/opcoes/2') // tipos de usuario
 
     if (!res.data.erro) {
       commit('dropdownTipoUsuario', res.data)

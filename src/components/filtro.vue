@@ -71,11 +71,13 @@
                 </v-list-item>
                 <v-list-item
                   dense
+                  :disabled="options && !options.values"
                   data-cy="btnLimparFiltros"
                   @click="$emit('clearFilters')"
                 >
                   <v-list-item-icon class="mr-3">
                     <v-icon
+                      :disabled="options && !options.values"
                       :color="$vuetify.theme.dark ? 'white' : 'primary'"
                     >
                       mdi-filter-remove

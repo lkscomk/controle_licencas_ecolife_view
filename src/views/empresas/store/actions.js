@@ -72,7 +72,7 @@ export const listarRelacionamento = async ({ commit }, filtros) => {
 
 export const excluir = async ({ commit }, id) => {
   try {
-    const res = await axios.delete('/usuario/' + id)
+    const res = await axios.delete('/empresa/' + id)
 
     return res.data
   } catch (error) {
@@ -92,7 +92,7 @@ export const salvar = async ({ commit }, dados) => {
 
 export const editar = async ({ commit }, dados) => {
   try {
-    const res = await axios.put('/usuario/' + dados.id, dados)
+    const res = await axios.put('/empresa/' + dados.id, dados)
 
     return res.data
   } catch (error) {
