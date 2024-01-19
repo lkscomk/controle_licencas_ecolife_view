@@ -5,7 +5,11 @@ const path = require('path')
 const app = express()
 app.use(serveStatic(path.join(__dirname, 'dist')))
 
-const port = process.env.PORT || 5000
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'dist', 'index.html'))
+})
+
+const port = process.env.PORT || 8003
 app.listen(port)
 // eslint-disable-next-line no-console
-console.log('Rodando na porta 5000')
+console.log('Rodando na porta 6000')

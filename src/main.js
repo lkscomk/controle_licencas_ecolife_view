@@ -10,6 +10,7 @@ import '@/plugins/validate'
 import vuetify from './plugins/vuetify'
 import '@mdi/font/css/materialdesignicons.css'
 import VueMask from 'v-mask'
+import Vupper from '@/plugins/uppercase'
 
 Vue.config.productionTip = false
 
@@ -22,19 +23,11 @@ Vue.component('pagina', () => import('./components/pagina'))
 Vue.component('loading', () => import('./components/loading'))
 
 Vue.use(VueMask)
-
-Vue.directive('uppercase', {
-  bind (el, binding, vnode) {
-    el.addEventListener('input', function (event) {
-      event.target.value = event.target.value.toUpperCase()
-      vnode.context.$data[vnode.data.model.expression] = event.target.value
-    })
-  }
-})
+Vue.use(Vupper)
 
 new Vue({
   router,
   store,
   vuetify,
-  render: h => h(App)
+  render: function (h) { return h(App) }
 }).$mount('#app')
