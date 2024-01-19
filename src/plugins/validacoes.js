@@ -2,7 +2,6 @@ import Vue from 'vue'
 import dayjs from 'dayjs'
 
 function cpfValidate (value) {
-  window.console.log(value, 'funcao')
   if (value) {
     const cpf = String(value).replace(/[^\d]/g, '') // Remove caracteres não numéricos
     // Verifica se o CPF possui 11 dígitos

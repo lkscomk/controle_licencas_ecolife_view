@@ -40,14 +40,14 @@
                   mdi-account
                 </v-icon>
               </v-avatar>
-              <v-btn
+              <!-- <v-btn
                 v-if="controle.editar"
                 color="success"
                 small
                 @click="openFilePicker"
               >
                 {{ imagemPerfil ? 'Substituir Imagem' : 'Escolher Imagem' }}
-              </v-btn>
+              </v-btn> -->
               <input
                 ref="fileInput"
                 type="file"
@@ -211,7 +211,7 @@
                       :disabled="controle.exibir"
                       :append-icon="mostrarSenha ? 'mdi-eye' : 'mdi-eye-off'"
                       dense
-                      label="Senha*"
+                      label="Nova Senha*"
                       outlined
                       :type="!mostrarSenha ? 'password' : 'text'"
                       @click:append="mostrarSenha = !mostrarSenha"
@@ -330,7 +330,7 @@ export default {
           id: res.id || null,
           login: window.atob(localStorage.getItem('umbrella:login')),
           nome: res.nome || null,
-          senha: res.senha || null,
+          senha: null,
           email: res.email || null,
           dataNascimento: res.data_nascimento ? this.$day(res.data_nascimento).format('DD/MM/YYYY') : null,
           criadoEm: res.created_at ? this.$day(res.created_at).format('DD/MM/YYYY HH:mm:ss') : null,
@@ -362,7 +362,7 @@ export default {
           id: this.formulario.id || null,
           nome: this.formulario.nome || null,
           cpf: this.formulario.cpf || null,
-          senha: this.formulario.senha || null,
+          senha: this.formulario.senha ? this.$crypto(this.formulario.senha, 'sha256') : undefined,
           data_nascimento: this.formulario.dataNascimento || null,
           tipoUsuarioId: this.formulario.tipoUsuarioId || null
         })

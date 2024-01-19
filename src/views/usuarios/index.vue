@@ -139,7 +139,7 @@
                 v-if="formulario.id"
                 xl="1"
                 lg="1"
-                md="1"
+                md="2"
                 sm="12"
                 cols="12"
               >
@@ -155,7 +155,7 @@
               <v-col
                 :xl="formulario.id ? 3 : 4"
                 :lg="formulario.id ? 3 : 4"
-                :md="formulario.id ? 3 : 4"
+                :md="formulario.id ? 3 : 5"
                 sm="12"
                 cols="12"
               >
@@ -181,7 +181,7 @@
               <v-col
                 xl="3"
                 lg="3"
-                md="3"
+                md="4"
                 sm="12"
                 cols="12"
               >
@@ -206,7 +206,7 @@
               <v-col
                 xl="2"
                 lg="2"
-                md="2"
+                md="3"
                 sm="12"
                 cols="12"
               >
@@ -230,8 +230,8 @@
               </v-col>
               <v-col
                 xl="1"
-                lg="1"
-                md="1"
+                lg="3"
+                md="3"
                 sm="12"
                 cols="12"
               >
@@ -256,7 +256,7 @@
               <v-col
                 xl="2"
                 lg="2"
-                md="2"
+                md="3"
                 sm="12"
                 cols="12"
               >
@@ -284,7 +284,7 @@
                 v-if="formulario.id"
                 xl="2"
                 lg="2"
-                md="2"
+                md="3"
                 sm="12"
                 cols="12"
               >
@@ -522,6 +522,7 @@ export default {
           nome: this.formulario.nome || undefined,
           tipoUsuarioId: this.formulario.tipoUsuarioId || undefined,
           email: this.formulario.email || undefined,
+          senha: this.$crypto(12345678, 'sha256'),
           dataNascimento: this.formulario.dataNascimento ? this.$day(this.formulario.dataNascimento, 'DD/MM/YYYY').format('YYYY-MM-DD') : null,
           cpf: this.formulario.cpf ? String(this.formulario.cpf).match(/\d/g).join('') : undefined
         }

@@ -8,6 +8,12 @@ export default {
   dropdownStatusEmpresa (state, param) {
     state.dropdownStatusEmpresa = param
   },
+  dropdownEstados (state, param) {
+    state.dropdownEstados = param
+  },
+  dropdownCidades (state, param) {
+    state.dropdownCidades = param
+  },
   setRegistros (state, param) {
     param.forEach(element => {
       element.data_cadastro = element.data_cadastro ? day(element.data_cadastro).format('DD/MM/YYYY') : null

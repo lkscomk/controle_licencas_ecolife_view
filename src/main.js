@@ -1,5 +1,6 @@
 import '@/plugins/axios_local'
 import '@/plugins/notificacao'
+import '@/plugins/crypto'
 import Vue from 'vue'
 import App from './App.vue'
 import '@/plugins/dayjs'

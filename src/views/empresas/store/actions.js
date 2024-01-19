@@ -28,6 +28,34 @@ export const buscarDropdownPortesEmpresa = async ({ commit }) => {
   }
 }
 
+export const buscarDropdownEstados = async ({ commit }) => {
+  try {
+    const res = await axios.get('/sistema/estados')
+
+    if (!res.data.erro) {
+      commit('dropdownEstados', res.data)
+    }
+
+    return res.data
+  } catch (error) {
+    return null
+  }
+}
+
+export const buscarDropdownCidade = async ({ commit }, uf) => {
+  try {
+    const res = await axios.get('/sistema/cidade/' + uf)
+
+    if (!res.data.erro) {
+      commit('dropdownCidades', res.data)
+    }
+
+    return res.data
+  } catch (error) {
+    return null
+  }
+}
+
 export const listar = async ({ commit }, filtros) => {
   try {
     const res = await axios.get('/empresa', {

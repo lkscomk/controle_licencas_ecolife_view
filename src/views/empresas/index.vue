@@ -163,7 +163,7 @@
                 xl="1"
                 lg="1"
                 md="1"
-                sm="4"
+                sm="2"
                 cols="12"
               >
                 <validation-provider
@@ -186,7 +186,7 @@
                 :xl="formulario.id ? 2 : 3"
                 :lg="formulario.id ? 2 : 3"
                 :md="formulario.id ? 2 : 3"
-                sm="4"
+                :sm="formulario.id ? 4 : 6"
                 cols="12"
               >
                 <validation-provider
@@ -211,7 +211,7 @@
                 xl="2"
                 lg="2"
                 md="2"
-                sm="4"
+                sm="6"
                 cols="12"
               >
                 <v-autocomplete
@@ -386,7 +386,7 @@
               <v-col
                 xl="1"
                 lg="2"
-                md="3"
+                md="4"
                 sm="6"
                 cols="12"
               >
@@ -411,7 +411,7 @@
               <v-col
                 xl="2"
                 lg="2"
-                md="3"
+                md="4"
                 sm="6"
                 cols="12"
               >
@@ -437,7 +437,7 @@
               <v-col
                 xl="1"
                 lg="2"
-                md="3"
+                md="4"
                 sm="6"
                 cols="12"
               >
@@ -460,9 +460,63 @@
                 </validation-provider>
               </v-col>
               <v-col
+                xl="3"
+                lg="3"
+                md="4"
+                sm="6"
+                cols="12"
+              >
+                <validation-provider
+                  v-slot="{ errors }"
+                  name="Estado"
+                  rules="required"
+                  vid="estado"
+                >
+                  <v-autocomplete
+                    v-model="formulario.estado"
+                    :items="dropdownEstados"
+                    :disabled="controle.exibir"
+                    :error-messages="errors"
+                    :hide-details="!errors.length"
+                    dense
+                    item-value="uf"
+                    item-text="nome"
+                    label="Estado*"
+                    outlined
+                  />
+                </validation-provider>
+              </v-col>
+              <v-col
+                xl="3"
+                lg="3"
+                md="4"
+                sm="6"
+                cols="12"
+              >
+                <validation-provider
+                  v-slot="{ errors }"
+                  name="Cidade"
+                  rules="required"
+                  vid="cidade"
+                >
+                  <v-autocomplete
+                    v-model="formulario.cidade"
+                    :items="dropdownCidades"
+                    :disabled="controle.exibir || !formulario.estado || !(formulario.estado === 'RO' || formulario.estado === 'AM' || formulario.estado === 'AC')"
+                    :error-messages="errors"
+                    :hide-details="!errors.length"
+                    dense
+                    item-value="codigo"
+                    item-text="nome"
+                    label="Cidade*"
+                    outlined
+                  />
+                </validation-provider>
+              </v-col>
+              <v-col
                 xl="2"
                 lg="2"
-                md="3"
+                md="4"
                 sm="6"
                 cols="12"
               >
@@ -685,6 +739,8 @@ export default {
       cep: null,
       logradouro: null,
       enderecoNumero: null,
+      estado: null,
+      cidade: null,
       complemento: null,
       bairro: null,
       created_at: null,
@@ -697,7 +753,9 @@ export default {
       'registros',
       'registrosRelacionamento',
       'dropdownStatusEmpresa',
-      'dropdownPortesEmpresa'
+      'dropdownPortesEmpresa',
+      'dropdownEstados',
+      'dropdownCidades'
     ]),
     filtroValor () {
       return !!(
@@ -730,10 +788,16 @@ export default {
       ]
     }
   },
+  watch: {
+    async 'formulario.estado' (value) {
+      if (value && (this.formulario.estado === 'RO' || this.formulario.estado === 'AM' || this.formulario.estado === 'AC')) await this.buscarDropdownCidade(value)
+    }
+  },
   async created () {
     this.listarRegistro()
     await this.buscarDropdownPortesEmpresa()
     await this.buscarDropdownStatusEmpresa()
+    await this.buscarDropdownEstados()
   },
   methods: {
     ...mapMutations('empresa', [
@@ -746,7 +810,9 @@ export default {
       'salvar',
       'excluir',
       'buscarDropdownPortesEmpresa',
-      'buscarDropdownStatusEmpresa'
+      'buscarDropdownStatusEmpresa',
+      'buscarDropdownEstados',
+      'buscarDropdownCidade'
     ]),
     async listarRegistro () {
       this.loading = true
@@ -779,6 +845,8 @@ export default {
           enderecoNumero: res.numero || null,
           complemento: res.complemento || null,
           bairro: res.bairro || null,
+          estado: res.estado || null,
+          cidade: res.cidade ? Number(res.cidade) : null,
           created_by: res.created_by || null,
           created_at: res.created_at ? this.$day(res.created_at).format('DD/MM/YYYY HH:mm:ss') : null
         }
@@ -807,6 +875,8 @@ export default {
           dataCadastro: this.formulario.dataCadastro ? this.$day(this.formulario.dataCadastro, 'DD/MM/YYYY').format('YYYY-MM-DD') : undefined,
           cep: this.formulario.cep ? String(this.formulario.cep).match(/\d/g).join('') : undefined,
           logradouro: this.formulario.logradouro || undefined,
+          estado: this.formulario.estado || undefined,
+          cidade: this.formulario.cidade || undefined,
           enderecoNumero: this.formulario.enderecoNumero || undefined,
           complemento: this.formulario.complemento || undefined,
           bairro: this.formulario.bairro || undefined
@@ -844,6 +914,13 @@ export default {
         inscricaoEstadual: null,
         inscricaoMunicipal: null,
         porte: null,
+        cep: null,
+        logradouro: null,
+        enderecoNumero: null,
+        estado: null,
+        cidade: null,
+        complemento: null,
+        bairro: null,
         created_at: null,
         created_by: null
       }
