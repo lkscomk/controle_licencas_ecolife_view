@@ -50,6 +50,62 @@
             </v-icon>
           </v-btn>
         </template>
+        <template v-slot:[`item.status`]="{ item, value }">
+          <v-btn
+            v-if="value && value.chip"
+            :color="value.color ? value.color : 'primary'"
+            :class="`font-weight-bold ${value.class ? value.class : ''}`"
+            depressed
+            small
+            text
+          >
+            {{ value.text }}
+          </v-btn>
+
+          <v-progress-circular
+            v-else
+            :color="$vuetify.theme.dark ? 'white' : 'primary'"
+            :size="20"
+            :width="2"
+            indeterminate
+          />
+
+          <v-tooltip
+            v-if="value && value.tooltip"
+            bottom
+            :activator="`#${item.empresa}`"
+          >
+            {{ value.tooltip }}
+          </v-tooltip>
+        </template>
+        <template v-slot:[`item.tipo`]="{ item, value }">
+          <v-btn
+            v-if="value && value.chip"
+            :color="value.color ? value.color : 'primary'"
+            :class="`font-weight-bold ${value.class ? value.class : ''}`"
+            depressed
+            small
+            text
+          >
+            {{ value.text }}
+          </v-btn>
+
+          <v-progress-circular
+            v-else
+            :color="$vuetify.theme.dark ? 'white' : 'primary'"
+            :size="20"
+            :width="2"
+            indeterminate
+          />
+
+          <v-tooltip
+            v-if="value && value.tooltip"
+            bottom
+            :activator="`#${item.empresa}`"
+          >
+            {{ value.tooltip }}
+          </v-tooltip>
+        </template>
       </v-data-table>
     </v-card>
   </div>

@@ -1,11 +1,96 @@
 import axios from '@/plugins/axios_local'
 
-export const buscarDropdownGrupos = async ({ commit }, grupo) => {
+export const buscarDropdownStatusLicencas = async ({ commit }) => {
   try {
-    const res = await axios.get('/sistema/opcoes/' + grupo)
+    const res = await axios.get('/sistema/opcoes/7')
 
     if (!res.data.erro) {
-      commit('dropdownGrupos', res.data)
+      commit('dropdownStatusLicencas', res.data)
+    }
+
+    return res.data
+  } catch (error) {
+    return null
+  }
+}
+
+export const buscarDropdownTiposLicencas = async ({ commit }, grupo) => {
+  try {
+    const res = await axios.get('/sistema/opcoes/3')
+
+    if (!res.data.erro) {
+      commit('dropdownTiposLicencas', res.data)
+    }
+
+    return res.data
+  } catch (error) {
+    return null
+  }
+}
+export const buscarDropdownStatusEmpresa = async ({ commit }) => {
+  try {
+    const res = await axios.get('/sistema/opcoes/4')
+
+    if (!res.data.erro) {
+      commit('dropdownStatusEmpresa', res.data)
+    }
+
+    return res.data
+  } catch (error) {
+    return null
+  }
+}
+
+export const buscarDropdownPortesEmpresa = async ({ commit }) => {
+  try {
+    const res = await axios.get('/sistema/opcoes/5')
+
+    if (!res.data.erro) {
+      commit('dropdownPortesEmpresa', res.data)
+    }
+
+    return res.data
+  } catch (error) {
+    return null
+  }
+}
+
+export const buscarDropdownEstados = async ({ commit }) => {
+  try {
+    const res = await axios.get('/sistema/estados')
+
+    if (!res.data.erro) {
+      commit('dropdownEstados', res.data)
+    }
+
+    return res.data
+  } catch (error) {
+    return null
+  }
+}
+
+export const buscarDropdownCidade = async ({ commit }, uf) => {
+  try {
+    const res = await axios.get('/sistema/cidade/' + uf)
+
+    if (!res.data.erro) {
+      commit('dropdownCidades', res.data)
+    }
+
+    return res.data
+  } catch (error) {
+    return null
+  }
+}
+
+export const listarEmpresas = async ({ commit }, filtros) => {
+  try {
+    const res = await axios.get('/empresa', {
+      params: filtros
+    })
+
+    if (!res.data.erro) {
+      commit('setRegistrosEmpresas', res.data)
     }
 
     return res.data
@@ -16,7 +101,7 @@ export const buscarDropdownGrupos = async ({ commit }, grupo) => {
 
 export const listar = async ({ commit }, filtros) => {
   try {
-    const res = await axios.get('/opcoes', {
+    const res = await axios.get('/licenca', {
       params: filtros
     })
 

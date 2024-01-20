@@ -121,21 +121,35 @@
             <slot name="formulario" />
           </v-card-text>
           <v-card-actions>
-            <v-col
-              v-if="camposObrigatorios"
-              :class="$vuetify.breakpoint.xsOnly ? 'px-0 py-0 text-center' : 'px-0 py-0'"
-              cols="12"
-              lg="3"
-              md="2"
-              sm="3"
-              xs="12"
+            <v-row
+              class="pa-0"
+              dense
             >
-              <span class="caption pl-2">
-                <span class="red--text">*</span> Campos obrigatórios
-              </span>
-            </v-col>
-            <v-spacer />
-            <slot name="botoes" />
+              <v-col
+                v-if="camposObrigatorios"
+                :class="$vuetify.breakpoint.xsOnly ? 'px-0 py-0 text-center' : 'px-0 py-0'"
+                cols="12"
+                xl="3"
+                lg="3"
+                md="3"
+                sm="12"
+              >
+                <span class="caption pl-2">
+                  <span class="red--text">*</span> Campos obrigatórios
+                </span>
+              </v-col>
+              <v-spacer />
+              <v-col
+                cols="12"
+                class="text-right py-1"
+                xl="9"
+                lg="9"
+                md="9"
+                sm="12"
+              >
+                <slot name="botoes" />
+              </v-col>
+            </v-row>
           </v-card-actions>
         </v-card>
       </v-col>

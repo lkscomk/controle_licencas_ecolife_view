@@ -6,6 +6,7 @@ export default {
   },
   setRegistros (state, param) {
     param.forEach(element => {
+      element.status = { chip: true, color: String(element.cor), text: element.cor }
       element.created_at = element.created_at ? day(element.created_at).format('DD/MM/YYYY HH:mm:ss') : null
     })
     state.registros = param

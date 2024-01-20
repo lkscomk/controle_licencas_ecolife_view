@@ -609,6 +609,8 @@
     <template slot="botoes">
       <v-btn
         v-if="!!(!controle.exibir && (controle.inserir || controle.editar))"
+        :block="$vuetify.breakpoint.xsOnly"
+        :class="$vuetify.breakpoint.xsOnly ? 'my-1' : 'mx-1'"
         color="success"
         small
         @click="salvarRegistro()"
@@ -623,6 +625,8 @@
       </v-btn>
       <v-btn
         v-if="!!(controle.exibir && !controle.inserir)"
+        :block="$vuetify.breakpoint.xsOnly"
+        :class="$vuetify.breakpoint.xsOnly ? 'my-1' : 'mx-1'"
         color="success"
         small
         @click="controle.editar = true, controle.exibir = false"
@@ -636,6 +640,8 @@
         Editar
       </v-btn>
       <v-btn
+        :block="$vuetify.breakpoint.xsOnly"
+        :class="$vuetify.breakpoint.xsOnly ? 'my-1' : 'mx-1'"
         color="error"
         small
         @click="modal = false, resetFormulario()"
@@ -653,10 +659,10 @@
 </template>
 
 <script>
-import { mapActions, mapMutations, mapState } from 'vuex'
+import { mapActions, mapState } from 'vuex'
 
 export default {
-  name: 'PaginaUsuarios',
+  name: 'PaginaEmpresas',
   data: () => ({
     loading: false,
     perfil: window.atob(localStorage.getItem('umbrella:perfil')),
@@ -683,7 +689,7 @@ export default {
         text: 'Status',
         align: 'start',
         sortable: false,
-        value: 'status_descricao'
+        value: 'status'
       },
       {
         text: 'Nome Fantasia',
@@ -751,7 +757,6 @@ export default {
   computed: {
     ...mapState('empresa', [
       'registros',
-      'registrosRelacionamento',
       'dropdownStatusEmpresa',
       'dropdownPortesEmpresa',
       'dropdownEstados',
@@ -800,9 +805,6 @@ export default {
     await this.buscarDropdownEstados()
   },
   methods: {
-    ...mapMutations('empresa', [
-      'setRegistrosRelacionamento'
-    ]),
     ...mapActions('empresa', [
       'listar',
       'exibir',

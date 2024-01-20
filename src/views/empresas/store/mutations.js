@@ -16,6 +16,7 @@ export default {
   },
   setRegistros (state, param) {
     param.forEach(element => {
+      element.status = { chip: true, color: String(element.status_cor), text: element.status_descricao }
       element.data_cadastro = element.data_cadastro ? day(element.data_cadastro).format('DD/MM/YYYY') : null
       element.cnpj = filter(element.cnpj, ['##.###.###/####-##'])
     })

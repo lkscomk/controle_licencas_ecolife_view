@@ -107,10 +107,10 @@
                 />
               </v-col>
               <v-col
-                :xl="formulario.id ? 4 : 5"
-                :lg="formulario.id ? 4 : 5"
-                :md="formulario.id ? 4 : 5"
-                :sm="formulario.id ? 6 : 5"
+                :xl="formulario.id ? 3 : 4"
+                :lg="formulario.id ? 3 : 4"
+                :md="formulario.id ? 3 : 4"
+                :sm="formulario.id ? 5 : 4"
                 cols="12"
               >
                 <v-autocomplete
@@ -142,10 +142,10 @@
                 />
               </v-col>
               <v-col
-                xl="5"
-                lg="5"
-                md="5"
-                sm="5"
+                xl="4"
+                lg="4"
+                md="4"
+                sm="4"
                 cols="12"
               >
                 <validation-provider
@@ -162,6 +162,31 @@
                     :disabled="controle.exibir"
                     dense
                     label="Descrição*"
+                    outlined
+                  />
+                </validation-provider>
+              </v-col>
+              <v-col
+                xl="2"
+                lg="2"
+                md="2"
+                sm="2"
+                cols="12"
+              >
+                <validation-provider
+                  v-slot="{ errors }"
+                  name="Cor"
+                  vid="cor"
+                  rules="required|max:6"
+                >
+                  <v-text-field
+                    v-model="formulario.cor"
+                    v-uppercase
+                    :error-messages="errors"
+                    :hide-details="!errors.length"
+                    :disabled="controle.exibir"
+                    dense
+                    label="Cor*"
                     outlined
                   />
                 </validation-provider>
@@ -208,6 +233,8 @@
     <template slot="botoes">
       <v-btn
         v-if="!!(!controle.exibir && (controle.inserir || controle.editar))"
+        :block="$vuetify.breakpoint.xsOnly"
+        :class="$vuetify.breakpoint.xsOnly ? 'my-1' : 'mx-1'"
         color="success"
         small
         @click="salvarRegistro()"
@@ -222,6 +249,8 @@
       </v-btn>
       <v-btn
         v-if="!!(controle.exibir && !controle.inserir)"
+        :block="$vuetify.breakpoint.xsOnly"
+        :class="$vuetify.breakpoint.xsOnly ? 'my-1' : 'mx-1'"
         color="success"
         small
         @click="controle.editar = true, controle.exibir = false"
@@ -235,6 +264,8 @@
         Editar
       </v-btn>
       <v-btn
+        :block="$vuetify.breakpoint.xsOnly"
+        :class="$vuetify.breakpoint.xsOnly ? 'my-1' : 'mx-1'"
         color="error"
         small
         @click="modal = false, resetFormulario()"
@@ -297,6 +328,12 @@ export default {
         value: 'descricao'
       },
       {
+        text: 'Cor',
+        align: 'start',
+        sortable: false,
+        value: 'status'
+      },
+      {
         text: 'Criado Por',
         align: 'start',
         sortable: false,
@@ -327,6 +364,7 @@ export default {
       created_at: null,
       created_by: null,
       grupo: null,
+      cor: null,
       item: null,
       descricao: null
     },
@@ -400,6 +438,7 @@ export default {
         this.loading = true
         const form = {
           id: this.formulario.id || undefined,
+          cor: this.formulario.cor ? '#' + String(this.formulario.cor) : null,
           item: this.formulario.item || null,
           grupo: this.formulario.grupo || null,
           descricao: this.formulario.descricao || null
@@ -444,6 +483,7 @@ export default {
           id: res.id || null,
           created_at: res.created_at ? this.$day(res.created_at).format('DD/MM/YYYY HH:mm:ss') : null,
           created_by: res.created_by || null,
+          cor: res.cor || null,
           item: res.item || null,
           grupo: res.grupo || null,
           descricao: res.descricao || null

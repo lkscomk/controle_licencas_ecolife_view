@@ -305,6 +305,8 @@
     <template slot="botoes">
       <v-btn
         v-if="!!(!controle.exibir && (controle.inserir || controle.editar))"
+        :block="$vuetify.breakpoint.xsOnly"
+        :class="$vuetify.breakpoint.xsOnly ? 'my-1' : 'mx-1'"
         color="success"
         small
         @click="salvarRegistro()"
@@ -319,6 +321,8 @@
       </v-btn>
       <v-btn
         v-if="!!(controle.exibir && !controle.inserir)"
+        :block="$vuetify.breakpoint.xsOnly"
+        :class="$vuetify.breakpoint.xsOnly ? 'my-1' : 'mx-1'"
         color="success"
         small
         @click="controle.editar = true, controle.exibir = false"
@@ -332,6 +336,8 @@
         Editar
       </v-btn>
       <v-btn
+        :block="$vuetify.breakpoint.xsOnly"
+        :class="$vuetify.breakpoint.xsOnly ? 'my-1' : 'mx-1'"
         color="error"
         small
         @click="resetFormulario()"
@@ -517,14 +523,11 @@ export default {
         }
         this.loading = true
 
-        const senha = '12345678'
-
         const form = {
           id: this.formulario.id || undefined,
           nome: this.formulario.nome || undefined,
           tipoUsuarioId: this.formulario.tipoUsuarioId || undefined,
           email: this.formulario.email || undefined,
-          senha: this.$crypto(senha, 'sha256'),
           dataNascimento: this.formulario.dataNascimento ? this.$day(this.formulario.dataNascimento, 'DD/MM/YYYY').format('YYYY-MM-DD') : null,
           cpf: this.formulario.cpf ? String(this.formulario.cpf).match(/\d/g).join('') : undefined
         }

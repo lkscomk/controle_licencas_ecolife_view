@@ -2,8 +2,8 @@
   <pagina
     :loading="loading"
     :modal="modal"
-    subtitulo="Página de Manutenção de Opções"
-    titulo="Opções"
+    subtitulo="Página de Manutenção de Licenças"
+    titulo="Licenças"
     :mais-opcoes="formulario.id ? maisOpcoes : null"
     :titulo-formulario="controle.editar ? 'Editar Registro' : controle.inserir ? 'Adicionar Registro' : 'Exibir Registro'"
     @voltar="resetFormulario()"
@@ -18,7 +18,8 @@
             <v-col cols="12">
               <filtro
                 :options="optionsFilter"
-                @adicionar="controle.inserir = true, modal = true, formulario.item = encontrarProximoItem(registros), formulario.grupo = filtro.grupo"
+                @clearFilters="limparFiltros()"
+                @adicionar="controle.inserir = true, modal = true"
                 @pesquisar="listarRegistro()"
               >
                 <template slot="filtros">
@@ -28,36 +29,119 @@
                   >
                     <v-row dense>
                       <v-col
-                        xl="3"
-                        lg="3"
-                        md="10"
-                        sm="12"
+                        xl="1"
+                        lg="1"
+                        md="2"
+                        sm="4"
                         cols="12"
                       >
-                        <v-autocomplete
-                          v-model="filtro.grupo"
-                          :items="dropdownGrupos"
+                        <v-text-field
+                          v-model="filtro.id"
+                          v-mask="'#####'"
+                          hide-details
+                          dense
+                          label="Código"
+                          outlined
+                        />
+                      </v-col>
+                      <v-col
+                        xl="2"
+                        lg="2"
+                        md="3"
+                        sm="8"
+                        cols="12"
+                      >
+                        <v-text-field
+                          v-model="filtro.cnpj"
+                          v-mask="'##.###.###/####-##'"
+                          hide-details
+                          dense
+                          label="CNPJ"
+                          outlined
+                        />
+                      </v-col>
+                      <v-col
+                        xl="2"
+                        lg="2"
+                        md="3"
+                        sm="4"
+                        cols="12"
+                      >
+                        <selecao-all
+                          v-model="filtro.status"
+                          :items="dropdownStatusLicencas"
                           hide-details
                           dense
                           item-value="item"
                           item-text="descricao"
-                          label="Grupo"
+                          label="Status"
                           outlined
-                          @change="listarRegistro()"
                         />
                       </v-col>
                       <v-col
-                        xl="4"
-                        lg="4"
-                        md="10"
+                        xl="3"
+                        lg="3"
+                        md="4"
+                        sm="8"
+                        cols="12"
+                      >
+                        <selecao-all
+                          v-model="filtro.tipo"
+                          :items="dropdownTiposLicencas"
+                          hide-details
+                          dense
+                          item-value="item"
+                          item-text="descricao"
+                          label="Tipo Licença"
+                          outlined
+                        />
+                      </v-col>
+
+                      <v-col
+                        xl="2"
+                        lg="2"
+                        md="4"
+                        sm="6"
+                        cols="12"
+                      >
+                        <v-text-field
+                          v-model="filtro.processo"
+                          v-mask="'##.#####.##/####'"
+                          hide-details
+                          dense
+                          label="Processo"
+                          outlined
+                        />
+                      </v-col>
+                      <v-col
+                        xl="2"
+                        lg="2"
+                        md="3"
+                        sm="6"
+                        cols="12"
+                      >
+                        <v-text-field
+                          v-model="filtro.dataVencimento"
+                          v-mask="'##/##/####'"
+                          hide-details
+                          dense
+                          label="Data de Vencimento"
+                          outlined
+                        />
+                      </v-col>
+                      <v-col
+                        xl="12"
+                        lg="12"
+                        md="5"
                         sm="12"
                         cols="12"
                       >
                         <v-text-field
-                          v-model="filtro.descricao"
+                          v-model="filtro.razaoSocial"
+                          v-uppercase
                           hide-details
                           dense
-                          label="Descrição"
+                          label="Razão Social"
                           outlined
                         />
                       </v-col>
@@ -88,6 +172,175 @@
           >
             <v-row dense>
               <v-col
+                cols="12"
+              >
+                Empresa
+              </v-col>
+              <v-col
+                xl="2"
+                lg="2"
+                md="2"
+                sm="2"
+                cols="12"
+              >
+                <validation-provider
+                  v-slot="{ errors }"
+                  name="Empresa"
+                  vid="Empresa"
+                  rules="required"
+                >
+                  <v-text-field
+                    v-model="formulario.empresaId"
+                    :error-messages="errors"
+                    :hide-details="!errors.length"
+                    :disabled="controle.exibir"
+                    append-icon="mdi-magnify"
+                    dense
+                    label="Código Empresa"
+                    outlined
+                    @click:append="modalBuscarEmpresa = true"
+                  />
+                </validation-provider>
+              </v-col>
+              <v-col
+                xl=" 3"
+                lg=" 3"
+                md=" 3"
+                sm=" 6"
+                cols="12"
+              >
+                <v-text-field
+                  v-model="formulario.cnpj"
+                  v-mask="'##.###.###/####-##'"
+                  disabled
+                  hide-details
+                  dense
+                  label="CNPJ"
+                  outlined
+                />
+              </v-col>
+              <v-col
+                xl="2"
+                lg="2"
+                md="2"
+                sm="6"
+                cols="12"
+              >
+                <v-autocomplete
+                  v-model="formulario.status"
+                  disabled
+                  :items="dropdownStatusEmpresa"
+                  hide-details
+                  dense
+                  item-value="item"
+                  item-text="descricao"
+                  label="Status Empresa"
+                  outlined
+                />
+              </v-col>
+              <v-col
+                xl="3"
+                lg="3"
+                md="7"
+                sm="6"
+                cols="12"
+              >
+                <v-text-field
+                  v-model="formulario.nomeFantasia"
+                  v-uppercase
+                  disabled
+                  hide-details
+                  dense
+                  label="Nome Fantasia"
+                  outlined
+                />
+              </v-col>
+              <v-col
+                xl="2"
+                lg="2"
+                md="4"
+                sm="6"
+                cols="12"
+              >
+                <v-text-field
+                  v-model="formulario.razaoSocial"
+                  v-uppercase
+                  disabled
+                  hide-details
+                  dense
+                  label="Razão Social"
+                  outlined
+                />
+              </v-col>
+              <v-col
+                xl="2"
+                lg="2"
+                md="2"
+                sm="4"
+                cols="12"
+              >
+                <v-text-field
+                  v-model="formulario.dataCadastro"
+                  v-mask="'##/##/####'"
+                  disabled
+                  hide-details
+                  dense
+                  label="Data de Cadastro"
+                  outlined
+                />
+              </v-col>
+              <v-col
+                xl="2"
+                lg="2"
+                md="3"
+                sm="4"
+                cols="12"
+              >
+                <v-text-field
+                  v-model="formulario.inscricaoEstadual"
+                  hide-details
+                  disabled
+                  dense
+                  label="Incrição Estadual"
+                  outlined
+                />
+              </v-col>
+              <v-col
+                xl="2"
+                lg="2"
+                md="3"
+                sm="4"
+                cols="12"
+              >
+                <v-text-field
+                  v-model="formulario.inscricaoMunicipal"
+                  hide-details
+                  disabled
+                  dense
+                  label="Incrição Municipal"
+                  outlined
+                />
+              </v-col>
+              <v-col
+                xl="3"
+                lg="3"
+                md="6"
+                sm="12"
+                cols="12"
+              >
+                <v-autocomplete
+                  v-model="formulario.porte"
+                  :items="dropdownPortesEmpresa"
+                  hide-details
+                  disabled
+                  dense
+                  item-value="item"
+                  item-text="descricao"
+                  label="Porte"
+                  outlined
+                />
+              </v-col>
+              <v-col
                 v-if="formulario.id"
                 xl="1"
                 lg="1"
@@ -113,7 +366,7 @@
               >
                 <v-autocomplete
                   v-model="formulario.grupo"
-                  :items="dropdownGrupos"
+                  :items="[]"
                   disabled
                   hide-details
                   dense
@@ -205,6 +458,8 @@
     <template slot="botoes">
       <v-btn
         v-if="!!(!controle.exibir && (controle.inserir || controle.editar))"
+        :block="$vuetify.breakpoint.xsOnly"
+        :class="$vuetify.breakpoint.xsOnly ? 'my-1' : 'mx-1'"
         color="success"
         smallsd
         @click="salvarRegistro()"
@@ -219,6 +474,8 @@
       </v-btn>
       <v-btn
         v-if="!!(controle.exibir && !controle.inserir)"
+        :block="$vuetify.breakpoint.xsOnly"
+        :class="$vuetify.breakpoint.xsOnly ? 'my-1' : 'mx-1'"
         color="success"
         small
         @click="controle.editar = true, controle.exibir = false"
@@ -232,6 +489,8 @@
         Editar
       </v-btn>
       <v-btn
+        :block="$vuetify.breakpoint.xsOnly"
+        :class="$vuetify.breakpoint.xsOnly ? 'my-1' : 'mx-1'"
         color="error"
         small
         @click="modal = false, resetFormulario()"
@@ -245,17 +504,209 @@
         Voltar
       </v-btn>
     </template>
+    <modal
+      v-model="modalBuscarEmpresa"
+      width="1200"
+    >
+      <template>
+        <v-form @submit.prevent="''">
+          <v-container
+            class="ma-0 pa-0"
+            fluid
+          >
+            <v-row dense>
+              <v-col cols="12">
+                <filtro
+                  :options="optionsFilter"
+                  @adicionar="modal = true, controle.inserir = true, formulario.status = enumStatusEmpresas.digitacao"
+                  @clearFilters="limparFiltros()"
+                  @pesquisar="listarRegistro()"
+                >
+                  <template slot="filtros">
+                    <v-container
+                      class="my-0 py-0"
+                      fluid
+                    >
+                      <v-row dense>
+                        <v-col
+                          xl="1"
+                          lg="1"
+                          md="4"
+                          sm="4"
+                          cols="12"
+                        >
+                          <v-text-field
+                            v-model="filtroModalEmpresa.id"
+                            v-mask="'###########'"
+                            hide-details
+                            dense
+                            label="Código"
+                            outlined
+                          />
+                        </v-col>
+                        <v-col
+                          xl="2"
+                          lg="2"
+                          md="4"
+                          sm="4"
+                          cols="12"
+                        >
+                          <v-text-field
+                            v-model="filtroModalEmpresa.cnpj"
+                            v-mask="'##.###.###/####-##'"
+                            hide-details
+                            dense
+                            label="CNPJ"
+                            outlined
+                          />
+                        </v-col>
+                        <v-col
+                          xl="2"
+                          lg="2"
+                          md="4"
+                          sm="4"
+                          cols="12"
+                        >
+                          <selecao-all
+                            v-model="filtroModalEmpresa.status"
+                            :items="dropdownStatusEmpresa"
+                            hide-details
+                            dense
+                            item-value="item"
+                            item-text="descricao"
+                            label="Status"
+                            outlined
+                          />
+                        </v-col>
+                        <v-col
+                          xl="2"
+                          lg="2"
+                          md="4"
+                          sm="12"
+                          cols="12"
+                        >
+                          <v-text-field
+                            v-model="filtroModalEmpresa.nomeFantasia"
+                            v-uppercase
+                            hide-details
+                            dense
+                            label="Nome Fantasia"
+                            outlined
+                          />
+                        </v-col>
+                        <v-col
+                          xl="3"
+                          lg="3"
+                          md="4"
+                          sm="12"
+                          cols="12"
+                        >
+                          <v-text-field
+                            v-model="filtroModalEmpresa.razaoSocial"
+                            v-uppercase
+                            hide-details
+                            dense
+                            label="Razão Social"
+                            outlined
+                          />
+                        </v-col>
+                        <v-col
+                          xl="2"
+                          lg="2"
+                          md="4"
+                          sm="12"
+                          cols="12"
+                        >
+                          <selecao-all
+                            v-model="filtroModalEmpresa.porte"
+                            :items="dropdownPortesEmpresa"
+                            hide-details
+                            dense
+                            item-value="item"
+                            item-text="descricao"
+                            label="Porte"
+                            outlined
+                          />
+                        </v-col>
+                      </v-row>
+                    </v-container>
+                  </template>
+                </filtro>
+              </v-col>
+              <v-col cols="12">
+                <tabela
+                  :colunas="colunasEmpresa"
+                  :registros="registrosEmpresas"
+                  exibir
+                  @exibir="exibirRegistro($event.id)"
+                />
+              </v-col>
+            </v-row>
+          </v-container>
+        </v-form>
+      </template>
+    </modal>
   </pagina>
 </template>
 
 <script>
-import { mapActions, mapMutations, mapState } from 'vuex'
+import { mapActions, mapState } from 'vuex'
 
 export default {
-  name: 'OpcoesGlobais',
+  name: 'TelaLicencas',
   data: () => ({
     loading: false,
-    perfil: window.atob(localStorage.getItem('umbrella:perfil')),
+    modalBuscarEmpresa: false,
+    colunasEmpresa: [
+      {
+        text: 'Ação',
+        align: 'start',
+        sortable: false,
+        value: 'acao'
+      },
+      {
+        text: 'Código',
+        align: 'start',
+        sortable: false,
+        value: 'id'
+      },
+      {
+        text: 'CNPJ',
+        align: 'start',
+        sortable: false,
+        value: 'cnpj'
+      },
+      {
+        text: 'Status',
+        align: 'start',
+        sortable: false,
+        value: 'status'
+      },
+      {
+        text: 'Nome Fantasia',
+        align: 'start',
+        sortable: false,
+        value: 'nome_fantasia'
+      },
+      {
+        text: 'Razão Social',
+        align: 'start',
+        sortable: false,
+        value: 'razao_social'
+      },
+      {
+        text: 'Data Cadastro',
+        align: 'start',
+        sortable: false,
+        value: 'data_cadastro'
+      },
+      {
+        text: 'Porte',
+        align: 'start',
+        sortable: false,
+        value: 'porte_descricao'
+      }
+    ],
     colunas: [
       {
         text: 'Ação',
@@ -264,34 +715,46 @@ export default {
         value: 'acao'
       },
       {
-        text: 'Id',
+        text: 'Código',
         align: 'start',
         sortable: false,
         value: 'id'
       },
       {
-        text: 'Grupo',
+        text: 'Status',
         align: 'start',
         sortable: false,
-        value: 'grupo'
+        value: 'status'
       },
       {
-        text: 'Descrição Grupo',
+        text: 'CNPJ Empresa',
         align: 'start',
         sortable: false,
-        value: 'descricao_grupo'
+        value: 'cnpj'
       },
       {
-        text: 'Item',
+        text: 'Razão Social',
         align: 'start',
         sortable: false,
-        value: 'item'
+        value: 'razao_social'
       },
       {
-        text: 'Descrição',
+        text: 'N. Processo',
         align: 'start',
         sortable: false,
-        value: 'descricao'
+        value: 'processo'
+      },
+      {
+        text: 'Vencimento',
+        align: 'start',
+        sortable: false,
+        value: 'data_vencimento'
+      },
+      {
+        text: 'Tipo Lincença',
+        align: 'start',
+        sortable: false,
+        value: 'tipo'
       },
       {
         text: 'Criado Por',
@@ -306,9 +769,22 @@ export default {
         value: 'created_at'
       }
     ],
+    filtroModalEmpresa: {
+      id: null,
+      cnpj: null,
+      status: [],
+      nomeFantasia: null,
+      razaoSocial: null,
+      porte: []
+    },
     filtro: {
-      grupo: 1,
-      descricao: null
+      id: null,
+      cnpj: null,
+      status: null,
+      tipo: null,
+      razaoSocial: null,
+      processo: null,
+      dataVencimento: null
     },
     filtroRelacionamento: {
       descricao: null,
@@ -320,6 +796,15 @@ export default {
       inserir: false
     },
     formulario: {
+      empresaId: null,
+      cnpj: null,
+      status: null,
+      nomeFantasia: null,
+      razaoSocial: null,
+      dataCadastro: null,
+      inscricaoEstadual: null,
+      inscricaoMunicipal: null,
+      porte: null,
       id: null,
       created_at: null,
       created_by: null,
@@ -330,10 +815,15 @@ export default {
     modal: false
   }),
   computed: {
-    ...mapState('opcoes', [
+    ...mapState('licencas', [
       'registros',
-      'registrosRelacionamento',
-      'dropdownGrupos'
+      'dropdownStatusLicencas',
+      'dropdownTiposLicencas',
+      'registrosEmpresas',
+      'dropdownStatusEmpresa',
+      'dropdownPortesEmpresa',
+      'dropdownEstados',
+      'dropdownCidades'
     ]),
     formularioDescricao: {
       get () {
@@ -346,7 +836,15 @@ export default {
     optionsFilter () {
       return {
         adicionar: true,
-        values: !!(this.filtro.descricao || this.filtro.grupo)
+        values: !!(
+          this.filtro.id ||
+          this.filtro.cnpj ||
+          (this.filtro.status ? this.filtro.status.length : null) ||
+          (this.filtro.tipo ? this.filtro.tipo.length : null) ||
+          this.filtro.razaoSocial ||
+          this.filtro.processo ||
+          this.filtro.dataVencimento
+        )
       }
     },
     maisOpcoes () {
@@ -361,27 +859,52 @@ export default {
     }
   },
   async created () {
-    await this.buscarDropdownGrupos(1) // GRUPOS DE OPÇOES
+    await this.buscarDropdownTiposLicencas()
+    await this.buscarDropdownStatusLicencas()
+    await this.buscarDropdownPortesEmpresa()
+    await this.buscarDropdownStatusEmpresa()
+    await this.buscarDropdownEstados()
     this.listarRegistro()
+    this.listarRegistroEmpresas()
   },
   methods: {
-    ...mapMutations('opcoes', [
-      'setRegistrosRelacionamento'
-    ]),
-    ...mapActions('opcoes', [
+    ...mapActions('licencas', [
       'listar',
       'exibir',
       'salvar',
       'editar',
       'excluir',
-      'listarRelacionamento',
-      'buscarDropdownGrupos'
+      'buscarDropdownStatusLicencas',
+      'buscarDropdownTiposLicencas',
+
+      'listarEmpresas',
+      'buscarDropdownPortesEmpresa',
+      'buscarDropdownStatusEmpresa',
+      'buscarDropdownEstados',
+      'buscarDropdownCidade'
     ]),
     async listarRegistro () {
       this.loading = true
       await this.listar({
-        grupo: this.filtro.grupo || null,
-        descricao: this.filtro.descricao || null
+        id: this.filtro.id || null,
+        cnpj: this.filtro.cnpj ? String(this.filtro.cnpj).match(/\d/g).join('') : null,
+        status: this.filtro.status || null,
+        tipo: this.filtro.tipo || null,
+        razaoSocial: this.filtro.razaoSocial || null,
+        processo: this.filtro.processo ? String(this.filtro.processo).match(/\d/g).join('') : null,
+        dataVencimento: this.filtro.dataVencimento ? this.$day(this.filtro.dataVencimento, 'DD/MM/YYYY').format('YYYY-MM-DD') : null
+      })
+      this.loading = false
+    },
+    async listarRegistroEmpresas () {
+      this.loading = true
+      await this.listarEmpresas({
+        id: this.filtro.id || null,
+        cnpj: this.filtro.cnpj ? String(this.filtro.cnpj).match(/\d/g).join('') : undefined,
+        status: this.filtro.status && this.filtro.status.length ? this.filtro.status : null,
+        nomeFantasia: this.filtro.nomeFantasia || null,
+        razaoSocial: this.filtro.razaoSocial || null,
+        porteEmpresa: this.filtro.porte && this.filtro.porte.length ? this.filtro.porte : null
       })
       this.loading = false
     },
@@ -460,7 +983,6 @@ export default {
     },
     async resetFormulario () {
       this.loading = true
-      await this.buscarDropdownGrupos(1) // GRUPOS DE OPÇOES
       this.modal = false
       this.controle = {
         exibir: null,
@@ -476,6 +998,17 @@ export default {
         descricao: null
       }
       this.loading = false
+    },
+    limparFiltros () {
+      this.filtro = {
+        id: null,
+        cnpj: null,
+        status: null,
+        tipo: null,
+        razaoSocial: null,
+        processo: null,
+        dataVencimento: null
+      }
     }
   }
 }

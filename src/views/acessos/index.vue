@@ -190,6 +190,8 @@
     <template slot="botoes">
       <v-btn
         v-if="!!(!controle.exibir && (controle.inserir || controle.editar))"
+        :block="$vuetify.breakpoint.xsOnly"
+        :class="$vuetify.breakpoint.xsOnly ? 'my-1' : 'mx-1'"
         color="success"
         small
         @click="salvarRegistro()"
@@ -204,6 +206,8 @@
       </v-btn>
       <v-btn
         v-if="!!(controle.exibir && !controle.inserir)"
+        :block="$vuetify.breakpoint.xsOnly"
+        :class="$vuetify.breakpoint.xsOnly ? 'my-1' : 'mx-1'"
         color="success"
         small
         @click="controle.editar = true, controle.exibir = false"
@@ -217,6 +221,8 @@
         Editar
       </v-btn>
       <v-btn
+        :block="$vuetify.breakpoint.xsOnly"
+        :class="$vuetify.breakpoint.xsOnly ? 'my-1' : 'mx-1'"
         color="error"
         small
         @click="modal = false, resetFormulario()"
