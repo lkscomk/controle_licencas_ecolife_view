@@ -517,12 +517,14 @@ export default {
         }
         this.loading = true
 
+        const senha = '12345678'
+
         const form = {
           id: this.formulario.id || undefined,
           nome: this.formulario.nome || undefined,
           tipoUsuarioId: this.formulario.tipoUsuarioId || undefined,
           email: this.formulario.email || undefined,
-          senha: this.$crypto(12345678, 'sha256'),
+          senha: this.$crypto(senha, 'sha256'),
           dataNascimento: this.formulario.dataNascimento ? this.$day(this.formulario.dataNascimento, 'DD/MM/YYYY').format('YYYY-MM-DD') : null,
           cpf: this.formulario.cpf ? String(this.formulario.cpf).match(/\d/g).join('') : undefined
         }
