@@ -560,7 +560,7 @@
                     :hide-details="!(errors.length || (formulario.complemento && formulario.complemento.length > 0) && !controle.exibir)"
                     :counter="100"
                     dense
-                    label="Complemento*"
+                    label="Complemento"
                     outlined
                   />
                 </validation-provider>
