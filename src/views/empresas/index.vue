@@ -314,7 +314,7 @@
                   v-slot="{ errors }"
                   name="Incrição Estadual"
                   vid="inscricaoEstadual"
-                  rules="required"
+                  rules=""
                 >
                   <v-text-field
                     v-model="formulario.inscricaoEstadual"
@@ -322,7 +322,7 @@
                     :error-messages="errors"
                     :hide-details="!errors.length"
                     dense
-                    label="Incrição Estadual*"
+                    label="Incrição Estadual"
                     outlined
                   />
                 </validation-provider>
@@ -338,7 +338,7 @@
                   v-slot="{ errors }"
                   name="Incrição Municipal"
                   vid="inscricaoMunicipal"
-                  rules="required"
+                  rules=""
                 >
                   <v-text-field
                     v-model="formulario.inscricaoMunicipal"
@@ -346,7 +346,7 @@
                     :error-messages="errors"
                     :hide-details="!errors.length"
                     dense
-                    label="Incrição Municipal*"
+                    label="Incrição Municipal"
                     outlined
                   />
                 </validation-provider>
