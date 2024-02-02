@@ -12,6 +12,9 @@ export default {
     state.dropdownEstados = param
   },
   dropdownCidades (state, param) {
+    param.forEach(element => {
+      element.codigo = String(element.codigo)
+    })
     state.dropdownCidades = param
   },
   setRegistros (state, param) {

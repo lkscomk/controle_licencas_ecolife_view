@@ -46,8 +46,8 @@
                         />
                       </v-col>
                       <v-col
-                        xl="2"
-                        lg="2"
+                        xl="1"
+                        lg="1"
                         md="4"
                         sm="4"
                         cols="12"
@@ -96,8 +96,8 @@
                         />
                       </v-col>
                       <v-col
-                        xl="3"
-                        lg="3"
+                        xl="2"
+                        lg="2"
                         md="4"
                         sm="12"
                         cols="12"
@@ -126,6 +126,24 @@
                           item-value="item"
                           item-text="descricao"
                           label="Porte"
+                          outlined
+                        />
+                      </v-col>
+                      <v-col
+                        xl="2"
+                        lg="2"
+                        md="4"
+                        sm="12"
+                        cols="12"
+                      >
+                        <selecao-all
+                          v-model="filtro.cidade"
+                          :items="dropdownCidades"
+                          hide-details
+                          dense
+                          item-value="codigo"
+                          item-text="nome"
+                          label="Cidade"
                           outlined
                         />
                       </v-col>
@@ -710,6 +728,12 @@ export default {
         value: 'data_cadastro'
       },
       {
+        text: 'Cidade',
+        align: 'start',
+        sortable: false,
+        value: 'cidade'
+      },
+      {
         text: 'Porte',
         align: 'start',
         sortable: false,
@@ -723,6 +747,7 @@ export default {
       id: null,
       cnpj: null,
       status: [],
+      cidade: [],
       nomeFantasia: null,
       razaoSocial: null,
       porte: []
@@ -766,6 +791,9 @@ export default {
       return !!(
         this.filtro.id ||
         this.filtro.cnpj ||
+        (this.filtro.cidade
+          ? this.filtro.cidade.length
+          : null) ||
         (this.filtro.status
           ? this.filtro.status.length
           : null) ||
@@ -803,6 +831,7 @@ export default {
     await this.buscarDropdownPortesEmpresa()
     await this.buscarDropdownStatusEmpresa()
     await this.buscarDropdownEstados()
+    this.buscarDropdownCidade('RO')
   },
   methods: {
     ...mapActions('empresa', [
@@ -821,6 +850,7 @@ export default {
       await this.listar({
         id: this.filtro.id || null,
         cnpj: this.filtro.cnpj ? String(this.filtro.cnpj).match(/\d/g).join('') : undefined,
+        cidade: this.filtro.cidade && this.filtro.cidade.length ? this.filtro.cidade : null,
         status: this.filtro.status && this.filtro.status.length ? this.filtro.status : null,
         nomeFantasia: this.filtro.nomeFantasia || null,
         razaoSocial: this.filtro.razaoSocial || null,
@@ -937,6 +967,7 @@ export default {
       this.filtro = {
         id: null,
         cnpj: null,
+        cidade: [],
         status: [],
         nomeFantasia: null,
         razaoSocial: null,
