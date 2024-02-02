@@ -4,7 +4,6 @@ import router from '@/router'
 
 const Axios = axios.create({
   baseURL: `${process.env.VUE_APP_URL}/api`,
-  withCredentials: true,
   headers: {
     Authorization: 'Bearer ' + localStorage.getItem('umbrella:token'),
     'X-Login': localStorage.getItem('umbrella:login') ? window.atob(localStorage.getItem('umbrella:login')) : ''

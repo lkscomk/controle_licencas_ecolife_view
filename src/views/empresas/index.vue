@@ -961,6 +961,7 @@ export default {
         editar: false,
         inserir: false
       }
+      this.buscarDropdownCidade('RO')
       this.listarRegistro()
     },
     limparFiltros () {
