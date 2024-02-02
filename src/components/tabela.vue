@@ -29,11 +29,24 @@
             class="botao-acao-tabela"
             data-cy="btnTableExibir"
             icon
-            title="Ecluir registro"
+            title="Excluir Registro"
             @click="$emit('excluir', item)"
           >
             <v-icon size="20">
               mdi-delete
+            </v-icon>
+          </v-btn>
+          <v-btn
+            v-if="selecionar"
+            :color="$vuetify.theme.dark ? 'white' : 'primary'"
+            class="botao-acao-tabela"
+            data-cy="btnTableExibir"
+            icon
+            title="Selecionar Registro"
+            @click="$emit('selecionado', item)"
+          >
+            <v-icon size="20">
+              mdi-check-bold
             </v-icon>
           </v-btn>
           <v-btn
@@ -42,7 +55,7 @@
             class="botao-acao-tabela"
             data-cy="btnTableExibir"
             icon
-            title="Exibir registro"
+            title="Exibir Registro"
             @click="$emit('exibir', item)"
           >
             <v-icon size="20">
@@ -123,6 +136,10 @@ export default {
       type: Boolean
     },
     excluir: {
+      default: false,
+      type: Boolean
+    },
+    selecionar: {
       default: false,
       type: Boolean
     },

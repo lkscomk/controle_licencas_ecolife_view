@@ -19,6 +19,9 @@ export default {
   dropdownEstados (state, param) {
     state.dropdownEstados = param
   },
+  dropdownCidadesEmpresa (state, param) {
+    state.dropdownCidadesEmpresa = param
+  },
   dropdownCidades (state, param) {
     state.dropdownCidades = param
   },

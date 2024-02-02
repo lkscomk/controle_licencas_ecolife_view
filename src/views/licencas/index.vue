@@ -162,7 +162,7 @@
         </v-container>
       </v-form>
     </template>
-
+    {{ $vuetify.breakpoint.name }}
     <template slot="formulario">
       <v-form @submit.prevent="''">
         <validation-observer ref="observer">
@@ -172,6 +172,225 @@
           >
             <v-row dense>
               <v-col
+                v-if="formulario.id"
+                xl="2"
+                lg="2"
+                md="2"
+                sm="4"
+                cols="12"
+              >
+                <v-text-field
+                  v-model="formulario.id"
+                  hide-details
+                  disabled
+                  dense
+                  label="Código Licença"
+                  outlined
+                />
+              </v-col>
+              <v-col
+                xl="2"
+                lg="2"
+                md="2"
+                sm="4"
+                cols="12"
+              >
+                <validation-provider
+                  v-slot="{ errors }"
+                  name="Processo"
+                  vid="processo"
+                  rules="required"
+                >
+                  <v-text-field
+                    v-model="formulario.processo"
+                    v-mask="'##.#####.##/####'"
+                    :error-messages="errors"
+                    :hide-details="!errors.length"
+                    :disabled="controle.exibir"
+                    dense
+                    label="Processo"
+                    outlined
+                  />
+                </validation-provider>
+              </v-col>
+              <v-col
+                xl="2"
+                lg="2"
+                md="3"
+                sm="4"
+                cols="12"
+              >
+                <v-autocomplete
+                  v-model="formulario.status"
+                  disabled
+                  :items="dropdownStatusLicencas"
+                  hide-details
+                  dense
+                  item-value="item"
+                  item-text="descricao"
+                  label="Status Licença"
+                  outlined
+                />
+              </v-col>
+              <v-col
+                xl="2"
+                lg="2"
+                md="3"
+                sm="4"
+                cols="12"
+              >
+                <validation-provider
+                  v-slot="{ errors }"
+                  name="Tipo Licença"
+                  vid="tipo"
+                  rules="required"
+                >
+                  <v-autocomplete
+                    v-model="formulario.tipo"
+                    :error-messages="errors"
+                    :hide-details="!errors.length"
+                    :disabled="controle.exibir"
+                    :items="dropdownTiposLicencas"
+                    dense
+                    item-value="item"
+                    item-text="descricao"
+                    label="Status Licença"
+                    outlined
+                  />
+                </validation-provider>
+              </v-col>
+              <v-col
+                xl="2"
+                lg="2"
+                md="2"
+                sm="4"
+                cols="12"
+              >
+                <validation-provider
+                  v-slot="{ errors }"
+                  name="Data de Vencimento"
+                  vid="dataVencimento"
+                  rules="required"
+                >
+                  <v-text-field
+                    v-model="formulario.dataVencimento"
+                    v-mask="'##/##/####'"
+                    :error-messages="errors"
+                    :hide-details="!errors.length"
+                    :disabled="controle.exibir"
+                    dense
+                    label="Data de Vencimento"
+                    outlined
+                  />
+                </validation-provider>
+              </v-col>
+              <v-col
+                xl="2"
+                lg="2"
+                md="2"
+                sm="4"
+                cols="12"
+              >
+                <validation-provider
+                  v-slot="{ errors }"
+                  name="Data de Saída"
+                  vid="dataSaida"
+                  rules="required"
+                >
+                  <v-text-field
+                    v-model="formulario.dataSaida"
+                    v-mask="'##/##/####'"
+                    :error-messages="errors"
+                    :hide-details="!errors.length"
+                    :disabled="controle.exibir"
+                    dense
+                    label="Data de Saída"
+                    outlined
+                  />
+                </validation-provider>
+              </v-col>
+              <v-col
+                xl="3"
+                lg="3"
+                md="4"
+                sm="6"
+                cols="12"
+              >
+                <validation-provider
+                  v-slot="{ errors }"
+                  name="Estado"
+                  rules="required"
+                  vid="estado"
+                >
+                  <v-autocomplete
+                    v-model="formulario.estado"
+                    :items="dropdownEstados"
+                    :disabled="controle.exibir"
+                    :error-messages="errors"
+                    :hide-details="!errors.length"
+                    dense
+                    item-value="uf"
+                    item-text="nome"
+                    label="Estado*"
+                    outlined
+                  />
+                </validation-provider>
+              </v-col>
+              <v-col
+                xl="3"
+                lg="3"
+                md="4"
+                sm="6"
+                cols="12"
+              >
+                <validation-provider
+                  v-slot="{ errors }"
+                  name="Cidade"
+                  rules="required"
+                  vid="cidade"
+                >
+                  <v-autocomplete
+                    v-model="formulario.cidade"
+                    :items="dropdownCidades"
+                    :disabled="controle.exibir || !formulario.estado || !(formulario.estado === 'RO' || formulario.estado === 'AM' || formulario.estado === 'AC')"
+                    :error-messages="errors"
+                    :hide-details="!errors.length"
+                    dense
+                    item-value="codigo"
+                    item-text="nome"
+                    label="Cidade*"
+                    outlined
+                  />
+                </validation-provider>
+              </v-col>
+              <v-col
+                cols="12"
+                xl="12"
+                lg="12"
+                md="12"
+              >
+                <validation-provider
+                  v-slot="{ errors }"
+                  name="Observação"
+                  rules="max:500"
+                  vid="observacao"
+                >
+                  <v-textarea
+                    v-model="formulario.observacao"
+                    v-uppercase
+                    :disabled="!controle.inserir && !controle.editar"
+                    :error-messages="errors"
+                    :hide-details="!(errors.length || (formulario.observacao && formulario.observacao.length > 0) && !controle.exibir)"
+                    :counter="500"
+                    dense
+                    label="Observação"
+                    outlined
+                    rows="3"
+                    spellcheck="false"
+                  />
+                </validation-provider>
+              </v-col>
+              <v-col
                 cols="12"
               >
                 Empresa
@@ -180,7 +399,7 @@
                 xl="2"
                 lg="2"
                 md="2"
-                sm="2"
+                sm="4"
                 cols="12"
               >
                 <validation-provider
@@ -203,14 +422,14 @@
                 </validation-provider>
               </v-col>
               <v-col
-                xl=" 3"
-                lg=" 3"
-                md=" 3"
-                sm=" 6"
+                xl="2"
+                lg="2"
+                md="3"
+                sm="4"
                 cols="12"
               >
                 <v-text-field
-                  v-model="formulario.cnpj"
+                  v-model="formularioEmpresa.cnpj"
                   v-mask="'##.###.###/####-##'"
                   disabled
                   hide-details
@@ -222,12 +441,12 @@
               <v-col
                 xl="2"
                 lg="2"
-                md="2"
-                sm="6"
+                md="3"
+                sm="4"
                 cols="12"
               >
                 <v-autocomplete
-                  v-model="formulario.status"
+                  v-model="formularioEmpresa.status"
                   disabled
                   :items="dropdownStatusEmpresa"
                   hide-details
@@ -241,12 +460,12 @@
               <v-col
                 xl="3"
                 lg="3"
-                md="7"
+                md="4"
                 sm="6"
                 cols="12"
               >
                 <v-text-field
-                  v-model="formulario.nomeFantasia"
+                  v-model="formularioEmpresa.nomeFantasia"
                   v-uppercase
                   disabled
                   hide-details
@@ -256,14 +475,14 @@
                 />
               </v-col>
               <v-col
-                xl="2"
-                lg="2"
-                md="4"
+                xl="3"
+                lg="3"
+                md="5"
                 sm="6"
                 cols="12"
               >
                 <v-text-field
-                  v-model="formulario.razaoSocial"
+                  v-model="formularioEmpresa.razaoSocial"
                   v-uppercase
                   disabled
                   hide-details
@@ -280,7 +499,7 @@
                 cols="12"
               >
                 <v-text-field
-                  v-model="formulario.dataCadastro"
+                  v-model="formularioEmpresa.dataCadastro"
                   v-mask="'##/##/####'"
                   disabled
                   hide-details
@@ -290,46 +509,14 @@
                 />
               </v-col>
               <v-col
-                xl="2"
-                lg="2"
-                md="3"
-                sm="4"
-                cols="12"
-              >
-                <v-text-field
-                  v-model="formulario.inscricaoEstadual"
-                  hide-details
-                  disabled
-                  dense
-                  label="Incrição Estadual"
-                  outlined
-                />
-              </v-col>
-              <v-col
-                xl="2"
-                lg="2"
-                md="3"
-                sm="4"
-                cols="12"
-              >
-                <v-text-field
-                  v-model="formulario.inscricaoMunicipal"
-                  hide-details
-                  disabled
-                  dense
-                  label="Incrição Municipal"
-                  outlined
-                />
-              </v-col>
-              <v-col
                 xl="3"
                 lg="3"
-                md="6"
-                sm="12"
+                md="5"
+                sm="8"
                 cols="12"
               >
                 <v-autocomplete
-                  v-model="formulario.porte"
+                  v-model="formularioEmpresa.porte"
                   :items="dropdownPortesEmpresa"
                   hide-details
                   disabled
@@ -341,77 +528,44 @@
                 />
               </v-col>
               <v-col
-                v-if="formulario.id"
-                xl="1"
-                lg="1"
-                md="1"
-                sm="3"
+                xl="5"
+                lg="5"
+                md="9"
+                sm="9"
                 cols="12"
               >
                 <v-text-field
-                  v-model="formulario.id"
-                  hide-details
-                  disabled
-                  dense
-                  label="Id"
-                  outlined
-                />
-              </v-col>
-              <v-col
-                :xl="formulario.id ? 4 : 5"
-                :lg="formulario.id ? 4 : 5"
-                :md="formulario.id ? 4 : 5"
-                :sm="formulario.id ? 6 : 5"
-                cols="12"
-              >
-                <v-autocomplete
-                  v-model="formulario.grupo"
-                  :items="[]"
+                  v-model="formularioEmpresa.empresaEndereco"
                   disabled
                   hide-details
                   dense
-                  item-value="item"
-                  item-text="descricao"
-                  label="Grupo*"
+                  label="Endereço Empresa"
                   outlined
                 />
               </v-col>
               <v-col
                 xl="2"
                 lg="2"
-                md="2"
-                sm="2"
-                cols="12"
-              >
-                <v-text-field
-                  v-model="formulario.item"
-                  hide-details
-                  disabled
-                  dense
-                  label="Item*"
-                  outlined
-                />
-              </v-col>
-              <v-col
-                xl="5"
-                lg="5"
-                md="5"
-                sm="5"
+                md="3"
+                sm="3"
                 cols="12"
               >
                 <validation-provider
                   v-slot="{ errors }"
-                  name="Descrição"
-                  vid="descricao"
+                  name="Cidade"
                   rules="required"
+                  vid="cidade"
                 >
-                  <v-text-field
-                    v-model="formularioDescricao"
+                  <v-autocomplete
+                    v-model="formularioEmpresa.cidade"
+                    :items="dropdownCidadesEmpresa"
                     :error-messages="errors"
                     :hide-details="!errors.length"
-                    :disabled="controle.exibir"
+                    disabled
                     dense
-                    label="Descrição*"
+                    item-value="codigo"
+                    item-text="nome"
+                    label="Cidade"
                     outlined
                   />
                 </validation-provider>
@@ -507,6 +661,8 @@
     <modal
       v-model="modalBuscarEmpresa"
       width="1200"
+      :mais-opcoes="false"
+      @fechar="modalBuscarEmpresa = false"
     >
       <template>
         <v-form @submit.prevent="''">
@@ -517,10 +673,9 @@
             <v-row dense>
               <v-col cols="12">
                 <filtro
-                  :options="optionsFilter"
-                  @adicionar="modal = true, controle.inserir = true, formulario.status = enumStatusEmpresas.digitacao"
-                  @clearFilters="limparFiltros()"
-                  @pesquisar="listarRegistro()"
+                  :options="optionsFilterModalBuscarEmpresa"
+                  @clearFilters="limparFiltrosModalEmpresa()"
+                  @pesquisar="listarRegistroEmpresas()"
                 >
                   <template slot="filtros">
                     <v-container
@@ -637,8 +792,8 @@
                 <tabela
                   :colunas="colunasEmpresa"
                   :registros="registrosEmpresas"
-                  exibir
-                  @exibir="exibirRegistro($event.id)"
+                  selecionar
+                  @selecionado="modalBuscarEmpresa = false, exibirRegistroEmpresa($event.id)"
                 />
               </v-col>
             </v-row>
@@ -786,31 +941,36 @@ export default {
       processo: null,
       dataVencimento: null
     },
-    filtroRelacionamento: {
-      descricao: null,
-      grupo: null
-    },
     controle: {
       exibir: false,
       editar: false,
       inserir: false
     },
     formulario: {
+      id: null,
+      status: null,
+      tipo: null,
+      processo: null,
+      dataVencimento: null,
+      dataSaida: null,
       empresaId: null,
+      estado: null,
+      cidade: null,
+      observacao: null
+    },
+    formularioEmpresa: {
+      id: null,
       cnpj: null,
       status: null,
       nomeFantasia: null,
       razaoSocial: null,
       dataCadastro: null,
-      inscricaoEstadual: null,
-      inscricaoMunicipal: null,
       porte: null,
-      id: null,
+      empresaEndereco: null,
+      estado: null,
+      cidade: null,
       created_at: null,
-      created_by: null,
-      grupo: null,
-      item: null,
-      descricao: null
+      created_by: null
     },
     modal: false
   }),
@@ -823,14 +983,24 @@ export default {
       'dropdownStatusEmpresa',
       'dropdownPortesEmpresa',
       'dropdownEstados',
+      'dropdownCidadesEmpresa',
       'dropdownCidades'
     ]),
-    formularioDescricao: {
-      get () {
-        return this.formulario.descricao ? this.formulario.descricao.toUpperCase() : this.formulario.descricao
-      },
-      set (valor) {
-        this.formulario.descricao = valor.toUpperCase()
+    optionsFilterModalBuscarEmpresa () {
+      return {
+        adicionar: false,
+        values: !!(
+          this.filtroModalEmpresa.id ||
+          this.filtroModalEmpresa.cnpj ||
+          (this.filtroModalEmpresa.status
+            ? this.filtroModalEmpresa.status.length
+            : null) ||
+          this.filtroModalEmpresa.nomeFantasia ||
+          this.filtroModalEmpresa.razaoSocial ||
+          (this.filtroModalEmpresa.porte
+            ? this.filtroModalEmpresa.porte.length
+            : null)
+        )
       }
     },
     optionsFilter () {
@@ -858,6 +1028,32 @@ export default {
       ]
     }
   },
+  watch: {
+    async 'formularioEmpresa.estado' (value) {
+      if (value && (this.formularioEmpresa.estado === 'RO' || this.formularioEmpresa.estado === 'AM' || this.formularioEmpresa.estado === 'AC')) await this.buscarDropdownCidadeEmpresa(value)
+    },
+    async 'formulario.estado' (value) {
+      if (value && (this.formulario.estado === 'RO' || this.formulario.estado === 'AM' || this.formulario.estado === 'AC')) await this.buscarDropdownCidade(value)
+    },
+    'formulario.empresaId' (value) {
+      if (!value) {
+        this.formularioEmpresa = {
+          id: null,
+          cnpj: null,
+          status: null,
+          nomeFantasia: null,
+          razaoSocial: null,
+          dataCadastro: null,
+          porte: null,
+          empresaEndereco: null,
+          estado: null,
+          cidade: null,
+          created_at: null,
+          created_by: null
+        }
+      }
+    }
+  },
   async created () {
     await this.buscarDropdownTiposLicencas()
     await this.buscarDropdownStatusLicencas()
@@ -878,10 +1074,12 @@ export default {
       'buscarDropdownTiposLicencas',
 
       'listarEmpresas',
+      'exibirEmpresas',
       'buscarDropdownPortesEmpresa',
       'buscarDropdownStatusEmpresa',
       'buscarDropdownEstados',
-      'buscarDropdownCidade'
+      'buscarDropdownCidade',
+      'buscarDropdownCidadeEmpresa'
     ]),
     async listarRegistro () {
       this.loading = true
@@ -896,41 +1094,37 @@ export default {
       })
       this.loading = false
     },
-    async listarRegistroEmpresas () {
+    async exibirRegistro (registro) {
       this.loading = true
-      await this.listarEmpresas({
-        id: this.filtro.id || null,
-        cnpj: this.filtro.cnpj ? String(this.filtro.cnpj).match(/\d/g).join('') : undefined,
-        status: this.filtro.status && this.filtro.status.length ? this.filtro.status : null,
-        nomeFantasia: this.filtro.nomeFantasia || null,
-        razaoSocial: this.filtro.razaoSocial || null,
-        porteEmpresa: this.filtro.porte && this.filtro.porte.length ? this.filtro.porte : null
-      })
-      this.loading = false
-    },
-    async listarRelacionamentoRegistro (grupo) {
-      this.loading = true
-      this.filtroRelacionamento.grupo = grupo
-      await this.listarRelacionamento({
-        grupo: this.filtroRelacionamento.grupo || null,
-        descricao: this.filtroRelacionamento.descricao || null
-      })
-      this.formulario = {
-        grupo: grupo,
-        item: null,
-        descricao: null
+      const res = await this.exibir(registro.id)
+      if (res && !res.erro) {
+        this.formulario = {
+          id: res.id || null,
+          created_at: res.created_at || null,
+          created_by: res.created_by || null,
+          item: res.item || null,
+          grupo: res.grupo || null,
+          descricao: res.descricao || null
+        }
       }
-      this.modal = true
       this.loading = false
+      this.modal = true
+      this.controle.exibir = true
     },
     async salvarRegistro () {
       if (await this.$refs.observer.validate()) {
         this.loading = true
         const form = {
-          id: this.formulario.id || undefined,
-          item: this.formulario.item || null,
-          grupo: this.formulario.grupo || null,
-          descricao: this.formulario.descricao || null
+          id: this.formulario.id || null,
+          status: this.formulario.status || null,
+          tipo: this.formulario.tipo || null,
+          processo: this.formulario.processo || null,
+          dataVencimento: this.formulario.dataVencimento || null,
+          dataSaida: this.formulario.dataSaida || null,
+          empresaId: this.formulario.empresaId || null,
+          estado: this.formulario.estado || null,
+          cidade: this.formulario.cidade || null,
+          observacao: this.formulario.observacao || null
         }
 
         let res
@@ -955,31 +1149,41 @@ export default {
       }
       this.loading = false
     },
-    encontrarProximoItem (sequencia) {
-      const valoresItem = sequencia.map((obj) => obj.item)
-      const maiorItem = valoresItem && valoresItem.length ? Math.max(...valoresItem) : 0
-
-      const proximoItem = maiorItem + 1
-
-      return proximoItem
-    },
-
-    async exibirRegistro (registro) {
+    // EMPRESA MODAL
+    async listarRegistroEmpresas () {
       this.loading = true
-      const res = await this.exibir(registro.id)
+      await this.listarEmpresas({
+        id: this.filtroModalEmpresa.id || null,
+        cnpj: this.filtroModalEmpresa.cnpj ? String(this.filtroModalEmpresa.cnpj).match(/\d/g).join('') : undefined,
+        status: this.filtroModalEmpresa.status && this.filtroModalEmpresa.status.length ? this.filtroModalEmpresa.status : null,
+        nomeFantasia: this.filtroModalEmpresa.nomeFantasia || null,
+        razaoSocial: this.filtroModalEmpresa.razaoSocial || null,
+        porteEmpresa: this.filtroModalEmpresa.porte && this.filtroModalEmpresa.porte.length ? this.filtroModalEmpresa.porte : null
+      })
+      this.loading = false
+    },
+    async exibirRegistroEmpresa (usuario) {
+      this.loading = true
+      const res = await this.exibirEmpresas(usuario)
       if (res && !res.erro) {
-        this.formulario = {
+        this.formularioEmpresa = {
           id: res.id || null,
-          created_at: res.created_at || null,
+          cnpj: res.cnpj || null,
+          status: res.status_empresa_id || null,
+          nomeFantasia: res.nome_fantasia || null,
+          razaoSocial: res.razao_social || null,
+          dataCadastro: res.data_cadastro ? this.$day(res.data_cadastro).format('DD/MM/YYYY') : null,
+          porte: res.porte_empresa_id || null,
+          empresaEndereco: `${res.logradouro}, ${res.numero} - ${res.estado} ${res.bairro} ${res.cep}`,
+          estado: res.estado || null,
+          cidade: res.cidade ? Number(res.cidade) : null,
           created_by: res.created_by || null,
-          item: res.item || null,
-          grupo: res.grupo || null,
-          descricao: res.descricao || null
+          created_at: res.created_at ? this.$day(res.created_at).format('DD/MM/YYYY HH:mm:ss') : null
         }
+
+        this.formulario.empresaId = res.id
       }
       this.loading = false
-      this.modal = true
-      this.controle.exibir = true
     },
     async resetFormulario () {
       this.loading = true
@@ -1008,6 +1212,16 @@ export default {
         razaoSocial: null,
         processo: null,
         dataVencimento: null
+      }
+    },
+    limparFiltrosModalEmpresa () {
+      this.filtro = {
+        id: null,
+        cnpj: null,
+        status: [],
+        nomeFantasia: null,
+        razaoSocial: null,
+        porte: []
       }
     }
   }

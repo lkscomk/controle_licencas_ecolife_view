@@ -828,9 +828,9 @@ export default {
       })
       this.loading = false
     },
-    async exibirRegistro (usuario) {
+    async exibirRegistro (id) {
       this.loading = true
-      const res = await this.exibir(usuario)
+      const res = await this.exibir(id)
       if (res && !res.erro) {
         this.formulario = {
           id: res.id || null,

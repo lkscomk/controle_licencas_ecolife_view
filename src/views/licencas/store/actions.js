@@ -82,6 +82,19 @@ export const buscarDropdownCidade = async ({ commit }, uf) => {
     return null
   }
 }
+export const buscarDropdownCidadeEmpresa = async ({ commit }, uf) => {
+  try {
+    const res = await axios.get('/sistema/cidade/' + uf)
+
+    if (!res.data.erro) {
+      commit('dropdownCidadesEmpresa', res.data)
+    }
+
+    return res.data
+  } catch (error) {
+    return null
+  }
+}
 
 export const listarEmpresas = async ({ commit }, filtros) => {
   try {
@@ -92,6 +105,16 @@ export const listarEmpresas = async ({ commit }, filtros) => {
     if (!res.data.erro) {
       commit('setRegistrosEmpresas', res.data)
     }
+
+    return res.data
+  } catch (error) {
+    return null
+  }
+}
+
+export const exibirEmpresas = async ({ commit }, id) => {
+  try {
+    const res = await axios.get('/empresa/' + id)
 
     return res.data
   } catch (error) {

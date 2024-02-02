@@ -2,7 +2,7 @@
   <v-dialog
     v-model="value"
     transition="dialog-bottom-transition"
-    max-width="width"
+    :width="width"
   >
     <v-card>
       <v-toolbar
@@ -73,7 +73,7 @@
           <slot name="maisOpcoes" />
         </v-menu>
       </v-toolbar>
-      <v-card-text>
+      <v-card-text class="mt-4">
         <slot />
       </v-card-text>
       <v-card-actions class="justify-end">
@@ -112,8 +112,8 @@ export default {
       type: String
     },
     maisOpcoes: {
-      type: Array,
-      default: () => []
+      default: true,
+      type: Boolean
     },
     width: {
       type: [Number, String],
