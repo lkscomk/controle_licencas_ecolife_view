@@ -2,6 +2,9 @@ export default {
   acessos_usuario (state, param) {
     state.acessos_usuario = param
   },
+  setRegistrosNotificacoes (state, param) {
+    state.registrosNotificacoes = param
+  },
   login (state, param) {
     state.login = param
   },

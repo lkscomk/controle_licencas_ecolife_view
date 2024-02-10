@@ -1,6 +1,7 @@
 export default {
   login: '',
   acessos_usuario: '',
+  registrosNotificacoes: [],
   notificacao: {
     ativo: false,
     cor: null,
