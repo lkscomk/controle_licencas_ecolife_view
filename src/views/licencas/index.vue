@@ -1099,14 +1099,35 @@ export default {
       const res = await this.exibir(registro.id)
       if (res && !res.erro) {
         this.formulario = {
-          id: res.id || null,
-          created_at: res.created_at || null,
+          bairro: res.bairro || null,
+          cep: res.cep || null,
+          cidade: res.cidade || null,
+          cnpj: res.cnpj || null,
+          complemento: res.complemento || null,
+          created_at: res.complemento || null,
           created_by: res.created_by || null,
-          item: res.item || null,
-          grupo: res.grupo || null,
-          descricao: res.descricao || null
+          data_cadastro: res.data_cadastro || null,
+          data_saida: res.data_saida || null,
+          data_vencimento: data_vencimento || null,
+          empresa_id: res.empresa_id || null,
+          estado: res.estado || null,
+          id: res.id || null,
+          inscricao_estadual: res.inscricao_estadual || null,
+          inscricao_municipal: res.inscricao_municipal || null,
+          logradouro: res.logradouro || null,
+          nome_fantasia: res.nome_fantasia || null,
+          numero: res.numero || numero,
+          observacao: res.observacao || null,
+          porte_empresa_id: res.porte_empresa_id || null,
+          processo: res.processo || null,
+          razao_social: res.razao_social || null,
+          status_empresa_id: res.status_empresa_id || null,
+          status_licenca_id: res.status_licenca_id || null,
+          tipo_licenca_id: res.tipo_licenca_id || null,
+          updated_at: res.updated_at || null,
+          updated_by: res.updated_by || null
         }
-      }
+      }  
       this.loading = false
       this.modal = true
       this.controle.exibir = true
