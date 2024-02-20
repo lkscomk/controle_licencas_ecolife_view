@@ -154,7 +154,16 @@
               <tabela
                 :colunas="colunas"
                 :registros="registros"
+                :paginacao="paginacao"
+                :registros-por-pagina="100"
+                :sort-by-cli="['id']"
+                :sort-desc-cli="true"
+                height-auto
                 exibir
+                class="mt-2"
+                toolbar-grid
+                titulo="Listagem de Licenças"
+                @paginacao="paginacao = $event"
                 @exibir="exibirRegistro($event)"
               />
             </v-col>
@@ -792,7 +801,16 @@
                 <tabela
                   :colunas="colunasEmpresa"
                   :registros="registrosEmpresas"
+                  :paginacao="paginacaoEmpresas"
+                  :registros-por-pagina="100"
+                  :sort-by-cli="['id']"
+                  :sort-desc-cli="true"
+                  height-auto
+                  class="mt-2"
+                  toolbar-grid
+                  titulo="Listagem de Empresas"
                   selecionar
+                  @paginacao="paginacaoEmpresas = $event"
                   @selecionado="modalBuscarEmpresa = false, exibirRegistroEmpresa($event.id)"
                 />
               </v-col>
@@ -972,6 +990,16 @@ export default {
       created_at: null,
       created_by: null
     },
+    paginacao: {
+      pagina: 1,
+      registros: 100,
+      totalRegistros: 0
+    },
+    paginacaoEmpresas: {
+      pagina: 1,
+      registros: 100,
+      totalRegistros: 0
+    },
     modal: false
   }),
   computed: {
@@ -1096,7 +1124,7 @@ export default {
     },
     async exibirRegistro (registro) {
       this.loading = true
-      const res = await this.exibir(registro.id)
+      const res = await this.exibir(registro)
       if (res && !res.erro) {
         this.formulario = {
           bairro: res.bairro || null,
@@ -1108,7 +1136,7 @@ export default {
           created_by: res.created_by || null,
           data_cadastro: res.data_cadastro || null,
           data_saida: res.data_saida || null,
-          data_vencimento: data_vencimento || null,
+          data_vencimento: res.data_vencimento || null,
           empresa_id: res.empresa_id || null,
           estado: res.estado || null,
           id: res.id || null,
@@ -1116,7 +1144,7 @@ export default {
           inscricao_municipal: res.inscricao_municipal || null,
           logradouro: res.logradouro || null,
           nome_fantasia: res.nome_fantasia || null,
-          numero: res.numero || numero,
+          numero: res.numero || null,
           observacao: res.observacao || null,
           porte_empresa_id: res.porte_empresa_id || null,
           processo: res.processo || null,
@@ -1127,7 +1155,7 @@ export default {
           updated_at: res.updated_at || null,
           updated_by: res.updated_by || null
         }
-      }  
+      }
       this.loading = false
       this.modal = true
       this.controle.exibir = true

@@ -72,7 +72,16 @@
               <tabela
                 :colunas="colunas"
                 :registros="registros"
+                :paginacao="paginacao"
+                :registros-por-pagina="100"
+                :sort-by-cli="['id']"
+                :sort-desc-cli="true"
+                height-auto
                 exibir
+                class="mt-2"
+                toolbar-grid
+                titulo="Listagem de Opções"
+                @paginacao="paginacao = $event"
                 @exibir="exibirRegistro($event)"
               />
             </v-col>
@@ -368,6 +377,11 @@ export default {
       item: null,
       descricao: null
     },
+    paginacao: {
+      pagina: 1,
+      registros: 100,
+      totalRegistros: 0
+    },
     modal: false
   }),
   computed: {
@@ -477,7 +491,7 @@ export default {
 
     async exibirRegistro (registro) {
       this.loading = true
-      const res = await this.exibir(registro.id)
+      const res = await this.exibir(registro)
       if (res && !res.erro) {
         this.formulario = {
           id: res.id || null,

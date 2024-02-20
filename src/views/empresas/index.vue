@@ -156,8 +156,17 @@
               <tabela
                 :colunas="colunas"
                 :registros="registros"
+                :paginacao="paginacao"
+                :registros-por-pagina="100"
+                :sort-by-cli="['id']"
+                :sort-desc-cli="true"
+                height-auto
                 exibir
-                @exibir="exibirRegistro($event.id)"
+                class="mt-2"
+                toolbar-grid
+                titulo="Listagem de Empresas"
+                @paginacao="paginacao = $event"
+                @exibir="exibirRegistro($event)"
               />
             </v-col>
           </v-row>
@@ -694,13 +703,13 @@ export default {
       {
         text: 'Código',
         align: 'start',
-        sortable: false,
+        sortable: true,
         value: 'id'
       },
       {
         text: 'CNPJ',
         align: 'start',
-        sortable: false,
+        sortable: true,
         value: 'cnpj'
       },
       {
@@ -712,31 +721,31 @@ export default {
       {
         text: 'Nome Fantasia',
         align: 'start',
-        sortable: false,
+        sortable: true,
         value: 'nome_fantasia'
       },
       {
         text: 'Razão Social',
         align: 'start',
-        sortable: false,
+        sortable: true,
         value: 'razao_social'
       },
       {
         text: 'Data Cadastro',
         align: 'start',
-        sortable: false,
+        sortable: true,
         value: 'data_cadastro'
       },
       {
         text: 'Cidade',
         align: 'start',
-        sortable: false,
+        sortable: true,
         value: 'cidade'
       },
       {
         text: 'Porte',
         align: 'start',
-        sortable: false,
+        sortable: true,
         value: 'porte_descricao'
       }
     ],
@@ -776,6 +785,11 @@ export default {
       bairro: null,
       created_at: null,
       created_by: null
+    },
+    paginacao: {
+      pagina: 1,
+      registros: 100,
+      totalRegistros: 0
     },
     modal: false
   }),

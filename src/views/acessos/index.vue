@@ -70,8 +70,17 @@
               <tabela
                 :colunas="colunas"
                 :registros="registros"
+                :paginacao="paginacao"
+                :registros-por-pagina="100"
+                :sort-by-cli="['id']"
+                :sort-desc-cli="true"
+                height-auto
                 exibir
-                @exibir="exibirRegistro($event.id)"
+                class="mt-2"
+                toolbar-grid
+                titulo="Listagem de Telas"
+                @paginacao="paginacao = $event"
+                @exibir="exibirRegistro($event)"
               />
             </v-col>
           </v-row>
@@ -279,8 +288,17 @@
             <tabela
               :colunas="colunasTipo"
               :registros="registrosTipo"
+              :paginacao="paginacaoTipos"
+              :registros-por-pagina="100"
+              :sort-by-cli="['id']"
+              :sort-desc-cli="true"
+              height-auto
               excluir
-              @excluir="excluirRegistroTipos($event.id)"
+              class="mt-2"
+              toolbar-grid
+              titulo="Listagem de Tipos"
+              @paginacao="paginacaoTipos = $event"
+              @excluir="excluirRegistroTipos($event)"
             />
           </v-col>
         </v-row>
@@ -405,7 +423,17 @@ export default {
       tipoUsuario: null
     },
     modal: false,
-    modalAdicionar: false
+    modalAdicionar: false,
+    paginacao: {
+      pagina: 1,
+      registros: 100,
+      totalRegistros: 0
+    },
+    paginacaoTipos: {
+      pagina: 1,
+      registros: 100,
+      totalRegistros: 0
+    }
   }),
   computed: {
     ...mapState('acessos', [
@@ -537,9 +565,9 @@ export default {
       }
       this.loading = false
     },
-    async excluirRegistroTipos (id) {
+    async excluirRegistroTipos (registro) {
       this.loading = true
-      const res = await this.excluirTiposAcesso(id)
+      const res = await this.excluirTiposAcesso(registro.id)
       if (res && !res.erro) {
         this.listarRegistroTipos()
         await this.buscarAcessos(this.perfil)

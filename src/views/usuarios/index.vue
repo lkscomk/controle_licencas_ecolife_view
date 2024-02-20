@@ -119,8 +119,17 @@
               <tabela
                 :colunas="colunas"
                 :registros="registros"
+                :paginacao="paginacao"
+                :registros-por-pagina="100"
+                :sort-by-cli="['id']"
+                :sort-desc-cli="true"
+                height-auto
                 exibir
-                @exibir="exibirRegistro($event.id)"
+                class="mt-2"
+                toolbar-grid
+                titulo="Listagem de Usuários"
+                @paginacao="paginacao = $event"
+                @exibir="exibirRegistro($event)"
               />
             </v-col>
           </v-row>
@@ -427,6 +436,11 @@ export default {
       email: null,
       cpf: null,
       created_at: null
+    },
+    paginacao: {
+      pagina: 1,
+      registros: 100,
+      totalRegistros: 0
     },
     modal: false
   }),
