@@ -1,10 +1,5 @@
 <template>
   <div v-resize="newCalculaTableHeigth">
-    <aviso
-      v-model="aviso.modal"
-      :options="aviso"
-      @input="aviso = {modal: false, key: null, text: ''}"
-    />
     <v-data-table
       id="10"
       ref="tabela"
@@ -88,6 +83,7 @@
           "
         />
       </template>
+
       <template
         v-for="(coluna, index) in colunasCustomizadas"
         v-slot:[`item.${coluna}`]="{ value }"
@@ -107,6 +103,7 @@
           v-html="value"
         />
       </template>
+
       <template
         v-for="(colPadrao, index) in customizadas"
         v-slot:[`item.${colPadrao}`]="{ value }"
@@ -116,6 +113,7 @@
           v-html="value"
         />
       </template>
+
       <template
         v-for="(htmlCol, index) in htmlCols"
         v-slot:[`item.${htmlCol.value}`]="{ value }"
@@ -125,6 +123,7 @@
           v-html="value"
         />
       </template>
+
       <template v-slot:top="{ items }">
         <v-toolbar
           v-if="toolbarGrid"
@@ -1634,11 +1633,6 @@ export default {
   },
 
   data: () => ({
-    aviso: {
-      modal: false,
-      key: null,
-      text: ''
-    },
     selecionadoSemOrdem: [],
     allSelected: false,
     customizadas: [
@@ -1984,7 +1978,20 @@ export default {
   ::-webkit-scrollbar {
     width: 12px !important;
     height: 12px !important;
+    background-color: #f1f1f1;
   }
+
+  ::-webkit-scrollbar-track {
+  background-color: #f1f1f1;
+}
+
+  ::-webkit-scrollbar-thumb {
+  background-color: #cccccc;
+}
+
+  ::-webkit-scrollbar-thumb:hover {
+  background-color: #cccccc;
+}
 }
 ::v-deep .componente-tabela > .v-data-table__wrapper {
   min-height: 100px !important;

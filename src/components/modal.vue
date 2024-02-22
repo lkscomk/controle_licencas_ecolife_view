@@ -2,6 +2,7 @@
   <v-dialog
     v-model="value"
     transition="dialog-bottom-transition"
+    scrollable
     :width="width"
   >
     <v-card>

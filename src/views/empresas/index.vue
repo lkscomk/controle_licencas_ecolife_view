@@ -9,6 +9,7 @@
     @voltar="modal = false, resetFormulario()"
     @excluir="excluirRegistro()"
   >
+
     <template slot="listagem">
       <v-form @submit.prevent="''">
         <v-container
@@ -747,7 +748,8 @@ export default {
         align: 'start',
         sortable: true,
         value: 'porte_descricao'
-      }
+      },
+      {}
     ],
     enumStatusEmpresas: {
       digitacao: 1
@@ -892,7 +894,7 @@ export default {
           complemento: res.complemento || null,
           bairro: res.bairro || null,
           estado: res.estado || null,
-          cidade: res.cidade ? Number(res.cidade) : null,
+          cidade: res.cidade || null,
           created_by: res.created_by || null,
           created_at: res.created_at ? this.$day(res.created_at).format('DD/MM/YYYY HH:mm:ss') : null
         }

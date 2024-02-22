@@ -2,6 +2,7 @@ import '@/plugins/axios_local'
 import '@/plugins/notificacao'
 import '@/plugins/crypto'
 import Vue from 'vue'
+import SortableTable from './plugins/sortable'
 import App from './App.vue'
 import '@/plugins/dayjs'
 import '@/plugins/validacoes'
@@ -25,6 +26,8 @@ Vue.component('loading', () => import('./components/loading'))
 
 Vue.use(VueMask)
 Vue.use(Vupper)
+
+Vue.directive('sortable-table', SortableTable)
 
 new Vue({
   router,
