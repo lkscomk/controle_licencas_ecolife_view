@@ -2,7 +2,7 @@ import axios from '@/plugins/axios_local'
 
 export const buscarDropdownStatusLicencas = async ({ commit }) => {
   try {
-    const res = await axios.get('/sistema/opcoes/7')
+    const res = await axios.get('/sistema/opcoes/6')
 
     if (!res.data.erro) {
       commit('dropdownStatusLicencas', res.data)
