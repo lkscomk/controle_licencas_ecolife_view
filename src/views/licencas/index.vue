@@ -6,6 +6,7 @@
     titulo="Licenças"
     :mais-opcoes="formulario.id ? maisOpcoes : null"
     :titulo-formulario="controle.editar ? 'Editar Registro' : controle.inserir ? 'Adicionar Registro' : 'Exibir Registro'"
+    @excluir="excluirRegistro()"
     @voltar="resetFormulario()"
   >
     <template slot="listagem">
@@ -995,16 +996,35 @@ export default {
       inserir: false
     },
     formulario: {
-      id: null,
-      status: null,
-      tipo: null,
-      processo: null,
-      dataVencimento: null,
-      dataSaida: null,
-      empresaId: null,
-      estado: null,
+      bairro: null,
+      cep: null,
       cidade: null,
-      observacao: null
+      cidade_empresa: null,
+      cnpj: null,
+      complemento: null,
+      created_at: null,
+      created_by: null,
+      data_cadastro: null,
+      data_saida: null,
+      data_vencimento: null,
+      empresa_id: null,
+      estado: null,
+      estado_empresa: null,
+      id: null,
+      inscricao_estadual: null,
+      inscricao_municipal: null,
+      logradouro: null,
+      nome_fantasia: null,
+      numero: null,
+      observacao: null,
+      porte_empresa_id: null,
+      processo: null,
+      razao_social: null,
+      status_empresa_id: null,
+      status_licenca_id: null,
+      tipo_licenca_id: null,
+      updated_at: null,
+      updated_by: null
     },
     formularioEmpresa: {
       id: null,
@@ -1230,7 +1250,6 @@ export default {
       this.loading = true
       const res = await this.excluir(this.formulario.id)
       if (res && !res.erro) {
-        this.listarRegistro(this.formulario.grupo)
         this.modal = false
         this.resetFormulario()
       }
@@ -1265,7 +1284,7 @@ export default {
           estado_empresa: res.estado || null,
           cidade_empresa: res.cidade || null
         }
-        this.formulario = { ...formularioEmpresa }
+        this.formulario = { ...this.formulario, ...formularioEmpresa }
 
         this.formulario.empresaId = res.id
       }
@@ -1280,12 +1299,35 @@ export default {
         editar: null
       }
       this.formulario = {
-        id: null,
+        bairro: null,
+        cep: null,
+        cidade: null,
+        cidade_empresa: null,
+        cnpj: null,
+        complemento: null,
         created_at: null,
         created_by: null,
-        item: null,
-        grupo: null,
-        descricao: null
+        data_cadastro: null,
+        data_saida: null,
+        data_vencimento: null,
+        empresa_id: null,
+        estado: null,
+        estado_empresa: null,
+        id: null,
+        inscricao_estadual: null,
+        inscricao_municipal: null,
+        logradouro: null,
+        nome_fantasia: null,
+        numero: null,
+        observacao: null,
+        porte_empresa_id: null,
+        processo: null,
+        razao_social: null,
+        status_empresa_id: null,
+        status_licenca_id: null,
+        tipo_licenca_id: null,
+        updated_at: null,
+        updated_by: null
       }
       this.loading = false
     },
