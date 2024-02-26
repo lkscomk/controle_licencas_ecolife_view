@@ -38,7 +38,6 @@
                       >
                         <v-text-field
                           v-model="filtro.id"
-                          v-mask="'#####'"
                           hide-details
                           dense
                           label="Código"
@@ -1139,6 +1138,9 @@ export default {
     }
   },
   async created () {
+    if (this.$route.query && this.$route.query.id) {
+      this.filtro.id = this.$route.query.id
+    }
     await this.buscarDropdownTiposLicencas()
     await this.buscarDropdownStatusLicencas()
     await this.buscarDropdownPortesEmpresa()
