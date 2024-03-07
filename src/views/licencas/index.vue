@@ -182,9 +182,9 @@
             <v-row dense>
               <v-col
                 v-if="formulario.id"
-                xl="2"
+                xl="1"
                 lg="2"
-                md="2"
+                md="3"
                 sm="4"
                 cols="12"
               >
@@ -200,7 +200,7 @@
               <v-col
                 xl="2"
                 lg="2"
-                md="2"
+                md="3"
                 sm="4"
                 cols="12"
               >
@@ -218,6 +218,31 @@
                     :disabled="controle.exibir"
                     dense
                     label="Processo"
+                    class="required"
+                    outlined
+                  />
+                </validation-provider>
+              </v-col>
+              <v-col
+                xl="2"
+                lg="2"
+                md="3"
+                sm="4"
+                cols="12"
+              >
+                <validation-provider
+                  v-slot="{ errors }"
+                  name="Licença"
+                  vid="Licença"
+                  rules="max:45"
+                >
+                  <v-text-field
+                    v-model="formulario.licenca"
+                    :error-messages="errors"
+                    :hide-details="!errors.length"
+                    :disabled="controle.exibir"
+                    dense
+                    label="Licença"
                     outlined
                   />
                 </validation-provider>
@@ -242,10 +267,10 @@
                 />
               </v-col>
               <v-col
-                xl="4"
-                lg="4"
-                md="6"
-                sm="6"
+                :xl="formulario.id ? 3 : 2"
+                :lg="formulario.id ? 4 : 4"
+                :md="formulario.id ? 6 : 3"
+                :sm="formulario.id ? 8 : 8"
                 cols="12"
               >
                 <validation-provider
@@ -264,6 +289,7 @@
                     item-value="item"
                     item-text="descricao"
                     label="Tipo Licença"
+                    class="required"
                     outlined
                   />
                 </validation-provider>
@@ -271,7 +297,7 @@
               <v-col
                 xl="2"
                 lg="2"
-                md="2"
+                md="3"
                 sm="4"
                 cols="12"
               >
@@ -289,6 +315,7 @@
                     :disabled="controle.exibir"
                     dense
                     label="Data de Vencimento"
+                    class="required"
                     outlined
                   />
                 </validation-provider>
@@ -296,7 +323,7 @@
               <v-col
                 xl="2"
                 lg="2"
-                md="2"
+                md="3"
                 sm="4"
                 cols="12"
               >
@@ -304,7 +331,7 @@
                   v-slot="{ errors }"
                   name="Data de Saída"
                   vid="dataSaida"
-                  rules="required"
+                  rules=""
                 >
                   <v-text-field
                     v-model="formulario.data_saida"
@@ -314,22 +341,23 @@
                     :disabled="controle.exibir"
                     dense
                     label="Data de Saída"
+                    class=""
                     outlined
                   />
                 </validation-provider>
               </v-col>
               <v-col
-                xl="3"
+                xl="2"
                 lg="3"
-                md="4"
-                sm="6"
+                md="3"
+                sm="4"
                 cols="12"
               >
                 <validation-provider
                   v-slot="{ errors }"
                   name="Estado"
-                  rules="required"
                   vid="estado"
+                  rules="required"
                 >
                   <v-autocomplete
                     v-model="formulario.estado"
@@ -340,23 +368,24 @@
                     dense
                     item-value="uf"
                     item-text="nome"
-                    label="Estado*"
+                    label="Estado"
+                    class="required"
                     outlined
                   />
                 </validation-provider>
               </v-col>
               <v-col
-                xl="3"
+                xl="2"
                 lg="3"
-                md="4"
-                sm="6"
+                md="3"
+                sm="4"
                 cols="12"
               >
                 <validation-provider
                   v-slot="{ errors }"
                   name="Cidade"
-                  rules="required"
                   vid="cidade"
+                  rules="required"
                 >
                   <v-autocomplete
                     v-model="formulario.cidade"
@@ -367,7 +396,8 @@
                     dense
                     item-value="codigo"
                     item-text="nome"
-                    label="Cidade*"
+                    label="Cidade"
+                    class="required"
                     outlined
                   />
                 </validation-provider>
@@ -424,8 +454,9 @@
                     :disabled="controle.exibir"
                     append-icon="mdi-magnify"
                     dense
-                    label="Código Empresa"
+                    label="Empresa (clique na lupa)"
                     outlined
+                    class="required"
                     @click:append="modalBuscarEmpresa = true"
                   />
                 </validation-provider>
@@ -561,9 +592,9 @@
               >
                 <validation-provider
                   v-slot="{ errors }"
-                  name="Estado"
+                  name="Estado Empresa"
                   rules="required"
-                  vid="estado"
+                  vid="estadoEmpresa"
                 >
                   <v-autocomplete
                     v-model="formulario.estado_empresa"
@@ -574,7 +605,7 @@
                     dense
                     item-value="uf"
                     item-text="nome"
-                    label="Estado*"
+                    label="Estado"
                     outlined
                   />
                 </validation-provider>
@@ -588,9 +619,9 @@
               >
                 <validation-provider
                   v-slot="{ errors }"
-                  name="Cidade"
+                  name="Cidade Empresa"
                   rules="required"
-                  vid="cidade"
+                  vid="cidadeEmpresa"
                 >
                   <v-autocomplete
                     v-model="formulario.cidade_empresa"
@@ -605,6 +636,11 @@
                     outlined
                   />
                 </validation-provider>
+              </v-col>
+              <v-col
+                cols="12"
+              >
+                <v-divider />
               </v-col>
               <v-col
                 v-if="formulario.id"
@@ -625,10 +661,10 @@
               </v-col>
               <v-col
                 v-if="formulario.id"
-                xl="4"
-                lg="4"
-                md="4"
-                sm="4"
+                xl="3"
+                lg="3"
+                md="3"
+                sm="3"
                 cols="12"
               >
                 <v-text-field
@@ -701,7 +737,7 @@
       width="100%"
       :titulo="'Pesquisar Empresa'"
       :mais-opcoes="false"
-      @fechar="modalBuscarEmpresa = false"
+      @fechar="resetModalEmpresa()"
     >
       <template>
         <v-form @submit.prevent="''">
@@ -841,7 +877,7 @@
                   titulo="Listagem de Empresas"
                   escolher
                   @paginacao="paginacaoEmpresas = $event"
-                  @escolher="modalBuscarEmpresa = false, exibirRegistroEmpresa($event)"
+                  @escolher="resetModalEmpresa(), exibirRegistroEmpresa($event)"
                 />
               </v-col>
             </v-row>
@@ -853,7 +889,7 @@
 </template>
 
 <script>
-import { mapActions, mapState } from 'vuex'
+import { mapActions, mapState, mapMutations } from 'vuex'
 
 export default {
   name: 'TelaLicencas',
@@ -1012,6 +1048,7 @@ export default {
       id: null,
       inscricao_estadual: null,
       inscricao_municipal: null,
+      licenca: null,
       logradouro: null,
       nome_fantasia: null,
       numero: null,
@@ -1150,6 +1187,9 @@ export default {
     this.listarRegistroEmpresas()
   },
   methods: {
+    ...mapMutations('licencas', [
+      'setRegistrosEmpresas'
+    ]),
     ...mapActions('licencas', [
       'listar',
       'exibir',
@@ -1332,6 +1372,18 @@ export default {
         updated_by: null
       }
       this.loading = false
+    },
+    resetModalEmpresa () {
+      this.modalBuscarEmpresa = false
+      this.setRegistrosEmpresas([])
+      this.filtroModalEmpresa = {
+        id: null,
+        cnpj: null,
+        status: [],
+        nomeFantasia: null,
+        razaoSocial: null,
+        porte: []
+      }
     },
     limparFiltros () {
       this.filtro = {

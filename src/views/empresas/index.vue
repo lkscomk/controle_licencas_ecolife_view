@@ -9,7 +9,6 @@
     @voltar="modal = false, resetFormulario()"
     @excluir="excluirRegistro()"
   >
-
     <template slot="listagem">
       <v-form @submit.prevent="''">
         <v-container
