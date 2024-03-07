@@ -684,6 +684,22 @@
 
     <template slot="botoes">
       <v-btn
+        v-if="formulario.id"
+        :block="$vuetify.breakpoint.xsOnly"
+        :class="$vuetify.breakpoint.xsOnly ? 'my-1' : 'mx-1'"
+        color="warning"
+        small
+        @click="$notificacao('Fluxo ainda em desenvolvimento', 'erro')"
+      >
+        <v-icon
+          left
+          size="20"
+        >
+          mdi-text
+        </v-icon>
+        Gerar RMAs
+      </v-btn>
+      <v-btn
         v-if="!!(!controle.exibir && (controle.inserir || controle.editar))"
         :block="$vuetify.breakpoint.xsOnly"
         :class="$vuetify.breakpoint.xsOnly ? 'my-1' : 'mx-1'"
@@ -1243,6 +1259,7 @@ export default {
           inscricao_estadual: res.inscricao_estadual || null,
           inscricao_municipal: res.inscricao_municipal || null,
           logradouro: res.logradouro || null,
+          licenca: res.licenca || null,
           nome_fantasia: res.nome_fantasia || null,
           numero: res.numero || null,
           observacao: res.observacao || null,
@@ -1360,6 +1377,7 @@ export default {
         inscricao_estadual: null,
         inscricao_municipal: null,
         logradouro: null,
+        licenca: null,
         nome_fantasia: null,
         numero: null,
         observacao: null,
