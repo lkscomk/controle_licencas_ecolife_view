@@ -1307,7 +1307,7 @@ export default {
         if (res && !res.erro) {
           this.modal = false
           this.resetFormulario()
-          this.listarRegistro()
+          this.exibirRegistro(res.id)
         }
         this.loading = false
       }
