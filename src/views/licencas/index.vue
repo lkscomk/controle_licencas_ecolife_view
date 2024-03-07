@@ -994,6 +994,12 @@ export default {
         value: 'razao_social'
       },
       {
+        text: 'Licença',
+        align: 'start',
+        sortable: false,
+        value: 'licenca'
+      },
+      {
         text: 'N. Processo',
         align: 'start',
         sortable: false,
