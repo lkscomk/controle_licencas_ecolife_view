@@ -1268,6 +1268,7 @@ export default {
           id: this.formulario.id || null,
           tipo: this.formulario.tipo_licenca_id || null,
           processo: this.formulario.processo ? String(this.formulario.processo).match(/\d/g).join('') : null,
+          licenca: this.formulario.licenca || null,
           dataVencimento: this.formulario.data_vencimento ? this.$day(this.formulario.data_vencimento, 'DD/MM/YYYY').format('YYYY-MM-DD') : null,
           dataSaida: this.formulario.data_saida ? this.$day(this.formulario.data_saida, 'DD/MM/YYYY').format('YYYY-MM-DD') : null,
           empresaId: this.formulario.empresa_id || null,
