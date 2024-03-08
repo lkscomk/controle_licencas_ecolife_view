@@ -108,6 +108,16 @@ export const excluir = async ({ commit }, id) => {
   }
 }
 
+export const ativar = async ({ commit }, id) => {
+  try {
+    const res = await axios.put('/empresa/ativar/' + id)
+
+    return res.data
+  } catch (error) {
+    return null
+  }
+}
+
 export const salvar = async ({ commit }, dados) => {
   try {
     const res = await axios.post('/empresa', dados)

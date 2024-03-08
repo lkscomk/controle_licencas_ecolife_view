@@ -2,13 +2,28 @@
   <pagina
     :loading="loading"
     :modal="modal"
-    subtitulo="Página de Manutenção de Empresas"
-    titulo="Empresas"
+    subtitulo="Página de Manutenção de Empresas/Pessoas"
+    titulo="Empresas/Pessoas"
     :mais-opcoes="formulario.id ? maisOpcoes : null"
     :titulo-formulario="controle.editar ? 'Editar Registro' : controle.inserir ? 'Adicionar Registro' : 'Exibir Registro'"
     @voltar="modal = false, resetFormulario()"
     @excluir="excluirRegistro()"
   >
+    <aviso
+      v-model="aviso.modal"
+      :conteudo="aviso.conteudo"
+      :acao="aviso.acao"
+      @cancelar="aviso = {
+        modal: false,
+        conteudo: '',
+        acao: ''
+      }"
+      @ativarEmpresa="aviso = {
+        modal: false,
+        conteudo: '',
+        acao: ''
+      }, ativarRegistro()"
+    />
     <template slot="listagem">
       <v-form @submit.prevent="''">
         <v-container
@@ -54,10 +69,9 @@
                       >
                         <v-text-field
                           v-model="filtro.cnpj"
-                          v-mask="'##.###.###/####-##'"
                           hide-details
                           dense
-                          label="CNPJ"
+                          label="CNPJ/CPF"
                           outlined
                         />
                       </v-col>
@@ -218,18 +232,18 @@
               >
                 <validation-provider
                   v-slot="{ errors }"
-                  name="CNPJ"
+                  name="CNPJ/CPF"
                   vid="cnpj"
                   rules="required"
                 >
                   <v-text-field
                     v-model="formulario.cnpj"
-                    v-mask="'##.###.###/####-##'"
                     :disabled="controle.exibir"
                     :error-messages="errors"
                     :hide-details="!errors.length"
                     dense
-                    label="CNPJ*"
+                    label="CNPJ/CPF"
+                    class="required"
                     outlined
                   />
                 </validation-provider>
@@ -274,7 +288,8 @@
                     :hide-details="!(errors.length || (formulario.nomeFantasia && formulario.nomeFantasia.length > 0) && !controle.exibir)"
                     :counter="100"
                     dense
-                    label="Nome Fantasia*"
+                    label="Nome Fantasia"
+                    class="required"
                     outlined
                   />
                 </validation-provider>
@@ -300,7 +315,8 @@
                     :hide-details="!(errors.length || (formulario.razaoSocial && formulario.razaoSocial.length > 0) && !controle.exibir)"
                     :counter="100"
                     dense
-                    label="Razão Social*"
+                    label="Razão Social"
+                    class="required"
                     outlined
                   />
                 </validation-provider>
@@ -325,7 +341,8 @@
                     :error-messages="errors"
                     :hide-details="!errors.length"
                     dense
-                    label="Data de Cadastro*"
+                    label="Data de Cadastro"
+                    class="required"
                     outlined
                   />
                 </validation-provider>
@@ -400,7 +417,8 @@
                     dense
                     item-value="item"
                     item-text="descricao"
-                    label="Porte*"
+                    label="Porte"
+                    class="required"
                     outlined
                   />
                 </validation-provider>
@@ -430,7 +448,8 @@
                     :error-messages="errors"
                     :hide-details="!errors.length"
                     dense
-                    label="CEP*"
+                    label="CEP"
+                    class="required"
                     outlined
                   />
                 </validation-provider>
@@ -456,7 +475,8 @@
                     :hide-details="!(errors.length || (formulario.logradouro && formulario.logradouro.length > 0) && !controle.exibir)"
                     :counter="100"
                     dense
-                    label="Logradouro*"
+                    label="Logradouro"
+                    class="required"
                     outlined
                   />
                 </validation-provider>
@@ -481,7 +501,8 @@
                     :error-messages="errors"
                     :hide-details="!errors.length"
                     dense
-                    label="Número*"
+                    label="Número"
+                    class="required"
                     outlined
                   />
                 </validation-provider>
@@ -508,7 +529,8 @@
                     dense
                     item-value="uf"
                     item-text="nome"
-                    label="Estado*"
+                    label="Estado"
+                    class="required"
                     outlined
                   />
                 </validation-provider>
@@ -535,7 +557,8 @@
                     dense
                     item-value="codigo"
                     item-text="nome"
-                    label="Cidade*"
+                    label="Cidade"
+                    class="required"
                     outlined
                   />
                 </validation-provider>
@@ -561,7 +584,8 @@
                     :hide-details="!(errors.length || (formulario.bairro && formulario.bairro.length > 0) && !controle.exibir)"
                     :counter="100"
                     dense
-                    label="Bairro*"
+                    label="Bairro"
+                    class="required"
                     outlined
                   />
                 </validation-provider>
@@ -606,7 +630,7 @@
                   disabled
                   hide-details
                   dense
-                  label="Criado Por*"
+                  label="Criado Por"
                   outlined
                 />
               </v-col>
@@ -623,7 +647,7 @@
                   disabled
                   hide-details
                   dense
-                  label="Criado Em*"
+                  label="Criado Em"
                   outlined
                 />
               </v-col>
@@ -634,6 +658,23 @@
     </template>
 
     <template slot="botoes">
+      <v-btn
+        v-if="formulario.id && formulario.status === enumStatusEmpresas.digitacao && controle.exibir"
+        :block="$vuetify.breakpoint.xsOnly"
+        :class="$vuetify.breakpoint.xsOnly ? 'my-1' : 'mx-1'"
+        color="warning"
+        small
+        @click="
+          aviso = { modal: true, conteudo: 'Após Ativado, não será possível EDITAR qualquer informação dessa empresa/pessoa. Deseja continuar?', acao: 'ativarEmpresa'}"
+      >
+        <v-icon
+          left
+          size="20"
+        >
+          mdi-check
+        </v-icon>
+        Ativar Registro
+      </v-btn>
       <v-btn
         v-if="!!(!controle.exibir && (controle.inserir || controle.editar))"
         :block="$vuetify.breakpoint.xsOnly"
@@ -651,7 +692,7 @@
         Salvar
       </v-btn>
       <v-btn
-        v-if="!!(controle.exibir && !controle.inserir)"
+        v-if="!!(controle.exibir && !controle.inserir) && formulario.status === enumStatusEmpresas.digitacao"
         :block="$vuetify.breakpoint.xsOnly"
         :class="$vuetify.breakpoint.xsOnly ? 'my-1' : 'mx-1'"
         color="success"
@@ -687,12 +728,18 @@
 
 <script>
 import { mapActions, mapState } from 'vuex'
+import { filter } from 'vue-input-facade'
 
 export default {
   name: 'PaginaEmpresas',
   data: () => ({
     loading: false,
     perfil: window.atob(localStorage.getItem('umbrella:perfil')),
+    aviso: {
+      modal: false,
+      conteudo: '',
+      acao: ''
+    },
     colunas: [
       {
         text: 'Ação',
@@ -707,7 +754,7 @@ export default {
         value: 'id'
       },
       {
-        text: 'CNPJ',
+        text: 'CNPJ/CPF',
         align: 'start',
         sortable: true,
         value: 'cnpj'
@@ -751,7 +798,8 @@ export default {
       {}
     ],
     enumStatusEmpresas: {
-      digitacao: 1
+      digitacao: 1,
+      ativa: 2
     },
     filtro: {
       id: null,
@@ -826,14 +874,17 @@ export default {
       }
     },
     maisOpcoes () {
-      return [
-        {
+      const acoes = []
+      if (this.formulario.status === this.enumStatusEmpresas.digitacao && this.formulario.id) {
+        acoes.push({
           acao: 'excluir',
           color: 'error',
           icone: 'mdi-delete',
           titulo: 'Excluir'
-        }
-      ]
+        })
+      }
+
+      return acoes
     }
   },
   watch: {
@@ -854,6 +905,7 @@ export default {
       'exibir',
       'editar',
       'salvar',
+      'ativar',
       'excluir',
       'buscarDropdownPortesEmpresa',
       'buscarDropdownStatusEmpresa',
@@ -876,10 +928,11 @@ export default {
     async exibirRegistro (id) {
       this.loading = true
       const res = await this.exibir(id)
+      window.console.log(res.cnpj ? (String(res.cnpj).length <= 11 ? String(res.cnpj).padStart(11, '0') : String(res.cnpj).padStart(14, '0')) : '-')
       if (res && !res.erro) {
         this.formulario = {
           id: res.id || null,
-          cnpj: res.cnpj || null,
+          cnpj: res.cnpj ? (String(res.cnpj).length <= 11 ? filter(String(res.cnpj).padStart(11, '0'), ['###.###.###-##']) : filter(String(res.cnpj).padStart(14, '0'), ['##.###.###/####-##'])) : '-',
           status: res.status_empresa_id || null,
           nomeFantasia: res.nome_fantasia || null,
           razaoSocial: res.razao_social || null,
@@ -946,6 +999,15 @@ export default {
         this.modal = false
         this.resetFormulario()
         this.listarRegistro()
+      }
+      this.loading = false
+    },
+    async ativarRegistro () {
+      this.loading = true
+      const res = await this.ativar(this.formulario.id)
+      if (res && !res.erro) {
+        this.modal = false
+        this.exibirRegistro(this.formulario.id)
       }
       this.loading = false
     },

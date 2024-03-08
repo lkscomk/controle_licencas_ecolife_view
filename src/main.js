@@ -18,6 +18,7 @@ Vue.config.productionTip = false
 
 Vue.component('selecao-all', () => import('./components/selecao-all'))
 Vue.component('modal', () => import('./components/modal'))
+Vue.component('aviso', () => import('./components/aviso'))
 Vue.component('notificacao', () => import('./components/notificacao'))
 Vue.component('tabela', () => import('./components/tabela'))
 Vue.component('filtro', () => import('./components/filtro'))

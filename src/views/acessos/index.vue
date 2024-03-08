@@ -118,7 +118,6 @@
                 >
                   <v-text-field
                     v-model="formulario.nome"
-                    v-uppercase
                     :disabled="controle.exibir"
                     :error-messages="errors"
                     :hide-details="!errors.length"

@@ -53,10 +53,10 @@
                       >
                         <v-text-field
                           v-model="filtro.cnpj"
-                          v-mask="'##.###.###/####-##'"
+                          v-mask="['###.###.###-##', '##.###.###/####-##']"
                           hide-details
                           dense
-                          label="CNPJ"
+                          label="CNPJ/CPF"
                           outlined
                         />
                       </v-col>
@@ -470,11 +470,11 @@
               >
                 <v-text-field
                   v-model="formulario.cnpj"
-                  v-mask="'##.###.###/####-##'"
+                  v-mask="['###.###.###-##', '##.###.###/####-##']"
                   disabled
                   hide-details
                   dense
-                  label="CNPJ"
+                  label="CNPJ/CPF"
                   outlined
                 />
               </v-col>
@@ -676,6 +676,40 @@
                   outlined
                 />
               </v-col>
+              <v-col
+                v-if="formulario.id"
+                xl="3"
+                lg="3"
+                md="3"
+                sm="3"
+                cols="12"
+              >
+                <v-text-field
+                  v-model="formulario.updated_by"
+                  hide-details
+                  disabled
+                  dense
+                  label="Última Alteração Por"
+                  outlined
+                />
+              </v-col>
+              <v-col
+                v-if="formulario.id"
+                xl="3"
+                lg="3"
+                md="3"
+                sm="3"
+                cols="12"
+              >
+                <v-text-field
+                  v-model="formulario.updated_at"
+                  hide-details
+                  disabled
+                  dense
+                  label="Última Alteração Em"
+                  outlined
+                />
+              </v-col>
             </v-row>
           </v-container>
         </validation-observer>
@@ -799,10 +833,10 @@
                         >
                           <v-text-field
                             v-model="filtroModalEmpresa.cnpj"
-                            v-mask="'##.###.###/####-##'"
+                            v-mask="['###.###.###-##', '##.###.###/####-##']"
                             hide-details
                             dense
-                            label="CNPJ"
+                            label="CNPJ/CPF"
                             outlined
                           />
                         </v-col>
@@ -816,6 +850,7 @@
                           <selecao-all
                             v-model="filtroModalEmpresa.status"
                             :items="dropdownStatusEmpresa"
+                            disabled
                             hide-details
                             dense
                             item-value="item"
@@ -906,6 +941,7 @@
 
 <script>
 import { mapActions, mapState, mapMutations } from 'vuex'
+import { filter } from 'vue-input-facade'
 
 export default {
   name: 'TelaLicencas',
@@ -926,7 +962,7 @@ export default {
         value: 'id'
       },
       {
-        text: 'CNPJ',
+        text: 'CNPJ/CPF',
         align: 'start',
         sortable: false,
         value: 'cnpj'
@@ -982,13 +1018,13 @@ export default {
         value: 'status'
       },
       {
-        text: 'CNPJ Empresa',
+        text: 'CNPJ/CPF',
         align: 'start',
         sortable: false,
         value: 'cnpj'
       },
       {
-        text: 'Razão Social',
+        text: 'Razão Social/Nome',
         align: 'start',
         sortable: false,
         value: 'razao_social'
@@ -1101,6 +1137,10 @@ export default {
     enumStatusLicenca: {
       digitacao: 1
     },
+    enumStatusEmpresas: {
+      digitacao: 1,
+      ativa: 2
+    },
     paginacao: {
       pagina: 1,
       registros: 100,
@@ -1177,22 +1217,23 @@ export default {
     async 'formulario.estado_empresa' (value) {
       if (value && (this.formulario.estado_empresa === 'RO' || this.formulario.estado_empresa === 'AM' || this.formulario.estado_empresa === 'AC')) await this.buscarDropdownCidadeEmpresa(value)
     },
-    'formulario.empresaId' (value) {
+    'formulario.empresa_id' (value) {
       if (!value) {
-        this.formularioEmpresa = {
-          id: null,
-          cnpj: null,
-          status: null,
-          nomeFantasia: null,
-          razaoSocial: null,
-          dataCadastro: null,
-          porte: null,
-          empresaEndereco: null,
-          estado: null,
-          cidade: null,
-          created_at: null,
-          created_by: null
-        }
+        this.formulario.bairro = null
+        this.formulario.cep = null
+        this.formulario.cidade_empresa = null
+        this.formulario.cnpj = null
+        this.formulario.complemento = null
+        this.formulario.data_cadastro = null
+        this.formulario.empresa_id = null
+        this.formulario.estado_empresa = null
+        this.formulario.logradouro = null
+        this.formulario.nome_fantasia = null
+        this.formulario.numero = null
+        this.formulario.empresaEndereco = null
+        this.formulario.porte_empresa_id = null
+        this.formulario.razao_social = null
+        this.formulario.status_empresa_id = null
       }
     }
   },
@@ -1251,7 +1292,7 @@ export default {
           cep: res.cep || null,
           cidade: res.cidade || null,
           cidade_empresa: res.cidade_empresa || null,
-          cnpj: res.cnpj || null,
+          cnpj: res.cnpj ? (String(res.cnpj).length <= 11 ? filter(String(res.cnpj).padStart(11, '0'), ['###.###.###-##']) : filter(String(res.cnpj).padStart(14, '0'), ['##.###.###/####-##'])) : '-',
           complemento: res.complemento || null,
           created_at: res.created_at ? this.$day(res.created_at).format('DD/MM/YYYY HH:mm:ss') : null,
           created_by: res.created_by || null,
@@ -1275,8 +1316,9 @@ export default {
           status_empresa_id: res.status_empresa_id || null,
           status_licenca_id: res.status_licenca_id || null,
           tipo_licenca_id: res.tipo_licenca_id || null,
-          updated_at: res.updated_at || null,
-          updated_by: res.updated_by || null
+          updated_at: res.updated_at ? this.$day(res.updated_at).format('DD/MM/YYYY HH:mm:ss') : null,
+          updated_by: res.updated_by || null,
+          empresaEndereco: null
         }
       }
       this.formulario.empresaEndereco = `${res.logradouro}, ${res.numero} - ${res.bairro}`
@@ -1324,6 +1366,7 @@ export default {
     // EMPRESA MODAL
     async listarRegistroEmpresas () {
       this.loading = true
+      this.filtroModalEmpresa.status = [this.enumStatusEmpresas.ativa]
       await this.listarEmpresas({
         id: this.filtroModalEmpresa.id || null,
         cnpj: this.filtroModalEmpresa.cnpj ? String(this.filtroModalEmpresa.cnpj).match(/\d/g).join('') : undefined,
@@ -1340,7 +1383,7 @@ export default {
       if (res && !res.erro) {
         const formularioEmpresa = {
           empresa_id: res.id || null,
-          cnpj: res.cnpj || null,
+          cnpj: res.cnpj ? (String(res.cnpj).length <= 11 ? filter(String(res.cnpj).padStart(11, '0'), ['###.###.###-##']) : filter(String(res.cnpj).padStart(14, '0'), ['##.###.###/####-##'])) : '-',
           status_empresa_id: res.status_empresa_id || null,
           nome_fantasia: res.nome_fantasia || null,
           razao_social: res.razao_social || null,

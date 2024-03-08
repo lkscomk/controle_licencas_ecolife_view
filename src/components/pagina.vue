@@ -73,7 +73,7 @@
             </v-toolbar-title>
             <v-spacer />
             <v-menu
-              v-if="maisOpcoes"
+              v-if="maisOpcoes && maisOpcoes.length"
               offset-y
               left
             >

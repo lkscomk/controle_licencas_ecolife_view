@@ -21,7 +21,7 @@ export default {
     param.forEach(element => {
       element.status = { chip: true, color: String(element.status_cor), text: element.status_descricao }
       element.data_cadastro = element.data_cadastro ? day(element.data_cadastro).format('DD/MM/YYYY') : null
-      element.cnpj = filter(String(element.cnpj).padStart(14, '0'), ['##.###.###/####-##'])
+      element.cnpj = element.cnpj ? (String(element.cnpj).length <= 11 ? filter(String(element.cnpj).padStart(11, '0'), ['###.###.###-##']) : filter(String(element.cnpj).padStart(14, '0'), ['##.###.###/####-##'])) : '-'
     })
     state.registros = param
   }
