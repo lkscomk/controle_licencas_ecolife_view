@@ -33,6 +33,11 @@ const routes = [
         component: () => import('../views/licencas/index.vue')
       },
       {
+        path: '/processo',
+        name: 'Processo',
+        component: () => import('../views/processo/index.vue')
+      },
+      {
         path: '/empresas',
         name: 'Empresas',
         component: () => import('../views/empresas/index.vue')
