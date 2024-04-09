@@ -9,7 +9,6 @@
     @excluir="excluirRegistro()"
     @voltar="resetFormulario()"
   >
-  {{  $vuetify.breakpoint.name }}
     <template slot="listagem">
       <v-form @submit.prevent="''">
         <v-container
@@ -111,7 +110,7 @@
                 exibir
                 class="mt-2"
                 toolbar-grid
-                titulo="Listagem de Licenças"
+                titulo="Listagem de Processos"
                 @paginacao="paginacao = $event"
                 @exibir="exibirRegistro($event)"
               />
@@ -142,7 +141,7 @@
                   hide-details
                   disabled
                   dense
-                  label="Código Licença"
+                  label="Código Processo"
                   outlined
                 />
               </v-col>
@@ -169,6 +168,34 @@
                     label="Processo"
                     class="required"
                     outlined
+                  />
+                </validation-provider>
+              </v-col>
+
+              <v-col
+                cols="12"
+                xl="12"
+                lg="12"
+                md="12"
+              >
+                <validation-provider
+                  v-slot="{ errors }"
+                  name="Observação"
+                  rules="max:500"
+                  vid="observacao"
+                >
+                  <v-textarea
+                    v-model="formulario.observacao"
+                    v-uppercase
+                    :disabled="!controle.inserir && !controle.editar"
+                    :error-messages="errors"
+                    :hide-details="!(errors.length || (formulario.observacao && formulario.observacao.length > 0) && !controle.exibir)"
+                    :counter="500"
+                    dense
+                    label="Observação"
+                    outlined
+                    rows="3"
+                    spellcheck="false"
                   />
                 </validation-provider>
               </v-col>
@@ -239,33 +266,6 @@
                   label="Última Alteração Em"
                   outlined
                 />
-              </v-col>
-              <v-col
-                cols="12"
-                xl="12"
-                lg="12"
-                md="12"
-              >
-                <validation-provider
-                  v-slot="{ errors }"
-                  name="Observação"
-                  rules="max:500"
-                  vid="observacao"
-                >
-                  <v-textarea
-                    v-model="formulario.observacao"
-                    v-uppercase
-                    :disabled="!controle.inserir && !controle.editar"
-                    :error-messages="errors"
-                    :hide-details="!(errors.length || (formulario.observacao && formulario.observacao.length > 0) && !controle.exibir)"
-                    :counter="500"
-                    dense
-                    label="Observação"
-                    outlined
-                    rows="3"
-                    spellcheck="false"
-                  />
-                </validation-provider>
               </v-col>
               <v-col
                 cols="12"
@@ -485,6 +485,54 @@
           </v-container>
         </validation-observer>
       </v-form>
+    </template>
+
+    <template slot="relacionamento">
+      <v-card
+        class="elevation-0 ma-2"
+        outlined
+      >
+        <v-form @submit.prevent="''">
+          <validation-observer ref="observer">
+            <v-container
+              fluid
+              grid-list-xs
+            >
+              <v-row dense>
+                <v-col
+                  xl="12"
+                  lg="12"
+                  md="12"
+                  sm="12"
+                  cols="12"
+                >
+                Listagem de Licenças
+                </v-col>
+                <v-col
+                  xl="12"
+                  lg="12"
+                  md="12"
+                  sm="12"
+                  cols="12"
+                >
+                  <tabela
+                    :colunas="colunasLicensas"
+                    :registros="registrosLicencas"
+                    :paginacao="paginacaoLicensas"
+                    :registros-por-pagina="100"
+                    :sort-by-cli="['id']"
+                    :sort-desc-cli="true"
+                    height-auto
+                    class="mt-2"
+                    exibir
+                    @paginacao="paginacaoLicensas = $event"
+                  />
+                </v-col>
+              </v-row>
+            </v-container>
+          </validation-observer>
+        </v-form>
+      </v-card>
     </template>
 
     <template slot="botoes">
@@ -719,6 +767,56 @@ export default {
   data: () => ({
     loading: false,
     modalBuscarEmpresa: false,
+    colunasLicensas: [
+      {
+        text: 'Ação',
+        align: 'start',
+        sortable: false,
+        value: 'acao'
+      },
+      {
+        text: 'Código',
+        align: 'start',
+        sortable: false,
+        value: 'id'
+      },
+      {
+        text: 'Licença',
+        align: 'start',
+        sortable: false,
+        value: 'licenca'
+      },
+      {
+        text: 'Status',
+        align: 'start',
+        sortable: false,
+        value: 'status'
+      },
+      {
+        text: 'Tipo',
+        align: 'start',
+        sortable: false,
+        value: 'tipo'
+      },
+      {
+        text: 'Data Vencimento',
+        align: 'start',
+        sortable: false,
+        value: 'data_vencimento'
+      },
+      {
+        text: 'Criado Por',
+        align: 'start',
+        sortable: false,
+        value: 'created_by'
+      },
+      {
+        text: 'Criado Em',
+        align: 'start',
+        sortable: false,
+        value: 'created_at'
+      }
+    ],
     colunasEmpresa: [
       {
         text: 'Ação',
@@ -898,14 +996,20 @@ export default {
       registros: 100,
       totalRegistros: 0
     },
+    paginacaoLicensas: {
+      pagina: 1,
+      registros: 100,
+      totalRegistros: 0
+    },
     modal: false
   }),
   computed: {
     ...mapState('processo', [
       'registros',
+      'registrosLicencas',
+      'registrosEmpresas',
       'dropdownStatusLicencas',
       'dropdownTiposLicencas',
-      'registrosEmpresas',
       'dropdownStatusEmpresa',
       'dropdownPortesEmpresa',
       'dropdownEstados',
@@ -1015,7 +1119,9 @@ export default {
       'buscarDropdownStatusEmpresa',
       'buscarDropdownEstados',
       'buscarDropdownCidade',
-      'buscarDropdownCidadeEmpresa'
+      'buscarDropdownCidadeEmpresa',
+
+      'listarLicencas'
     ]),
     async listarRegistro () {
       this.loading = true
@@ -1058,6 +1164,8 @@ export default {
           updated_by: res.updated_by || null,
           empresaEndereco: null
         }
+
+        this.listarLicencasRegistros()
       }
       this.formulario.empresaEndereco = `${res.logradouro}, ${res.numero} - ${res.bairro}`
       this.loading = false
@@ -1070,7 +1178,7 @@ export default {
         const form = {
           id: this.formulario.id || null,
           processo: this.formulario.processo ? String(this.formulario.processo).match(/\d/g).join('') : null,
-          empresaId: this.formulario.empresa_id || null,
+          empresa_id: this.formulario.empresa_id || null,
           observacao: this.formulario.observacao || null
         }
 
@@ -1092,6 +1200,16 @@ export default {
       if (res && !res.erro) {
         this.modal = false
         this.resetFormulario()
+      }
+      this.loading = false
+    },
+    // LICENCA
+    async listarLicencasRegistros () {
+      this.loading = true
+      const res = await this.listarLicencas({
+        processo_id: this.formulario.id
+      })
+      if (res && !res.erro) {
       }
       this.loading = false
     },

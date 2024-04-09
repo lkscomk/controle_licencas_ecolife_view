@@ -42,6 +42,15 @@ export default {
     })
     state.registros = param
   },
+  setRegistrosLicencas (state, param) {
+    param.forEach(element => {
+      element.tipo = { chip: true, color: element.tipo_cor, text: element.tipo_descricao }
+      element.status = { chip: true, color: element.status_cor, text: element.status_descricao }
+      element.data_vencimento = element.data_vencimento ? day(element.data_vencimento).format('DD/MM/YYYY') : null
+      element.created_at = element.created_at ? day(element.created_at).format('DD/MM/YYYY HH:mm:ss') : null
+    })
+    state.registrosLicencas = param
+  },
   setRegistrosRelacionamento (state, param) {
     param.forEach(element => {
       element.created_at = element.created_at ? day(element.created_at).format('DD/MM/YYYY HH:mm:ss') : null

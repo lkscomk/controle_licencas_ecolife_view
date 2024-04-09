@@ -1,5 +1,6 @@
 export default {
   registros: [],
+  registrosLicencas: [],
   dropdownStatusLicencas: [],
   dropdownTiposLicencas: [],
   registrosEmpresas: [],

@@ -122,6 +122,7 @@ export const exibirEmpresas = async ({ commit }, id) => {
   }
 }
 
+// processo
 export const listar = async ({ commit }, filtros) => {
   try {
     const res = await axios.get('/processo', {
@@ -148,25 +149,9 @@ export const exibir = async ({ commit }, id) => {
   }
 }
 
-export const listarRelacionamento = async ({ commit }, filtros) => {
-  try {
-    const res = await axios.get('/opcoes', {
-      params: filtros
-    })
-
-    if (!res.data.erro) {
-      commit('setRegistrosRelacionamento', res.data)
-    }
-
-    return res.data
-  } catch (error) {
-    return null
-  }
-}
-
 export const salvar = async ({ commit }, dados) => {
   try {
-    const res = await axios.post('/licenca', dados)
+    const res = await axios.post('/processo', dados)
 
     return res.data
   } catch (error) {
@@ -176,7 +161,7 @@ export const salvar = async ({ commit }, dados) => {
 
 export const editar = async ({ commit }, dados) => {
   try {
-    const res = await axios.put('/licenca/' + dados.id, dados)
+    const res = await axios.put('/processo/' + dados.id, dados)
 
     return res.data
   } catch (error) {
@@ -193,3 +178,61 @@ export const excluir = async ({ commit }, id) => {
     return null
   }
 }
+
+// licenca
+
+export const listarLicencas = async ({ commit }, filtros) => {
+  try {
+    const res = await axios.get('/licenca', {
+      params: filtros
+    })
+
+    if (!res.data.erro) {
+      commit('setRegistrosLicencas', res.data)
+    }
+
+    return res.data
+  } catch (error) {
+    return null
+  }
+}
+
+// export const exibir = async ({ commit }, id) => {
+//   try {
+//     const res = await axios.get('/processo/' + id)
+
+//     return res.data
+//   } catch (error) {
+//     return null
+//   }
+// }
+
+// export const salvar = async ({ commit }, dados) => {
+//   try {
+//     const res = await axios.post('/licenca', dados)
+
+//     return res.data
+//   } catch (error) {
+//     return null
+//   }
+// }
+
+// export const editar = async ({ commit }, dados) => {
+//   try {
+//     const res = await axios.put('/licenca/' + dados.id, dados)
+
+//     return res.data
+//   } catch (error) {
+//     return null
+//   }
+// }
+
+// export const excluir = async ({ commit }, id) => {
+//   try {
+//     const res = await axios.delete('/licenca/' + id)
+
+//     return res.data
+//   } catch (error) {
+//     return null
+//   }
+// }
