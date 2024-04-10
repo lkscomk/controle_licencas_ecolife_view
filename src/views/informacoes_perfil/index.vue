@@ -362,7 +362,7 @@ export default {
           id: this.formulario.id || null,
           email: this.formulario.email || null,
           nome: this.formulario.nome || null,
-          cpf: this.formulario.cpf || null,
+          cpf: this.formulario.cpf ? String(this.formulario.cpf).match(/\d/g).join('') : undefined,
           senha: this.formulario.senha ? this.$crypto(this.formulario.senha, 'sha256') : undefined,
           data_nascimento: this.formulario.dataNascimento ? this.$day(this.formulario.dataNascimento, 'DD/MM/YYYY').format('YYYY-MM-DD') : null,
           tipoUsuarioId: this.formulario.tipoUsuarioId || null
