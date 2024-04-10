@@ -162,9 +162,9 @@
                 />
               </v-col>
               <v-col
-                :xl="formulario.id ? 3 : 4"
-                :lg="formulario.id ? 3 : 4"
-                :md="formulario.id ? 3 : 5"
+                :xl="formulario.id ? 4 : 3"
+                :lg="formulario.id ? 4 : 3"
+                :md="formulario.id ? 4 : 4"
                 sm="12"
                 cols="12"
               >
@@ -182,7 +182,8 @@
                     :hide-details="!(errors.length || (formulario.nome && formulario.nome.length > 0) && !controle.exibir)"
                     :counter="100"
                     dense
-                    label="Nome*"
+                    label="Nome"
+                    class="required"
                     outlined
                   />
                 </validation-provider>
@@ -202,12 +203,13 @@
                 >
                   <v-text-field
                     v-model="formulario.email"
-                    :disabled="controle.exibir"
+                    :disabled="controle.exibir || controle.editar"
                     :error-messages="errors"
-                    :hide-details="!(errors.length || (formulario.email && formulario.email.length > 0) && !controle.exibir)"
+                    :hide-details="!(errors.length || (formulario.email && formulario.email.length > 0) && !(controle.exibir || controle.editar))"
                     :counter="100"
                     dense
-                    label="Email*"
+                    label="Email"
+                    class="required"
                     outlined
                   />
                 </validation-provider>
@@ -215,7 +217,7 @@
               <v-col
                 xl="2"
                 lg="2"
-                md="3"
+                md="4"
                 sm="12"
                 cols="12"
               >
@@ -223,24 +225,25 @@
                   v-slot="{ errors }"
                   name="Data de Nascimento"
                   rules="required"
-                  vid="dataNascimento"
+                  vid="data_nascimento"
                 >
                   <v-text-field
-                    v-model="formulario.dataNascimento"
+                    v-model="formulario.data_nascimento"
                     v-mask="'##/##/####'"
                     :disabled="controle.exibir"
                     :error-messages="errors"
                     :hide-details="!errors.length"
                     dense
-                    label="Data Nascimento*"
+                    label="Data Nascimento"
+                    class="required"
                     outlined
                   />
                 </validation-provider>
               </v-col>
               <v-col
-                xl="1"
-                lg="3"
-                md="3"
+                xl="2"
+                lg="2"
+                md="4"
                 sm="12"
                 cols="12"
               >
@@ -257,7 +260,8 @@
                     :error-messages="errors"
                     :hide-details="!errors.length"
                     dense
-                    label="CPF*"
+                    label="CPF"
+                    class="required"
                     outlined
                   />
                 </validation-provider>
@@ -265,18 +269,18 @@
               <v-col
                 xl="2"
                 lg="2"
-                md="3"
+                md="4"
                 sm="12"
                 cols="12"
               >
                 <validation-provider
                   v-slot="{ errors }"
                   name="Tipo de Usuário"
-                  rules=""
-                  vid="tipoUsuarioId"
+                  rules="required"
+                  vid="tipo_usuario_id"
                 >
                   <v-autocomplete
-                    v-model="formulario.tipoUsuarioId"
+                    v-model="formulario.tipo_usuario_id"
                     :disabled="controle.exibir"
                     :items="dropdownTiposUsuarios"
                     :error-messages="errors"
@@ -284,10 +288,28 @@
                     dense
                     item-value="item"
                     item-text="descricao"
-                    label="Tipo de Usuário*"
+                    label="Tipo de Usuário"
+                    class="required"
                     outlined
                   />
                 </validation-provider>
+              </v-col>
+              <v-col
+                v-if="formulario.id"
+                xl="2"
+                lg="2"
+                md="3"
+                sm="12"
+                cols="12"
+              >
+                <v-text-field
+                  v-model="formulario.created_by"
+                  disabled
+                  hide-details
+                  dense
+                  label="Criado Por"
+                  outlined
+                />
               </v-col>
               <v-col
                 v-if="formulario.id"
@@ -303,6 +325,40 @@
                   hide-details
                   dense
                   label="Criado Em"
+                  outlined
+                />
+              </v-col>
+              <v-col
+                v-if="formulario.id"
+                xl="2"
+                lg="2"
+                md="3"
+                sm="12"
+                cols="12"
+              >
+                <v-text-field
+                  v-model="formulario.updated_by"
+                  disabled
+                  hide-details
+                  dense
+                  label="Última Alteração Por"
+                  outlined
+                />
+              </v-col>
+              <v-col
+                v-if="formulario.id"
+                xl="2"
+                lg="2"
+                md="3"
+                sm="12"
+                cols="12"
+              >
+                <v-text-field
+                  v-model="formulario.updated_at"
+                  disabled
+                  hide-details
+                  dense
+                  label="Última Alteração Em"
                   outlined
                 />
               </v-col>
@@ -431,8 +487,8 @@ export default {
       id: null,
       nome: null,
       login: null,
-      tipoUsuarioId: null,
-      dataNascimento: null,
+      tipo_usuario_id: null,
+      data_nascimento: null,
       email: null,
       cpf: null,
       created_at: null
@@ -513,11 +569,14 @@ export default {
           id: res.id || null,
           nome: res.nome || null,
           login: `${res.id}-${res.nome.split(' ')[0]}`,
-          tipoUsuarioId: res.tipo_usuario_id || null,
-          dataNascimento: res.data_nascimento ? this.$day(res.data_nascimento).format('DD/MM/YYYY') : null,
+          tipo_usuario_id: res.tipo_usuario_id || null,
+          data_nascimento: res.data_nascimento ? this.$day(res.data_nascimento).format('DD/MM/YYYY') : null,
           email: res.email || null,
           cpf: res.cpf || null,
-          created_at: res.created_at ? this.$day(res.created_at).format('DD/MM/YYYY HH:mm:ss') : null
+          created_at: res.created_at ? this.$day(res.created_at).format('DD/MM/YYYY HH:mm:ss') : null,
+          created_by: res.created_by || null,
+          updated_at: res.updated_at ? this.$day(res.updated_at).format('DD/MM/YYYY HH:mm:ss') : null,
+          updated_by: res.updated_by || null
         }
       }
       this.modal = true
@@ -526,11 +585,11 @@ export default {
     },
     async salvarRegistro () {
       if (await this.$refs.observer.validate()) {
-        const dataNascimento = this.$dataValidade(this.formulario.dataNascimento)
+        const dataNascimento = this.$dataValidade(this.formulario.data_nascimento)
         const cpf = this.$cpfValidate(this.formulario.cpf)
         const email = this.$emailValidade(this.formulario.email)
         if (dataNascimento || email || cpf) {
-          if (dataNascimento) this.$refs.observer.setErrors({ dataNascimento: [dataNascimento] })
+          if (dataNascimento) this.$refs.observer.setErrors({ data_nascimento: ['data_nascimento'] })
           if (email) this.$refs.observer.setErrors({ email: [email] })
           if (cpf) this.$refs.observer.setErrors({ cpf: [cpf] })
           return
@@ -540,9 +599,9 @@ export default {
         const form = {
           id: this.formulario.id || undefined,
           nome: this.formulario.nome || undefined,
-          tipoUsuarioId: this.formulario.tipoUsuarioId || undefined,
+          tipo_usuario_id: this.formulario.tipo_usuario_id || undefined,
           email: this.formulario.email || undefined,
-          dataNascimento: this.formulario.dataNascimento ? this.$day(this.formulario.dataNascimento, 'DD/MM/YYYY').format('YYYY-MM-DD') : null,
+          data_nascimento: this.formulario.data_nascimento ? this.$day(this.formulario.data_nascimento, 'DD/MM/YYYY').format('YYYY-MM-DD') : null,
           cpf: this.formulario.cpf ? String(this.formulario.cpf).match(/\d/g).join('') : undefined
         }
 
@@ -570,8 +629,8 @@ export default {
         id: null,
         nome: null,
         login: null,
-        tipoUsuarioId: null,
-        dataNascimento: null,
+        tipo_usuario_id: null,
+        data_nascimento: null,
         email: null,
         cpf: null,
         created_at: null

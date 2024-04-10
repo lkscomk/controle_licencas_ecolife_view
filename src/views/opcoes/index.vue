@@ -131,7 +131,8 @@
                   dense
                   item-value="item"
                   item-text="descricao"
-                  label="Grupo*"
+                  label="Grupo"
+                  class="required"
                   outlined
                 />
               </v-col>
@@ -147,7 +148,8 @@
                   hide-details
                   disabled
                   dense
-                  label="Item*"
+                  label="Item"
+                  class="required"
                   outlined
                 />
               </v-col>
@@ -171,7 +173,8 @@
                     :hide-details="!errors.length"
                     :disabled="controle.exibir"
                     dense
-                    label="Descrição*"
+                    label="Descrição"
+                    class="required"
                     outlined
                   />
                 </validation-provider>
@@ -187,7 +190,7 @@
                   v-slot="{ errors }"
                   name="Cor"
                   vid="cor"
-                  rules="required|max:6"
+                  rules="required|max:7"
                 >
                   <v-text-field
                     v-model="formulario.cor"
@@ -196,7 +199,8 @@
                     :hide-details="!errors.length"
                     :disabled="controle.exibir"
                     dense
-                    label="Cor*"
+                    label="Cor"
+                    class="required"
                     outlined
                   />
                 </validation-provider>
@@ -220,10 +224,10 @@
               </v-col>
               <v-col
                 v-if="formulario.id"
-                xl="4"
-                lg="4"
-                md="4"
-                sm="4"
+                xl="3"
+                lg="3"
+                md="3"
+                sm="3"
                 cols="12"
               >
                 <v-text-field
@@ -232,6 +236,40 @@
                   disabled
                   dense
                   label="Criado Em"
+                  outlined
+                />
+              </v-col>
+              <v-col
+                v-if="formulario.id"
+                xl="3"
+                lg="3"
+                md="3"
+                sm="3"
+                cols="12"
+              >
+                <v-text-field
+                  v-model="formulario.updated_by"
+                  hide-details
+                  disabled
+                  dense
+                  label="Última Alteração Por"
+                  outlined
+                />
+              </v-col>
+              <v-col
+                v-if="formulario.id"
+                xl="3"
+                lg="3"
+                md="3"
+                sm="3"
+                cols="12"
+              >
+                <v-text-field
+                  v-model="formulario.updated_at"
+                  hide-details
+                  disabled
+                  dense
+                  label="Última Alteração Em"
                   outlined
                 />
               </v-col>
@@ -376,7 +414,9 @@ export default {
       grupo: null,
       cor: null,
       item: null,
-      descricao: null
+      descricao: null,
+      updated_at: null,
+      updated_by: null
     },
     paginacao: {
       pagina: 1,
@@ -453,7 +493,7 @@ export default {
         this.loading = true
         const form = {
           id: this.formulario.id || undefined,
-          cor: this.formulario.cor ? '#' + String(this.formulario.cor) : null,
+          cor: this.formulario.cor || null,
           item: this.formulario.item || null,
           grupo: this.formulario.grupo || null,
           descricao: this.formulario.descricao || null
@@ -501,7 +541,9 @@ export default {
           cor: res.cor || null,
           item: res.item || null,
           grupo: res.grupo || null,
-          descricao: res.descricao || null
+          descricao: res.descricao || null,
+          updated_at: res.updated_at ? this.$day(res.updated_at).format('DD/MM/YYYY HH:mm:ss') : null,
+          updated_by: res.updated_by || null
         }
       }
       this.loading = false
@@ -523,7 +565,9 @@ export default {
         created_by: null,
         item: null,
         grupo: null,
-        descricao: null
+        descricao: null,
+        updated_at: null,
+        updated_by: null
       }
       this.loading = false
     },

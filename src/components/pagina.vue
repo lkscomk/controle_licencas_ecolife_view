@@ -154,6 +154,7 @@
         </v-card>
       </v-col>
       <v-col
+        v-if="modal"
         cols="12"
       >
         <slot name="relacionamento" />

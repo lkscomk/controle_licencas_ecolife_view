@@ -100,7 +100,8 @@
                       :hide-details="!errors.length"
                       :disabled="controle.exibir"
                       dense
-                      label="Nome*"
+                      label="Nome"
+                      class="required"
                       outlined
                     />
                   </validation-provider>
@@ -141,7 +142,8 @@
                       :error-messages="errors"
                       :hide-details="!errors.length"
                       dense
-                      label="Data Nascimento*"
+                      label="Data Nascimento"
+                      class="required"
                       outlined
                     />
                   </validation-provider>
@@ -166,7 +168,8 @@
                       :hide-details="!errors.length"
                       :disabled="controle.exibir"
                       dense
-                      label="CPF*"
+                      label="CPF"
+                      class="required"
                       outlined
                     />
                   </validation-provider>
@@ -179,7 +182,7 @@
                   cols="12"
                 >
                   <v-autocomplete
-                    v-model="formulario.tipoUsuarioId"
+                    v-model="formulario.tipo_usuario_id"
                     :items="dropdownTipoUsuario"
                     hide-details
                     disabled
@@ -190,33 +193,6 @@
                     class="required"
                     outlined
                   />
-                </v-col>
-                <v-col
-                  xl="3"
-                  lg="3"
-                  md="3"
-                  sm="12"
-                  cols="12"
-                >
-                  <validation-provider
-                    v-slot="{ errors }"
-                    name="Senha"
-                    vid="senha"
-                    rules="required|min:8"
-                  >
-                    <v-text-field
-                      v-model="formulario.senha"
-                      :error-messages="errors"
-                      :hide-details="!errors.length"
-                      :disabled="controle.exibir"
-                      :append-icon="mostrarSenha ? 'mdi-eye' : 'mdi-eye-off'"
-                      dense
-                      label="Nova Senha*"
-                      outlined
-                      :type="!mostrarSenha ? 'password' : 'text'"
-                      @click:append="mostrarSenha = !mostrarSenha"
-                    />
-                  </validation-provider>
                 </v-col>
                 <v-col
                   xl="3"
@@ -239,8 +215,18 @@
                   class="d-flex justify-end"
                 >
                   <v-btn
+                    v-if="!!(controle.exibir && !controle.inserir)"
+                    color="success"
+                    small
+                    class="mx-1"
+                    @click="modalAlterarSenha = true, controleSenha.inserir = true"
+                  >
+                    Alterar Senha
+                  </v-btn>
+                  <v-btn
                     v-if="!!(!controle.exibir && (controle.inserir || controle.editar))"
                     color="success"
+                    small
                     class="mx-1"
                     @click="salvarPerfilUsuario()"
                   >
@@ -249,6 +235,7 @@
                   <v-btn
                     v-if="!!(controle.exibir && !controle.inserir)"
                     color="success"
+                    small
                     class="mx-1"
                     @click="controle.editar = true, controle.exibir = false"
                   >
@@ -258,6 +245,7 @@
                     v-if="!!(!controle.exibir && (controle.inserir || controle.editar))"
                     color="error"
                     class="mx-1"
+                    small
                     @click="buscarPerfilUsuario()"
                   >
                     CANCELAR
@@ -269,6 +257,143 @@
         </v-container>
       </validation-observer>
     </template>
+
+    <modal
+      v-model="modalAlterarSenha"
+      width="40%"
+      :titulo="'Alterar Senha'"
+      :mais-opcoes="false"
+      @fechar="resetModalAlterarSenha()"
+    >
+      <template slot="botoes">
+        <v-btn
+          v-if="!!(!controleSenha.exibir && (controleSenha.inserir || controleSenha.editar))"
+          :block="$vuetify.breakpoint.xsOnly"
+          :class="$vuetify.breakpoint.xsOnly ? 'my-1' : 'mx-1'"
+          color="success"
+          small
+          @click="salvarPerfilUsuarioSenha()"
+        >
+          <v-icon
+            left
+            size="20"
+          >
+            mdi-content-save
+          </v-icon>
+          Salvar
+        </v-btn>
+        <v-btn
+          v-if="!!(controleSenha.exibir && !controleSenha.inserir)"
+          :block="$vuetify.breakpoint.xsOnly"
+          :class="$vuetify.breakpoint.xsOnly ? 'my-1' : 'mx-1'"
+          color="success"
+          small
+          @click="controleSenha.editar = true, controleSenha.exibir = false"
+        >
+          <v-icon
+            left
+            size="20"
+          >
+            mdi-pencil
+          </v-icon>
+          Editar
+        </v-btn>
+      </template>
+      <template>
+        <v-form @submit.prevent="''">
+          <validation-observer ref="observerAlterarSenha">
+            <v-container
+              class="ma-0 pa-0"
+              fluid
+            >
+              <v-row dense>
+                <v-col
+                  xl="12"
+                  lg="12"
+                  md="12"
+                  sm="12"
+                  cols="12"
+                >
+                  <validation-provider
+                    v-slot="{ errors }"
+                    name="Antiga Senha"
+                    vid="antigaSenha"
+                    rules="required|min:8"
+                  >
+                    <v-text-field
+                      v-model="formularioSenha.antigaSenha"
+                      :error-messages="errors"
+                      :hide-details="!errors.length"
+                      :append-icon="mostrarAntigaSenha ? 'mdi-eye' : 'mdi-eye-off'"
+                      dense
+                      label="Antiga Senha"
+                      class="required"
+                      outlined
+                      :type="!mostrarAntigaSenha ? 'password' : 'text'"
+                      @click:append="mostrarAntigaSenha = !mostrarAntigaSenha"
+                    />
+                  </validation-provider>
+                </v-col>
+                <v-col
+                  xl="12"
+                  lg="12"
+                  md="12"
+                  sm="12"
+                  cols="12"
+                >
+                  <validation-provider
+                    v-slot="{ errors }"
+                    name="Senha Nova"
+                    vid="senhaNova"
+                    rules="required|min:8"
+                  >
+                    <v-text-field
+                      v-model="formularioSenha.senhaNova"
+                      :error-messages="errors"
+                      :hide-details="!errors.length"
+                      :append-icon="mostrarSenhaNova ? 'mdi-eye' : 'mdi-eye-off'"
+                      dense
+                      label="Nova Senha"
+                      outlined
+                      class="required"
+                      :type="!mostrarSenhaNova ? 'password' : 'text'"
+                      @click:append="mostrarSenhaNova = !mostrarSenhaNova"
+                    />
+                  </validation-provider>
+                </v-col>
+                <v-col
+                  xl="12"
+                  lg="12"
+                  md="12"
+                  sm="12"
+                  cols="12"
+                >
+                  <validation-provider
+                    v-slot="{ errors }"
+                    name="Senha Nova Confirmação"
+                    vid="senhaNovaConfirmacao"
+                    rules="required|min:8"
+                  >
+                    <v-text-field
+                      v-model="formularioSenha.senhaNovaConfirmacao"
+                      :error-messages="errors"
+                      :hide-details="!errors.length"
+                      :append-icon="mostrarSenhaNovaConfirmacao ? 'mdi-eye' : 'mdi-eye-off'"
+                      dense
+                      label="Nova Senha Confirmação"
+                      outlined
+                      class="required"
+                      :type="!mostrarSenhaNovaConfirmacao ? 'password' : 'text'"
+                      @click:append="mostrarSenhaNovaConfirmacao = !mostrarSenhaNovaConfirmacao"
+                    />
+                  </validation-provider>
+                </v-col>
+              </v-row>
+            </v-container>
+          </validation-observer>
+        </v-form>
+      </template>
+    </modal>
   </pagina>
 </template>
 
@@ -282,20 +407,32 @@ export default {
     modal: false,
     loading: false,
     perfil: window.atob(localStorage.getItem('umbrella:perfil')),
-    mostrarSenha: false,
+    mostrarSenhaNovaConfirmacao: false,
+    mostrarSenhaNova: false,
+    mostrarAntigaSenha: false,
+    modalAlterarSenha: false,
     formulario: {
       id: null,
       login: null,
       nome: null,
-      senha: null,
       email: null,
       dataNascimento: null,
       cpf: null,
       criadoEm: null,
-      tipoUsuarioId: null
+      tipo_usuario_id: null
+    },
+    formularioSenha: {
+      antigaSenha: null,
+      senhaNova: null,
+      senhaNovaConfirmacao: null
     },
     controle: {
       exibir: true,
+      editar: false,
+      inserir: false
+    },
+    controleSenha: {
+      exibir: false,
       editar: false,
       inserir: false
     },
@@ -317,7 +454,8 @@ export default {
       'buscarImagemUsuario',
       'salvarUsuario',
       'salvarImagemUsuario',
-      'buscarDropdownTipoUsuario'
+      'buscarDropdownTipoUsuario',
+      'editarSenhaUsuario'
     ]),
     ...mapActions('app', [
       'buscarPathImagem'
@@ -334,7 +472,7 @@ export default {
           email: res.email || null,
           dataNascimento: res.data_nascimento ? this.$day(res.data_nascimento).format('DD/MM/YYYY') : null,
           criadoEm: res.created_at ? this.$day(res.created_at).format('DD/MM/YYYY HH:mm:ss') : null,
-          tipoUsuarioId: res.tipo_usuario_id || null,
+          tipo_usuario_id: res.tipo_usuario_id || null,
           cpf: res.cpf || null
         }
         this.controle = {
@@ -363,13 +501,31 @@ export default {
           email: this.formulario.email || null,
           nome: this.formulario.nome || null,
           cpf: this.formulario.cpf ? String(this.formulario.cpf).match(/\d/g).join('') : undefined,
-          senha: this.formulario.senha ? this.$crypto(this.formulario.senha, 'sha256') : undefined,
           data_nascimento: this.formulario.dataNascimento ? this.$day(this.formulario.dataNascimento, 'DD/MM/YYYY').format('YYYY-MM-DD') : null,
-          tipoUsuarioId: this.formulario.tipoUsuarioId || null
+          tipo_usuario_id: this.formulario.tipo_usuario_id || null
         })
         if (res && !res.erro) {
-          if (this.imagemPerfil) await this.salvarImagem()
-          this.mostrarSenha = false
+          this.buscarPerfilUsuario()
+        }
+        this.loading = false
+      }
+    },
+    async salvarPerfilUsuarioSenha () {
+      if (await this.$refs.observerAlterarSenha.validate()) {
+        this.loading = true
+        if (this.formularioSenha.senhaNova !== this.formularioSenha.senhaNovaConfirmacao) {
+          this.$refs.observerAlterarSenha.setErrors({ senhaNova: ['As senhas não estão iguais'] })
+          this.$refs.observerAlterarSenha.setErrors({ senhaNovaConfirmacao: ['As senhas não estão iguais'] })
+          this.loading = false
+          return
+        }
+        const res = await this.editarSenhaUsuario({
+          id: this.formulario.id || null,
+          antiga_senha: this.formularioSenha.antigaSenha ? this.$crypto(this.formularioSenha.antigaSenha, 'sha256') : undefined,
+          senha_nova: this.formularioSenha.senhaNova ? this.$crypto(this.formularioSenha.senhaNova, 'sha256') : undefined
+        })
+        if (res && !res.erro) {
+          this.resetModalAlterarSenha()
           this.buscarPerfilUsuario()
         }
         this.loading = false
@@ -416,6 +572,22 @@ export default {
           this.imagemPerfil = reader.result
         }
         reader.readAsDataURL(this.selectedFile)
+      }
+    },
+    resetModalAlterarSenha () {
+      this.modalAlterarSenha = false
+      this.mostrarSenhaNova = false
+      this.mostrarAntigaSenha = false
+      this.modalAlterarSenha = false
+      this.formularioSenha = {
+        antigaSenha: null,
+        senhaNova: null,
+        senhaNovaConfirmacao: null
+      }
+      this.controleSenha = {
+        exibir: false,
+        editar: false,
+        inserir: false
       }
     }
   }
