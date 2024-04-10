@@ -69,6 +69,7 @@
                       >
                         <v-text-field
                           v-model="filtro.cnpj"
+                          v-mask="['###.###.###-##', '##.###.###/####-##']"
                           hide-details
                           dense
                           label="CNPJ/CPF"
@@ -616,13 +617,13 @@
                   />
                 </validation-provider>
               </v-col>
-
+              <v-col cols="12" />
               <v-col
                 v-if="formulario.id"
-                xl="2"
-                lg="2"
+                xl="3"
+                lg="3"
                 md="3"
-                sm="6"
+                sm="3"
                 cols="12"
               >
                 <v-text-field
@@ -636,10 +637,10 @@
               </v-col>
               <v-col
                 v-if="formulario.id"
-                xl="2"
-                lg="2"
+                xl="3"
+                lg="3"
                 md="3"
-                sm="6"
+                sm="3"
                 cols="12"
               >
                 <v-text-field
@@ -648,6 +649,40 @@
                   hide-details
                   dense
                   label="Criado Em"
+                  outlined
+                />
+              </v-col>
+              <v-col
+                v-if="formulario.id"
+                xl="3"
+                lg="3"
+                md="3"
+                sm="3"
+                cols="12"
+              >
+                <v-text-field
+                  v-model="formulario.updated_by"
+                  hide-details
+                  disabled
+                  dense
+                  label="Última Alteração Por"
+                  outlined
+                />
+              </v-col>
+              <v-col
+                v-if="formulario.id"
+                xl="3"
+                lg="3"
+                md="3"
+                sm="3"
+                cols="12"
+              >
+                <v-text-field
+                  v-model="formulario.updated_at"
+                  hide-details
+                  disabled
+                  dense
+                  label="Última Alteração Em"
                   outlined
                 />
               </v-col>
@@ -833,7 +868,9 @@ export default {
       complemento: null,
       bairro: null,
       created_at: null,
-      created_by: null
+      created_by: null,
+      updated_at: null,
+      updated_by: null
     },
     paginacao: {
       pagina: 1,
@@ -948,7 +985,9 @@ export default {
           estado: res.estado || null,
           cidade: res.cidade || null,
           created_by: res.created_by || null,
-          created_at: res.created_at ? this.$day(res.created_at).format('DD/MM/YYYY HH:mm:ss') : null
+          created_at: res.created_at ? this.$day(res.created_at).format('DD/MM/YYYY HH:mm:ss') : null,
+          updated_at: res.updated_at ? this.$day(res.updated_at).format('DD/MM/YYYY HH:mm:ss') : null,
+          updated_by: res.updated_by || null
         }
       }
       this.modal = true
@@ -1031,7 +1070,9 @@ export default {
         complemento: null,
         bairro: null,
         created_at: null,
-        created_by: null
+        created_by: null,
+        updated_at: null,
+        updated_by: null
       }
       this.controle = {
         exibir: false,
@@ -1051,6 +1092,7 @@ export default {
         razaoSocial: null,
         porte: []
       }
+      this.listarRegistro()
     }
   }
 }

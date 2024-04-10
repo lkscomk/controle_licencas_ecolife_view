@@ -57,3 +57,13 @@ export const salvarImagemUsuario = async ({ commit }, dados) => {
     return null
   }
 }
+
+export const editarSenhaUsuario = async ({ commit }, dados) => {
+  try {
+    const res = await axios.post('/usuario/alterar-senha/' + dados.id, dados)
+
+    return res.data
+  } catch (error) {
+    return null
+  }
+}
