@@ -171,7 +171,7 @@ export const editar = async ({ commit }, dados) => {
 
 export const excluir = async ({ commit }, id) => {
   try {
-    const res = await axios.delete('/licenca/' + id)
+    const res = await axios.delete('/processo/' + id)
 
     return res.data
   } catch (error) {
