@@ -363,7 +363,7 @@ export default {
           nome: this.formulario.nome || null,
           cpf: this.formulario.cpf || null,
           senha: this.formulario.senha ? this.$crypto(this.formulario.senha, 'sha256') : undefined,
-          data_nascimento: this.formulario.dataNascimento || null,
+          data_nascimento: this.formulario.dataNascimento ? this.$day(this.formulario.data_nascimento).format('YYYY-MM-DD') : null,
           tipoUsuarioId: this.formulario.tipoUsuarioId || null
         })
         if (res && !res.erro) {
