@@ -17,16 +17,14 @@
       </div>
       <v-spacer />
 
+      <!-- v-if="registrosNotificacoes && registrosNotificacoes.length" -->
       <v-app-bar-nav-icon
-        v-if="registrosNotificacoes && registrosNotificacoes.length"
         class="mx-1"
         title="Notificações do Sistema"
         @click="modalNotificacoes = !modalNotificacoes"
       >
         <v-avatar
-          :color="$vuetify.theme.dark
-            ? ''
-            : 'white'"
+          icon
           size="50"
         >
           <v-icon
@@ -140,7 +138,7 @@
     </v-navigation-drawer>
 
     <v-navigation-drawer
-      v-model="notitifacoesDrawer"
+      v-model="modalNotificacoes"
       :color="$vuetify.theme.dark
         ? ''
         : 'white'"
@@ -170,6 +168,7 @@
         </v-col>
       </v-row>
       <v-divider />
+      Etapa Ainda em Desenvolvimento
       <v-list
         class="mt-2"
         nav
@@ -249,15 +248,15 @@ export default {
   name: 'App',
 
   data: () => ({
-    loading: true,
     perfil: window.atob(localStorage.getItem('umbrella:perfil')),
+    modalNotificacoes: false,
+    loading: true,
     dataAtual: '',
     drawer: false,
     group: null,
     nome: window.atob(localStorage.getItem('umbrella:nome')),
     email: window.atob(localStorage.getItem('umbrella:email')),
     imagemPerfil: null,
-    modalNotificacoes: null,
     enumImportancia: {
       alta: 1,
       media: 2,
