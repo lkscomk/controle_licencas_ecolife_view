@@ -360,6 +360,7 @@ export default {
         this.loading = true
         const res = await this.salvarUsuario({
           id: this.formulario.id || null,
+          email: this.formulario.email || null,
           nome: this.formulario.nome || null,
           cpf: this.formulario.cpf || null,
           senha: this.formulario.senha ? this.$crypto(this.formulario.senha, 'sha256') : undefined,
