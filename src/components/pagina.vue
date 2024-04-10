@@ -73,7 +73,7 @@
             </v-toolbar-title>
             <v-spacer />
             <v-menu
-              v-if="maisOpcoes"
+              v-if="maisOpcoes && maisOpcoes.length"
               offset-y
               left
             >
@@ -154,6 +154,7 @@
         </v-card>
       </v-col>
       <v-col
+        v-if="modal"
         cols="12"
       >
         <slot name="relacionamento" />

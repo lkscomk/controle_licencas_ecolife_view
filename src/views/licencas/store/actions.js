@@ -2,7 +2,7 @@ import axios from '@/plugins/axios_local'
 
 export const buscarDropdownStatusLicencas = async ({ commit }) => {
   try {
-    const res = await axios.get('/sistema/opcoes/7')
+    const res = await axios.get('/sistema/opcoes/6')
 
     if (!res.data.erro) {
       commit('dropdownStatusLicencas', res.data)
@@ -140,7 +140,7 @@ export const listar = async ({ commit }, filtros) => {
 
 export const exibir = async ({ commit }, id) => {
   try {
-    const res = await axios.get('/opcoes/' + id)
+    const res = await axios.get('/licenca/' + id)
 
     return res.data
   } catch (error) {
@@ -166,7 +166,7 @@ export const listarRelacionamento = async ({ commit }, filtros) => {
 
 export const salvar = async ({ commit }, dados) => {
   try {
-    const res = await axios.post('/opcoes', dados)
+    const res = await axios.post('/licenca', dados)
 
     return res.data
   } catch (error) {
@@ -176,7 +176,7 @@ export const salvar = async ({ commit }, dados) => {
 
 export const editar = async ({ commit }, dados) => {
   try {
-    const res = await axios.put('/opcoes/' + dados.id, dados)
+    const res = await axios.put('/licenca/' + dados.id, dados)
 
     return res.data
   } catch (error) {
@@ -186,7 +186,7 @@ export const editar = async ({ commit }, dados) => {
 
 export const excluir = async ({ commit }, id) => {
   try {
-    const res = await axios.delete('/opcoes/' + id)
+    const res = await axios.delete('/licenca/' + id)
 
     return res.data
   } catch (error) {

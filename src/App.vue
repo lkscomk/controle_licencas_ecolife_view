@@ -62,4 +62,6 @@ export default {
   .v-textarea textarea {
     line-height: 1.3rem !important;
   }
+
+  @import './assets/css/app.scss'
 </style>

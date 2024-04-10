@@ -2,13 +2,28 @@
   <pagina
     :loading="loading"
     :modal="modal"
-    subtitulo="Página de Manutenção de Empresas"
-    titulo="Empresas"
+    subtitulo="Página de Manutenção de Empresas/Pessoas"
+    titulo="Empresas/Pessoas"
     :mais-opcoes="formulario.id ? maisOpcoes : null"
     :titulo-formulario="controle.editar ? 'Editar Registro' : controle.inserir ? 'Adicionar Registro' : 'Exibir Registro'"
     @voltar="modal = false, resetFormulario()"
     @excluir="excluirRegistro()"
   >
+    <aviso
+      v-model="aviso.modal"
+      :conteudo="aviso.conteudo"
+      :acao="aviso.acao"
+      @cancelar="aviso = {
+        modal: false,
+        conteudo: '',
+        acao: ''
+      }"
+      @ativarEmpresa="aviso = {
+        modal: false,
+        conteudo: '',
+        acao: ''
+      }, ativarRegistro()"
+    />
     <template slot="listagem">
       <v-form @submit.prevent="''">
         <v-container
@@ -54,10 +69,10 @@
                       >
                         <v-text-field
                           v-model="filtro.cnpj"
-                          v-mask="'##.###.###/####-##'"
+                          v-mask="['###.###.###-##', '##.###.###/####-##']"
                           hide-details
                           dense
-                          label="CNPJ"
+                          label="CNPJ/CPF"
                           outlined
                         />
                       </v-col>
@@ -156,8 +171,17 @@
               <tabela
                 :colunas="colunas"
                 :registros="registros"
+                :paginacao="paginacao"
+                :registros-por-pagina="100"
+                :sort-by-cli="['id']"
+                :sort-desc-cli="true"
+                height-auto
                 exibir
-                @exibir="exibirRegistro($event.id)"
+                class="mt-2"
+                toolbar-grid
+                titulo="Listagem de Empresas"
+                @paginacao="paginacao = $event"
+                @exibir="exibirRegistro($event)"
               />
             </v-col>
           </v-row>
@@ -209,18 +233,18 @@
               >
                 <validation-provider
                   v-slot="{ errors }"
-                  name="CNPJ"
+                  name="CNPJ/CPF"
                   vid="cnpj"
                   rules="required"
                 >
                   <v-text-field
                     v-model="formulario.cnpj"
-                    v-mask="'##.###.###/####-##'"
                     :disabled="controle.exibir"
                     :error-messages="errors"
                     :hide-details="!errors.length"
                     dense
-                    label="CNPJ*"
+                    label="CNPJ/CPF"
+                    class="required"
                     outlined
                   />
                 </validation-provider>
@@ -265,7 +289,8 @@
                     :hide-details="!(errors.length || (formulario.nomeFantasia && formulario.nomeFantasia.length > 0) && !controle.exibir)"
                     :counter="100"
                     dense
-                    label="Nome Fantasia*"
+                    label="Nome Fantasia"
+                    class="required"
                     outlined
                   />
                 </validation-provider>
@@ -291,7 +316,8 @@
                     :hide-details="!(errors.length || (formulario.razaoSocial && formulario.razaoSocial.length > 0) && !controle.exibir)"
                     :counter="100"
                     dense
-                    label="Razão Social*"
+                    label="Razão Social"
+                    class="required"
                     outlined
                   />
                 </validation-provider>
@@ -316,7 +342,8 @@
                     :error-messages="errors"
                     :hide-details="!errors.length"
                     dense
-                    label="Data de Cadastro*"
+                    label="Data de Cadastro"
+                    class="required"
                     outlined
                   />
                 </validation-provider>
@@ -391,7 +418,8 @@
                     dense
                     item-value="item"
                     item-text="descricao"
-                    label="Porte*"
+                    label="Porte"
+                    class="required"
                     outlined
                   />
                 </validation-provider>
@@ -421,7 +449,8 @@
                     :error-messages="errors"
                     :hide-details="!errors.length"
                     dense
-                    label="CEP*"
+                    label="CEP"
+                    class="required"
                     outlined
                   />
                 </validation-provider>
@@ -447,7 +476,8 @@
                     :hide-details="!(errors.length || (formulario.logradouro && formulario.logradouro.length > 0) && !controle.exibir)"
                     :counter="100"
                     dense
-                    label="Logradouro*"
+                    label="Logradouro"
+                    class="required"
                     outlined
                   />
                 </validation-provider>
@@ -472,7 +502,8 @@
                     :error-messages="errors"
                     :hide-details="!errors.length"
                     dense
-                    label="Número*"
+                    label="Número"
+                    class="required"
                     outlined
                   />
                 </validation-provider>
@@ -499,7 +530,8 @@
                     dense
                     item-value="uf"
                     item-text="nome"
-                    label="Estado*"
+                    label="Estado"
+                    class="required"
                     outlined
                   />
                 </validation-provider>
@@ -526,7 +558,8 @@
                     dense
                     item-value="codigo"
                     item-text="nome"
-                    label="Cidade*"
+                    label="Cidade"
+                    class="required"
                     outlined
                   />
                 </validation-provider>
@@ -552,7 +585,8 @@
                     :hide-details="!(errors.length || (formulario.bairro && formulario.bairro.length > 0) && !controle.exibir)"
                     :counter="100"
                     dense
-                    label="Bairro*"
+                    label="Bairro"
+                    class="required"
                     outlined
                   />
                 </validation-provider>
@@ -583,13 +617,13 @@
                   />
                 </validation-provider>
               </v-col>
-
+              <v-col cols="12" />
               <v-col
                 v-if="formulario.id"
-                xl="2"
-                lg="2"
+                xl="3"
+                lg="3"
                 md="3"
-                sm="6"
+                sm="3"
                 cols="12"
               >
                 <v-text-field
@@ -597,16 +631,16 @@
                   disabled
                   hide-details
                   dense
-                  label="Criado Por*"
+                  label="Criado Por"
                   outlined
                 />
               </v-col>
               <v-col
                 v-if="formulario.id"
-                xl="2"
-                lg="2"
+                xl="3"
+                lg="3"
                 md="3"
-                sm="6"
+                sm="3"
                 cols="12"
               >
                 <v-text-field
@@ -614,7 +648,41 @@
                   disabled
                   hide-details
                   dense
-                  label="Criado Em*"
+                  label="Criado Em"
+                  outlined
+                />
+              </v-col>
+              <v-col
+                v-if="formulario.id"
+                xl="3"
+                lg="3"
+                md="3"
+                sm="3"
+                cols="12"
+              >
+                <v-text-field
+                  v-model="formulario.updated_by"
+                  hide-details
+                  disabled
+                  dense
+                  label="Última Alteração Por"
+                  outlined
+                />
+              </v-col>
+              <v-col
+                v-if="formulario.id"
+                xl="3"
+                lg="3"
+                md="3"
+                sm="3"
+                cols="12"
+              >
+                <v-text-field
+                  v-model="formulario.updated_at"
+                  hide-details
+                  disabled
+                  dense
+                  label="Última Alteração Em"
                   outlined
                 />
               </v-col>
@@ -625,6 +693,23 @@
     </template>
 
     <template slot="botoes">
+      <v-btn
+        v-if="formulario.id && formulario.status === enumStatusEmpresas.digitacao && controle.exibir"
+        :block="$vuetify.breakpoint.xsOnly"
+        :class="$vuetify.breakpoint.xsOnly ? 'my-1' : 'mx-1'"
+        color="warning"
+        small
+        @click="
+          aviso = { modal: true, conteudo: 'Após Ativado, não será possível EDITAR qualquer informação dessa empresa/pessoa. Deseja continuar?', acao: 'ativarEmpresa'}"
+      >
+        <v-icon
+          left
+          size="20"
+        >
+          mdi-check
+        </v-icon>
+        Ativar Registro
+      </v-btn>
       <v-btn
         v-if="!!(!controle.exibir && (controle.inserir || controle.editar))"
         :block="$vuetify.breakpoint.xsOnly"
@@ -642,7 +727,7 @@
         Salvar
       </v-btn>
       <v-btn
-        v-if="!!(controle.exibir && !controle.inserir)"
+        v-if="!!(controle.exibir && !controle.inserir) && formulario.status === enumStatusEmpresas.digitacao"
         :block="$vuetify.breakpoint.xsOnly"
         :class="$vuetify.breakpoint.xsOnly ? 'my-1' : 'mx-1'"
         color="success"
@@ -678,12 +763,18 @@
 
 <script>
 import { mapActions, mapState } from 'vuex'
+import { filter } from 'vue-input-facade'
 
 export default {
   name: 'PaginaEmpresas',
   data: () => ({
     loading: false,
     perfil: window.atob(localStorage.getItem('umbrella:perfil')),
+    aviso: {
+      modal: false,
+      conteudo: '',
+      acao: ''
+    },
     colunas: [
       {
         text: 'Ação',
@@ -694,13 +785,13 @@ export default {
       {
         text: 'Código',
         align: 'start',
-        sortable: false,
+        sortable: true,
         value: 'id'
       },
       {
-        text: 'CNPJ',
+        text: 'CNPJ/CPF',
         align: 'start',
-        sortable: false,
+        sortable: true,
         value: 'cnpj'
       },
       {
@@ -712,36 +803,38 @@ export default {
       {
         text: 'Nome Fantasia',
         align: 'start',
-        sortable: false,
+        sortable: true,
         value: 'nome_fantasia'
       },
       {
         text: 'Razão Social',
         align: 'start',
-        sortable: false,
+        sortable: true,
         value: 'razao_social'
       },
       {
         text: 'Data Cadastro',
         align: 'start',
-        sortable: false,
+        sortable: true,
         value: 'data_cadastro'
       },
       {
         text: 'Cidade',
         align: 'start',
-        sortable: false,
+        sortable: true,
         value: 'cidade'
       },
       {
         text: 'Porte',
         align: 'start',
-        sortable: false,
+        sortable: true,
         value: 'porte_descricao'
-      }
+      },
+      {}
     ],
     enumStatusEmpresas: {
-      digitacao: 1
+      digitacao: 1,
+      ativa: 2
     },
     filtro: {
       id: null,
@@ -775,7 +868,14 @@ export default {
       complemento: null,
       bairro: null,
       created_at: null,
-      created_by: null
+      created_by: null,
+      updated_at: null,
+      updated_by: null
+    },
+    paginacao: {
+      pagina: 1,
+      registros: 100,
+      totalRegistros: 0
     },
     modal: false
   }),
@@ -811,14 +911,17 @@ export default {
       }
     },
     maisOpcoes () {
-      return [
-        {
+      const acoes = []
+      if (this.formulario.status === this.enumStatusEmpresas.digitacao && this.formulario.id) {
+        acoes.push({
           acao: 'excluir',
           color: 'error',
           icone: 'mdi-delete',
           titulo: 'Excluir'
-        }
-      ]
+        })
+      }
+
+      return acoes
     }
   },
   watch: {
@@ -839,6 +942,7 @@ export default {
       'exibir',
       'editar',
       'salvar',
+      'ativar',
       'excluir',
       'buscarDropdownPortesEmpresa',
       'buscarDropdownStatusEmpresa',
@@ -861,10 +965,11 @@ export default {
     async exibirRegistro (id) {
       this.loading = true
       const res = await this.exibir(id)
+      window.console.log(res.cnpj ? (String(res.cnpj).length <= 11 ? String(res.cnpj).padStart(11, '0') : String(res.cnpj).padStart(14, '0')) : '-')
       if (res && !res.erro) {
         this.formulario = {
           id: res.id || null,
-          cnpj: res.cnpj || null,
+          cnpj: res.cnpj ? (String(res.cnpj).length <= 11 ? filter(String(res.cnpj).padStart(11, '0'), ['###.###.###-##']) : filter(String(res.cnpj).padStart(14, '0'), ['##.###.###/####-##'])) : '-',
           status: res.status_empresa_id || null,
           nomeFantasia: res.nome_fantasia || null,
           razaoSocial: res.razao_social || null,
@@ -878,9 +983,11 @@ export default {
           complemento: res.complemento || null,
           bairro: res.bairro || null,
           estado: res.estado || null,
-          cidade: res.cidade ? Number(res.cidade) : null,
+          cidade: res.cidade || null,
           created_by: res.created_by || null,
-          created_at: res.created_at ? this.$day(res.created_at).format('DD/MM/YYYY HH:mm:ss') : null
+          created_at: res.created_at ? this.$day(res.created_at).format('DD/MM/YYYY HH:mm:ss') : null,
+          updated_at: res.updated_at ? this.$day(res.updated_at).format('DD/MM/YYYY HH:mm:ss') : null,
+          updated_by: res.updated_by || null
         }
       }
       this.modal = true
@@ -934,6 +1041,15 @@ export default {
       }
       this.loading = false
     },
+    async ativarRegistro () {
+      this.loading = true
+      const res = await this.ativar(this.formulario.id)
+      if (res && !res.erro) {
+        this.modal = false
+        this.exibirRegistro(this.formulario.id)
+      }
+      this.loading = false
+    },
     resetFormulario () {
       this.$refs.observer.reset()
       this.formulario = {
@@ -954,7 +1070,9 @@ export default {
         complemento: null,
         bairro: null,
         created_at: null,
-        created_by: null
+        created_by: null,
+        updated_at: null,
+        updated_by: null
       }
       this.controle = {
         exibir: false,
@@ -974,6 +1092,7 @@ export default {
         razaoSocial: null,
         porte: []
       }
+      this.listarRegistro()
     }
   }
 }

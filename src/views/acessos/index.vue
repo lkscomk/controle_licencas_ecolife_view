@@ -54,7 +54,6 @@
                       >
                         <v-text-field
                           v-model="filtro.nome"
-                          v-uppercase
                           hide-details
                           dense
                           label="Nome"
@@ -70,8 +69,17 @@
               <tabela
                 :colunas="colunas"
                 :registros="registros"
+                :paginacao="paginacao"
+                :registros-por-pagina="100"
+                :sort-by-cli="['id']"
+                :sort-desc-cli="true"
+                height-auto
                 exibir
-                @exibir="exibirRegistro($event.id)"
+                class="mt-2"
+                toolbar-grid
+                titulo="Listagem de Telas"
+                @paginacao="paginacao = $event"
+                @exibir="exibirRegistro($event)"
               />
             </v-col>
           </v-row>
@@ -109,7 +117,6 @@
                 >
                   <v-text-field
                     v-model="formulario.nome"
-                    v-uppercase
                     :disabled="controle.exibir"
                     :error-messages="errors"
                     :hide-details="!errors.length"
@@ -237,54 +244,66 @@
       </v-btn>
     </template>
     <template
-      v-if="formulario.id"
       slot="relacionamento"
     >
-      <v-container
-        v-if="formulario.id"
-        class="my-2 py-0"
-        fluid
+      <v-card
+        class="ma-2 elevation-0"
+        outlined
       >
-        <v-row dense>
-          <v-col
-            class="body-2 font-weight-bold"
-            cols="12"
-          >
-            Quem pode ter acesso a essa tela?
-          </v-col>
-          <v-col cols="3">
-            <v-autocomplete
-              v-model="formularioRelacionamento.tipoUsuario"
-              :items="dropdownGrupos"
-              hide-details
-              dense
-              item-value="item"
-              item-text="descricao"
-              label="Tipo Usuário"
-              outlined
-            />
-          </v-col>
-          <v-col cols="3">
-            <v-btn
-              v-if="controle.exibir || controle.editar"
-              color="primary"
-              @click="salvarRegistroTipos()"
+        <v-container
+          class="my-2 py-0"
+          fluid
+        >
+          <v-row dense>
+            <v-col
+              class="body-2 font-weight-bold"
+              cols="12"
             >
-              Adicionar
-            </v-btn>
-          </v-col>
-          <v-col
-            cols="12"
-          >
-            <tabela
-              :colunas="colunasTipo"
-              :registros="registrosTipo"
-              excluir
-              @excluir="excluirRegistroTipos($event.id)"
-            />
-          </v-col>
-        </v-row>
-      </v-container>
+              Quem pode ter acesso a essa tela?
+            </v-col>
+            <v-col cols="3">
+              <v-autocomplete
+                v-model="formularioRelacionamento.tipoUsuario"
+                :items="dropdownGrupos"
+                hide-details
+                dense
+                item-value="item"
+                item-text="descricao"
+                label="Tipo Usuário"
+                outlined
+              />
+            </v-col>
+            <v-col cols="3">
+              <v-btn
+                v-if="controle.exibir || controle.editar"
+                color="primary"
+                @click="salvarRegistroTipos()"
+              >
+                Adicionar
+              </v-btn>
+            </v-col>
+            <v-col
+              cols="12"
+            >
+              <tabela
+                :colunas="colunasTipo"
+                :registros="registrosTipo"
+                :paginacao="paginacaoTipos"
+                :registros-por-pagina="100"
+                :sort-by-cli="['id']"
+                :sort-desc-cli="true"
+                height-auto
+                excluir
+                class="mt-2"
+                toolbar-grid
+                titulo="Listagem de Tipos"
+                @paginacao="paginacaoTipos = $event"
+                @excluir="excluirRegistroTipos($event)"
+              />
+            </v-col>
+          </v-row>
+        </v-container>
+      </v-card>
     </template>
   </pagina>
 </template>
@@ -405,7 +424,17 @@ export default {
       tipoUsuario: null
     },
     modal: false,
-    modalAdicionar: false
+    modalAdicionar: false,
+    paginacao: {
+      pagina: 1,
+      registros: 100,
+      totalRegistros: 0
+    },
+    paginacaoTipos: {
+      pagina: 1,
+      registros: 100,
+      totalRegistros: 0
+    }
   }),
   computed: {
     ...mapState('acessos', [
@@ -537,9 +566,9 @@ export default {
       }
       this.loading = false
     },
-    async excluirRegistroTipos (id) {
+    async excluirRegistroTipos (registro) {
       this.loading = true
-      const res = await this.excluirTiposAcesso(id)
+      const res = await this.excluirTiposAcesso(registro.id)
       if (res && !res.erro) {
         this.listarRegistroTipos()
         await this.buscarAcessos(this.perfil)

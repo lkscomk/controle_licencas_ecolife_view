@@ -56,7 +56,7 @@ export const buscarPathImagem = async ({ commit }, id) => {
 }
 export const buscarNotificacoes = async ({ commit }, params) => {
   try {
-    const res = await axios.get('/notificacoes/', {
+    const res = await axios.get('/sistema/notificacoes', {
       params
     })
 

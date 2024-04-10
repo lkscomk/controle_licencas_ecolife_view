@@ -193,7 +193,7 @@
               style="cursor: pointer;"
               class="pl-1 ml-0 cardNotificacao"
               :style="{
-                borderLeft: '8px solid '+ (!notificacao.importancia ? '' : +notificacao.importancia === $opcao74.importancia.Baixa ? '#2979FF' : +notificacao.importancia === $opcao74.importancia.Normal ? '#F2C037' : '#eb2f06') +' !important',
+                borderLeft: '8px solid '+ (!notificacao.importancia ? '' : +notificacao.importancia === 1 ? '#2979FF' : +notificacao.importancia === 2 ? '#F2C037' : '#eb2f06') +' !important',
               }"
               @click="openUrlNew(notificacao.detail)"
             >
@@ -282,7 +282,7 @@ export default {
     }, 200)
     setTimeout(async () => {
       await this.buscarAcessos(this.perfil)
-      // await this.buscarImagem()
+      // this.buscarNotificacoesRegistros()
     }, 200)
   },
 
@@ -320,6 +320,16 @@ export default {
       if (res && !res.erro) {
         window.console.log(res)
       }
+    },
+    openUrlNew (valor) {
+      // const param = this.$route.fullPath
+      // window.console.log(this.$route)
+      this.$router.replace({
+        name: 'TelaLicencas',
+        query: {
+          id: window.btoa(JSON.stringify(valor))
+        }
+      })
     },
     atualizarData () {
       this.dataAtual = this.$day().format('dddd - DD - MMMM - YYYY HH:mm:ss')
