@@ -14,6 +14,19 @@ export const buscarDropdownStatusLicencas = async ({ commit }) => {
   }
 }
 
+export const buscarDropdownPorteLicencas = async ({ commit }, grupo) => {
+  try {
+    const res = await axios.get('/sistema/opcoes/7')
+
+    if (!res.data.erro) {
+      commit('dropdownPorteLicencas', res.data)
+    }
+
+    return res.data
+  } catch (error) {
+    return null
+  }
+}
 export const buscarDropdownTiposLicencas = async ({ commit }, grupo) => {
   try {
     const res = await axios.get('/sistema/opcoes/3')

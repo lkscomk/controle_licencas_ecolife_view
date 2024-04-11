@@ -1,4 +1,7 @@
 export default {
+  setRegistrosAnexos (state, param) {
+    state.registrosAnexos = param
+  },
   acessos_usuario (state, param) {
     state.acessos_usuario = param
   },

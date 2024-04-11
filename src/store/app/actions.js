@@ -54,6 +54,7 @@ export const buscarPathImagem = async ({ commit }, id) => {
     return null
   }
 }
+
 export const buscarNotificacoes = async ({ commit }, params) => {
   try {
     const res = await axios.get('/sistema/notificacoes', {
@@ -65,6 +66,47 @@ export const buscarNotificacoes = async ({ commit }, params) => {
     }
 
     return res.data
+  } catch (error) {
+    return null
+  }
+}
+
+export const listarAnexos = async ({ commit }, params) => {
+  try {
+    const res = await axios.get('/anexos', {
+      params
+    })
+
+    if (!res.data.erro) {
+      commit('setRegistrosAnexos', res.data)
+    }
+
+    return res.data
+  } catch (error) {
+    return null
+  }
+}
+
+export const exibirAnexo = async ({ commit }, arquivo) => {
+  try {
+    const res = await axios.get('/anexos/download/' + arquivo, {
+      responseType: 'arraybuffer'
+    })
+
+    return res.data
+  } catch (error) {
+    return null
+  }
+}
+
+export const salvarAnexo = async ({ state }, params) => {
+  try {
+    const res = await axios.post('/anexos', params, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    })
+    return res
   } catch (error) {
     return null
   }

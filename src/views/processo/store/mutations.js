@@ -10,6 +10,9 @@ export default {
     })
     state.registrosEmpresas = param
   },
+  dropdownPorteLicencas (state, param) {
+    state.dropdownPorteLicencas = param
+  },
   dropdownPortesEmpresa (state, param) {
     state.dropdownPortesEmpresa = param
   },
@@ -37,7 +40,6 @@ export default {
       element.status = { chip: true, color: element.status_cor, text: element.status_descricao }
       element.cnpj = element.cnpj ? (String(element.cnpj).length <= 11 ? filter(String(element.cnpj).padStart(11, '0'), ['###.###.###-##']) : filter(String(element.cnpj).padStart(14, '0'), ['##.###.###/####-##'])) : '-'
       element.processo = filter(element.processo, ['##.#####.##/####'])
-      element.data_vencimento = element.data_vencimento ? day(element.data_vencimento).format('DD/MM/YYYY') : null
       element.created_at = element.created_at ? day(element.created_at).format('DD/MM/YYYY HH:mm:ss') : null
     })
     state.registros = param
@@ -46,6 +48,7 @@ export default {
     param.forEach(element => {
       element.tipo = { chip: true, color: element.tipo_cor, text: element.tipo_descricao }
       element.status = { chip: true, color: element.status_cor, text: element.status_descricao }
+      element.data_saida = element.data_saida ? day(element.data_saida).format('DD/MM/YYYY') : null
       element.data_vencimento = element.data_vencimento ? day(element.data_vencimento).format('DD/MM/YYYY') : null
       element.created_at = element.created_at ? day(element.created_at).format('DD/MM/YYYY HH:mm:ss') : null
     })

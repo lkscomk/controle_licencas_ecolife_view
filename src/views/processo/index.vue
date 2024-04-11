@@ -53,7 +53,7 @@
                       >
                         <v-text-field
                           v-model="filtro.cnpj"
-                          v-mask="['###.###.###-##', '##.###.###/####-##']"
+                          v-mask="['##.###.###/####-##', '###.###.###-##']"
                           hide-details
                           dense
                           label="CNPJ/CPF"
@@ -163,7 +163,7 @@
                     v-mask="'##.#####.##/####'"
                     :error-messages="errors"
                     :hide-details="!errors.length"
-                    :disabled="controle.exibir"
+                    :disabled="!controle.inserir"
                     dense
                     label="Processo"
                     class="required"
@@ -308,7 +308,7 @@
               >
                 <v-text-field
                   v-model="formulario.cnpj"
-                  v-mask="['###.###.###-##', '##.###.###/####-##']"
+                  v-mask="['##.###.###/####-##', '###.###.###-##']"
                   disabled
                   hide-details
                   dense
@@ -799,6 +799,27 @@
             </v-list-item-title>
           </v-list-item-content>
         </v-list-item>
+        <v-list-item
+          @click="formularioAnexo = {
+            value: true,
+            titulo: 'Anexos da Licença',
+            tabela: 'licenca',
+            tabelaId: formularioLicenca.id,
+            tipoGrupoId: 8,
+            subTipoGrupoId: 1
+          }"
+        >
+          <v-list-item-icon class="mr-3">
+            <v-icon :color="'primary'">
+              mdi-delete
+            </v-icon>
+          </v-list-item-icon>
+          <v-list-item-content>
+            <v-list-item-title>
+              Anexos
+            </v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
       </template>
       <template slot="botoes">
         <v-btn
@@ -876,9 +897,9 @@
                   />
                 </v-col>
                 <v-col
-                  :xl="formularioLicenca.id ? 2 : 3"
-                  :lg="formularioLicenca.id ? 2 : 3"
-                  :md="formularioLicenca.id ? 2 : 3"
+                  :xl="formularioLicenca.id ? 1 : 2"
+                  :lg="formularioLicenca.id ? 1 : 2"
+                  :md="formularioLicenca.id ? 1 : 2"
                   sm="4"
                   cols="12"
                 >
@@ -920,9 +941,37 @@
                   />
                 </v-col>
                 <v-col
-                  xl="3"
-                  lg="3"
-                  md="3"
+                  xl="2"
+                  lg="2"
+                  md="2"
+                  sm="12"
+                  cols="12"
+                >
+                  <validation-provider
+                    v-slot="{ errors }"
+                    name="Porte Licença"
+                    rules="required"
+                    vid="porte_licenca_id"
+                  >
+                    <v-autocomplete
+                      v-model="formularioLicenca.porte_licenca_id"
+                      :items="dropdownPorteLicencas"
+                      :error-messages="errors"
+                      :hide-details="!errors.length"
+                      :disabled="controleLicenca.exibir"
+                      dense
+                      class="required"
+                      item-value="item"
+                      item-text="descricao"
+                      label="Porte Licença"
+                      outlined
+                    />
+                  </validation-provider>
+                </v-col>
+                <v-col
+                  xl="2"
+                  lg="2"
+                  md="2"
                   sm="12"
                   cols="12"
                 >
@@ -1102,6 +1151,16 @@
         </v-form>
       </template>
     </modal>
+
+    <anexo
+      :value="formularioAnexo.value"
+      :titulo="formularioAnexo.titulo"
+      :tabela="formularioAnexo.tabela"
+      :tabela-id="formularioAnexo.tabelaId"
+      :tipo-grupo-id="formularioAnexo.tipoGrupoId"
+      :subtipo-grupo-id="formularioAnexo.subTipoGrupoId"
+      @fechar="resetFormularioAnexo"
+    />
   </pagina>
 </template>
 
@@ -1141,10 +1200,22 @@ export default {
         value: 'status'
       },
       {
+        text: 'Porte',
+        align: 'start',
+        sortable: false,
+        value: 'porte_descricao'
+      },
+      {
         text: 'Tipo',
         align: 'start',
         sortable: false,
         value: 'tipo'
+      },
+      {
+        text: 'Data Saída',
+        align: 'start',
+        sortable: false,
+        value: 'data_saida'
       },
       {
         text: 'Data Vencimento',
@@ -1323,6 +1394,7 @@ export default {
       id: null,
       licenca: null,
       status_licenca_id: null,
+      porte_licenca_id: null,
       tipo_licenca_id: null,
       data_vencimento: null,
       data_saida: null,
@@ -1331,6 +1403,14 @@ export default {
       created_by: null,
       updated_at: null,
       updated_by: null
+    },
+    formularioAnexo: {
+      value: false,
+      titulo: null,
+      tabela: null,
+      tabelaId: null,
+      tipoGrupoId: null,
+      subTipoGrupoId: null
     },
     enumStatusLicenca: {
       digitacao: 1
@@ -1354,7 +1434,7 @@ export default {
       registros: 100,
       totalRegistros: 0
     },
-    modal: false
+    modal: false,
   }),
   computed: {
     ...mapState('processo', [
@@ -1362,6 +1442,7 @@ export default {
       'registrosLicencas',
       'registrosEmpresas',
       'dropdownStatusLicencas',
+      'dropdownPorteLicencas',
       'dropdownTiposLicencas',
       'dropdownStatusEmpresa',
       'dropdownPortesEmpresa',
@@ -1446,6 +1527,7 @@ export default {
       this.filtro.id = this.$route.query.id
     }
     await this.buscarDropdownTiposLicencas()
+    await this.buscarDropdownPorteLicencas()
     await this.buscarDropdownStatusLicencas()
     await this.buscarDropdownPortesEmpresa()
     await this.buscarDropdownStatusEmpresa()
@@ -1467,6 +1549,7 @@ export default {
       'excluir',
       'buscarDropdownStatusLicencas',
       'buscarDropdownTiposLicencas',
+      'buscarDropdownPorteLicencas',
 
       'listarEmpresas',
       'exibirEmpresas',
@@ -1580,6 +1663,7 @@ export default {
           updated_by: res.updated_by || null,
           licenca: res.licenca || null,
           status_licenca_id: res.status_licenca_id || null,
+          porte_licenca_id: res.porte_licenca_id || null,
           tipo_licenca_id: res.tipo_licenca_id || null,
           data_vencimento: res.data_vencimento ? this.$day(res.data_vencimento).format('DD/MM/YYYY') : null,
           data_saida: res.data_saida ? this.$day(res.data_saida).format('DD/MM/YYYY') : null
@@ -1605,6 +1689,7 @@ export default {
           id: this.formularioLicenca.id || null,
           processo_id: this.formulario.id || null,
           licenca: this.formularioLicenca.licenca || null,
+          porte_licenca_id: this.formularioLicenca.porte_licenca_id || null,
           tipo_licenca_id: this.formularioLicenca.tipo_licenca_id || null,
           data_vencimento: this.formularioLicenca.data_vencimento ? this.$day(this.formularioLicenca.data_vencimento, 'DD/MM/YYYY').format('YYYY-MM-DD') : null,
           data_saida: this.formularioLicenca.data_saida ? this.$day(this.formularioLicenca.data_saida, 'DD/MM/YYYY').format('YYYY-MM-DD') : null,
@@ -1706,6 +1791,7 @@ export default {
         id: null,
         licenca: null,
         status_licenca_id: null,
+        porte_licenca_id: null,
         tipo_licenca_id: null,
         data_vencimento: null,
         data_saida: null,
@@ -1737,6 +1823,16 @@ export default {
         inserir: false
       }
       this.listarLicencasRegistros()
+    },
+    resetFormularioAnexo () {
+      this.formularioAnexo = {
+        value: false,
+        titulo: null,
+        tabela: null,
+        tabelaId: null,
+        tipoGrupoId: null,
+        subTipoGrupoId: null
+      }
     },
     limparFiltros () {
       this.filtro = {

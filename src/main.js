@@ -17,6 +17,7 @@ import Vupper from '@/plugins/uppercase'
 Vue.config.productionTip = false
 
 Vue.component('selecao-all', () => import('./components/selecao-all'))
+Vue.component('anexo', () => import('./components/anexo'))
 Vue.component('modal', () => import('./components/modal'))
 Vue.component('aviso', () => import('./components/aviso'))
 Vue.component('notificacao', () => import('./components/notificacao'))
