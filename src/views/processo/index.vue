@@ -1606,8 +1606,8 @@ export default {
           processo_id: this.formulario.id || null,
           licenca: this.formularioLicenca.licenca || null,
           tipo_licenca_id: this.formularioLicenca.tipo_licenca_id || null,
-          data_vencimento: this.formularioLicenca.data_vencimento || null,
-          data_saida: this.formularioLicenca.data_saida || null,
+          data_vencimento: this.formularioLicenca.data_vencimento ? this.$day(this.formularioLicenca.data_vencimento, 'DD/MM/YYYY').format('YYY-MM-DD') : null,
+          data_saida: this.formularioLicenca.data_saida ? this.$day(this.formularioLicenca.data_saida, 'DD/MM/YYYY').format('YYY-MM-DD') : null,
           observacao: this.formularioLicenca.observacao || null
         }
 
