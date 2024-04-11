@@ -2,6 +2,11 @@
   "name": "ecolife_erp",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "yarn": "1.22.0",
+    "node": "14.20.0",
+    "npm": "6.14.17"
+  },
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
