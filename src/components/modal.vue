@@ -49,11 +49,11 @@
             </v-btn>
           </template>
           <v-list
-            v-if="maisOpcoes && maisOpcoes.length"
+            v-if="maisOpcoes"
             class="pa-0"
             dense
           >
-            <v-list-item
+            <!-- <v-list-item
               v-for="(opcao, i) in maisOpcoes"
               :key="i"
               :disabled="!!opcao.disabled"
@@ -69,12 +69,12 @@
                   {{ opcao.titulo }}
                 </v-list-item-title>
               </v-list-item-content>
-            </v-list-item>
+            </v-list-item> -->
+            <slot name="maisOpcoes" />
           </v-list>
-          <slot name="maisOpcoes" />
         </v-menu>
       </v-toolbar>
-      <v-card-text class="mt-4">
+      <v-card-text class="mt-3 pt-1">
         <slot />
       </v-card-text>
       <v-card-actions class="justify-end">

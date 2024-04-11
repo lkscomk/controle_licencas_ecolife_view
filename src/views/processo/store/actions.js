@@ -197,42 +197,42 @@ export const listarLicencas = async ({ commit }, filtros) => {
   }
 }
 
-// export const exibir = async ({ commit }, id) => {
-//   try {
-//     const res = await axios.get('/processo/' + id)
+export const exibirLicenca = async ({ commit }, id) => {
+  try {
+    const res = await axios.get('/licenca/' + id)
 
-//     return res.data
-//   } catch (error) {
-//     return null
-//   }
-// }
+    return res.data
+  } catch (error) {
+    return null
+  }
+}
 
-// export const salvar = async ({ commit }, dados) => {
-//   try {
-//     const res = await axios.post('/licenca', dados)
+export const salvarLicenca = async ({ commit }, dados) => {
+  try {
+    const res = await axios.post('/licenca', dados)
 
-//     return res.data
-//   } catch (error) {
-//     return null
-//   }
-// }
+    return res.data
+  } catch (error) {
+    return null
+  }
+}
 
-// export const editar = async ({ commit }, dados) => {
-//   try {
-//     const res = await axios.put('/licenca/' + dados.id, dados)
+export const editarLicenca = async ({ commit }, dados) => {
+  try {
+    const res = await axios.put('/licenca/' + dados.id, dados)
 
-//     return res.data
-//   } catch (error) {
-//     return null
-//   }
-// }
+    return res.data
+  } catch (error) {
+    return null
+  }
+}
 
-// export const excluir = async ({ commit }, id) => {
-//   try {
-//     const res = await axios.delete('/licenca/' + id)
+export const excluirLicenca = async ({ commit }, id) => {
+  try {
+    const res = await axios.delete('/licenca/' + id)
 
-//     return res.data
-//   } catch (error) {
-//     return null
-//   }
-// }
+    return res.data
+  } catch (error) {
+    return null
+  }
+}

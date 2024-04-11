@@ -486,107 +486,93 @@
       </v-form>
     </template>
 
-    <template slot="relacionamento">
+    <template
+      v-if="formulario.id"
+      slot="relacionamento"
+    >
       <v-card
         class="elevation-0 ma-2 pa-2"
         outlined
       >
         <v-form @submit.prevent="''">
-          <validation-observer ref="observer">
-            <v-container
-              fluid
-              grid-list-xs
-            >
-              <v-row dense>
-                <v-col
-                  xl="8"
-                  lg="8"
-                  md="7"
-                  sm="6"
-                  cols="12"
+          <v-container
+            fluid
+            grid-list-xs
+          >
+            <v-row dense>
+              <v-col
+                xl="8"
+                lg="8"
+                md="7"
+                sm="6"
+                cols="12"
+              >
+                Listagem de Licenças
+              </v-col>
+              <v-col
+                xl="1"
+                lg="1"
+                md="1"
+                sm="1"
+                cols="12"
+              >
+                <v-btn
+                  small
+                  block
+                  color="primary"
+                  @click="listarLicencasRegistros()"
                 >
-                  Listagem de Licenças
-                </v-col>
-                <v-col
-                  xl="1"
-                  lg="1"
-                  md="1"
-                  sm="1"
-                  cols="12"
+                  <v-icon dark>
+                    mdi-refresh
+                  </v-icon>
+                </v-btn>
+              </v-col>
+              <v-col
+                xl="3"
+                lg="3"
+                md="4"
+                sm="5"
+                cols="12"
+              >
+                <v-btn
+                  small
+                  block
+                  color="primary"
+                  @click="modalLicenca = true, controleLicenca.inserir = true, formularioLicenca.status_licenca_id = enumStatusLicenca.digitacao"
                 >
-                  <v-btn
-                    small
-                    block
-                    color="primary"
-                    @click="listarLicencasRegistros()"
-                  >
-                    <v-icon dark>
-                      mdi-refresh
-                    </v-icon>
-                  </v-btn>
-                </v-col>
-                <v-col
-                  xl="3"
-                  lg="3"
-                  md="4"
-                  sm="5"
-                  cols="12"
-                >
-                  <v-btn
-                    small
-                    block
-                    color="primary"
-                    @click="modalLicenca = true, controleLicenca.inserir = true, formularioLicenca.status_licenca_id === enumStatusLicenca.digitacao"
-                  >
-                    <v-icon dark>
-                      mdi-plus
-                    </v-icon>
-                    Adicionar Nova Licença
-                  </v-btn>
-                </v-col>
-                <v-col
-                  xl="12"
-                  lg="12"
-                  md="12"
-                  sm="12"
-                  cols="12"
-                >
-                  <tabela
-                    :colunas="colunasLicencas"
-                    :registros="registrosLicencas"
-                    :paginacao="paginacaoLicencas"
-                    :registros-por-pagina="100"
-                    :sort-by-cli="['id']"
-                    :sort-desc-cli="true"
-                    height-auto
-                    exibir
-                    @paginacao="paginacaoLicencas = $event"
-                  />
-                </v-col>
-              </v-row>
-            </v-container>
-          </validation-observer>
+                  <v-icon dark>
+                    mdi-plus
+                  </v-icon>
+                  Adicionar Nova Licença
+                </v-btn>
+              </v-col>
+              <v-col
+                xl="12"
+                lg="12"
+                md="12"
+                sm="12"
+                cols="12"
+              >
+                <tabela
+                  :colunas="colunasLicencas"
+                  :registros="registrosLicencas"
+                  :paginacao="paginacaoLicencas"
+                  :registros-por-pagina="100"
+                  :sort-by-cli="['id']"
+                  :sort-desc-cli="true"
+                  height-auto
+                  exibir
+                  @paginacao="paginacaoLicencas = $event"
+                  @exibir="exibirLicencaRegistro($event), modalLicenca = true"
+                />
+              </v-col>
+            </v-row>
+          </v-container>
         </v-form>
       </v-card>
     </template>
 
     <template slot="botoes">
-      <v-btn
-        v-if="formulario.id"
-        :block="$vuetify.breakpoint.xsOnly"
-        :class="$vuetify.breakpoint.xsOnly ? 'my-1' : 'mx-1'"
-        color="warning"
-        small
-        @click="$notificacao('Fluxo ainda em desenvolvimento', 'erro')"
-      >
-        <v-icon
-          left
-          size="20"
-        >
-          mdi-text
-        </v-icon>
-        Gerar RMAs
-      </v-btn>
       <v-btn
         v-if="!!(!controle.exibir && (controle.inserir || controle.editar))"
         :block="$vuetify.breakpoint.xsOnly"
@@ -790,13 +776,30 @@
         </v-form>
       </template>
     </modal>
+
     <modal
       v-model="modalLicenca"
       width="100%"
       :titulo="'Licença'"
-      :mais-opcoes="false"
+      :mais-opcoes="!!formularioLicenca.id"
       @fechar="resetModalLicenca()"
     >
+      <template slot="maisOpcoes">
+        <v-list-item
+          @click="excluirLicencaRegistro()"
+        >
+          <v-list-item-icon class="mr-3">
+            <v-icon :color="'error'">
+              mdi-delete
+            </v-icon>
+          </v-list-item-icon>
+          <v-list-item-content>
+            <v-list-item-title>
+              Excluir Licença
+            </v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+      </template>
       <template slot="botoes">
         <v-btn
           v-if="formularioLicenca.id"
@@ -849,237 +852,253 @@
       </template>
       <template>
         <v-form @submit.prevent="''">
-          <v-container
-            class="ma-0 pa-0"
-            fluid
-          >
-            <v-row dense>
-              <v-col
-                v-if="formularioLicenca.id"
-                xl="2"
-                lg="2"
-                md="2"
-                sm="2"
-                cols="12"
-              >
-                <v-text-field
-                  v-model="formularioLicenca.id"
-                  hide-details
-                  disabled
-                  dense
-                  label="Código Licença"
-                  outlined
-                />
-              </v-col>
-              <v-col
-                xl="2"
-                lg="2"
-                md="2"
-                sm="4"
-                cols="12"
-              >
-                <validation-provider
-                  v-slot="{ errors }"
-                  name="Licença"
-                  rules="required"
-                  vid="licenca"
+          <validation-observer ref="observerLicenca">
+            <v-container
+              class="ma-0 pa-0"
+              fluid
+            >
+              <v-row dense>
+                <v-col
+                  v-show="formularioLicenca.id"
+                  xl="1"
+                  lg="1"
+                  md="1"
+                  sm="4"
+                  cols="12"
                 >
                   <v-text-field
-                    v-model="formulario.licenca"
-                    :disabled="controleLicenca.exibir"
-                    :error-messages="errors"
-                    :hide-details="errors.length"
+                    v-model="formularioLicenca.id"
+                    hide-details
+                    disabled
                     dense
-                    label="Licença"
-                    class="required"
+                    label="Código Licença"
                     outlined
                   />
-                </validation-provider>
-              </v-col>
-              <v-col
-                xl="3"
-                lg="3"
-                md="5"
-                sm="8"
-                cols="12"
-              >
-                <v-autocomplete
-                  v-model="formularioLicenca.status_licenca_id"
-                  :items="dropdownPortesEmpresa"
-                  hide-details
-                  disabled
-                  dense
-                  item-value="item"
-                  item-text="descricao"
-                  label="Status"
-                  outlined
-                />
-              </v-col>
-              <v-col
-                xl="3"
-                lg="3"
-                md="5"
-                sm="8"
-                cols="12"
-              >
-                <validation-provider
-                  v-slot="{ errors }"
-                  name="Tipo Licença"
-                  rules="required"
-                  vid="tipo_licenca_id"
+                </v-col>
+                <v-col
+                  :xl="formularioLicenca.id ? 2 : 3"
+                  :lg="formularioLicenca.id ? 2 : 3"
+                  :md="formularioLicenca.id ? 2 : 3"
+                  sm="4"
+                  cols="12"
+                >
+                  <validation-provider
+                    v-slot="{ errors }"
+                    name="Licença"
+                    rules="required"
+                    vid="licenca"
+                  >
+                    <v-text-field
+                      v-model="formularioLicenca.licenca"
+                      :disabled="controleLicenca.exibir"
+                      :error-messages="errors"
+                      :hide-details="!errors.length"
+                      dense
+                      label="Licença"
+                      class="required"
+                      outlined
+                    />
+                  </validation-provider>
+                </v-col>
+                <v-col
+                  xl="2"
+                  lg="2"
+                  md="2"
+                  sm="4"
+                  cols="12"
                 >
                   <v-autocomplete
-                    v-model="formularioLicenca.tipo_licenca_id"
-                    :items="dropdownPortesEmpresa"
-                    :error-messages="errors"
-                    :hide-details="errors.length"
-                    :disabled="controleLicenca.exibir"
+                    v-model="formularioLicenca.status_licenca_id"
+                    :items="dropdownStatusLicencas"
+                    disabled
+                    hide-details
                     dense
-                    class="required"
                     item-value="item"
                     item-text="descricao"
-                    label="Tipo Licença"
+                    label="Status"
                     outlined
                   />
-                </validation-provider>
-              </v-col>
-              <v-col
-                xl="2"
-                lg="2"
-                md="2"
-                sm="4"
-                cols="12"
-              >
-                <validation-provider
-                  v-slot="{ errors }"
-                  name="Data de Vencimento"
-                  rules="required"
-                  vid="data_vencimento"
+                </v-col>
+                <v-col
+                  xl="3"
+                  lg="3"
+                  md="3"
+                  sm="12"
+                  cols="12"
+                >
+                  <validation-provider
+                    v-slot="{ errors }"
+                    name="Tipo Licença"
+                    rules="required"
+                    vid="tipo_licenca_id"
+                  >
+                    <v-autocomplete
+                      v-model="formularioLicenca.tipo_licenca_id"
+                      :items="dropdownTiposLicencas"
+                      :error-messages="errors"
+                      :hide-details="!errors.length"
+                      :disabled="controleLicenca.exibir"
+                      dense
+                      class="required"
+                      item-value="item"
+                      item-text="descricao"
+                      label="Tipo Licença"
+                      outlined
+                    />
+                  </validation-provider>
+                </v-col>
+                <v-col
+                  xl="2"
+                  lg="2"
+                  md="2"
+                  sm="12"
+                  cols="12"
+                >
+                  <validation-provider
+                    v-slot="{ errors }"
+                    name="Data de Vencimento"
+                    rules="required"
+                    vid="data_vencimento"
+                  >
+                    <v-text-field
+                      v-model="formularioLicenca.data_vencimento"
+                      v-mask="'##/##/####'"
+                      :disabled="controleLicenca.exibir"
+                      :error-messages="errors"
+                      :hide-details="!errors.length"
+                      class="required"
+                      dense
+                      label="Data de Vencimento"
+                      outlined
+                    />
+                  </validation-provider>
+                </v-col>
+                <v-col
+                  xl="2"
+                  lg="2"
+                  md="2"
+                  sm="12"
+                  cols="12"
+                >
+                  <validation-provider
+                    v-slot="{ errors }"
+                    name="Data de Saída"
+                    rules="required"
+                    vid="data_saida"
+                  >
+                    <v-text-field
+                      v-model="formularioLicenca.data_saida"
+                      v-mask="'##/##/####'"
+                      :disabled="controleLicenca.exibir"
+                      :error-messages="errors"
+                      :hide-details="!errors.length"
+                      class="required"
+                      dense
+                      label="Data de Saída"
+                      outlined
+                    />
+                  </validation-provider>
+                </v-col>
+                <v-col
+                  cols="12"
+                  xl="12"
+                  lg="12"
+                  md="12"
+                  sm="12"
+                >
+                  <validation-provider
+                    v-slot="{ errors }"
+                    name="Observação"
+                    rules="max:500"
+                    vid="observacao"
+                  >
+                    <v-textarea
+                      v-model="formularioLicenca.observacao"
+                      v-uppercase
+                      :disabled="controleLicenca.exibir"
+                      :error-messages="errors"
+                      :hide-details="!(errors.length || (formularioLicenca.observacao && formularioLicenca.observacao.length > 0) && !controleLicenca.exibir)"
+                      :counter="500"
+                      dense
+                      label="Observação"
+                      outlined
+                      rows="3"
+                      spellcheck="false"
+                    />
+                  </validation-provider>
+                </v-col>
+
+                <v-col
+                  v-show="formularioLicenca.id"
+                  xl="3"
+                  lg="3"
+                  md="3"
+                  sm="6"
+                  cols="12"
                 >
                   <v-text-field
-                    v-model="formularioLicenca.data_vencimento"
-                    v-mask="'##/##/####'"
-                    :disabled="controleLicenca.exibir"
-                    :error-messages="errors"
-                    :hide-details="errors.length"
-                    class="required"
+                    v-model="formularioLicenca.created_by"
+                    hide-details
+                    disabled
                     dense
-                    label="Data de Vencimento"
+                    label="Criado Por"
                     outlined
                   />
-                </validation-provider>
-              </v-col>
-              <v-col
-                xl="2"
-                lg="2"
-                md="2"
-                sm="4"
-                cols="12"
-              >
-                <validation-provider
-                  v-slot="{ errors }"
-                  name="Data de Saída"
-                  rules="required"
-                  vid="data_saida"
+                </v-col>
+                <v-col
+                  v-show="formularioLicenca.id"
+                  xl="3"
+                  lg="3"
+                  md="3"
+                  sm="6"
+                  cols="12"
                 >
                   <v-text-field
-                    v-model="formularioLicenca.data_saida"
-                    v-mask="'##/##/####'"
-                    :disabled="controleLicenca.exibir"
-                    :error-messages="errors"
-                    :hide-details="errors.length"
-                    class="required"
+                    v-model="formularioLicenca.created_at"
+                    hide-details
+                    disabled
                     dense
-                    label="Data de Saída"
+                    label="Criado Em"
                     outlined
                   />
-                </validation-provider>
-              </v-col>
-              <v-col
-                cols="12"
-                xl="12"
-                lg="12"
-                md="12"
-              >
-                <validation-provider
-                  v-slot="{ errors }"
-                  name="Observação"
-                  rules="max:500"
-                  vid="observacao"
+                </v-col>
+                <v-col
+                  v-show="formularioLicenca.id"
+                  xl="3"
+                  lg="3"
+                  md="3"
+                  sm="6"
+                  cols="12"
                 >
-                  <v-textarea
-                    v-model="formularioLicenca.observacao"
-                    v-uppercase
-                    :disabled="controleLicenca.exibir"
-                    :error-messages="errors"
-                    :hide-details="!(errors.length || (formularioLicenca.observacao && formularioLicenca.observacao.length > 0) && !controleLicenca.exibir)"
-                    :counter="500"
+                  <v-text-field
+                    v-model="formularioLicenca.updated_by"
+                    hide-details
+                    disabled
                     dense
-                    label="Observação"
+                    label="Última Alteração Por"
                     outlined
-                    rows="3"
-                    spellcheck="false"
                   />
-                </validation-provider>
-              </v-col>
-              <v-col
-                v-if="formularioLicenca.id"
-                xl="3"
-                lg="3"
-                md="3"
-                sm="3"
-                cols="12"
-              >
-                <v-text-field
-                  v-model="formularioLicenca.created_at"
-                  hide-details
-                  disabled
-                  dense
-                  label="Criado Em"
-                  outlined
-                />
-              </v-col>
-              <v-col
-                v-if="formularioLicenca.id"
-                xl="3"
-                lg="3"
-                md="3"
-                sm="3"
-                cols="12"
-              >
-                <v-text-field
-                  v-model="formularioLicenca.updated_by"
-                  hide-details
-                  disabled
-                  dense
-                  label="Última Alteração Por"
-                  outlined
-                />
-              </v-col>
-              <v-col
-                v-if="formularioLicenca.id"
-                xl="3"
-                lg="3"
-                md="3"
-                sm="3"
-                cols="12"
-              >
-                <v-text-field
-                  v-model="formularioLicenca.updated_at"
-                  hide-details
-                  disabled
-                  dense
-                  label="Última Alteração Em"
-                  outlined
-                />
-              </v-col>
-              <v-col
-                cols="12"
-              >
-                Empresa
-              </v-col>
-            </v-row>
-          </v-container>
+                </v-col>
+                <v-col
+                  v-show="formularioLicenca.id"
+                  xl="3"
+                  lg="3"
+                  md="3"
+                  sm="6"
+                  cols="12"
+                >
+                  <v-text-field
+                    v-model="formularioLicenca.updated_at"
+                    hide-details
+                    disabled
+                    dense
+                    label="Última Alteração Em"
+                    outlined
+                  />
+                </v-col>
+              </v-row>
+            </v-container>
+          </validation-observer>
         </v-form>
       </template>
     </modal>
@@ -1551,52 +1570,45 @@ export default {
       this.loading = true
       const res = await this.exibirLicenca(registro)
       if (res && !res.erro) {
-        this.formulario = {
+        this.formularioLicenca = {
           id: res.id || null,
-          processo: res.processo || null,
+          processo_id: res.processo_id || null,
           observacao: res.observacao || null,
           created_at: res.created_at ? this.$day(res.created_at).format('DD/MM/YYYY HH:mm:ss') : null,
           created_by: res.created_by || null,
           updated_at: res.updated_at ? this.$day(res.updated_at).format('DD/MM/YYYY HH:mm:ss') : null,
           updated_by: res.updated_by || null,
-          empresa_id: res.empresa_id || null,
-          cnpj: res.cnpj ? (String(res.cnpj).length <= 11 ? filter(String(res.cnpj).padStart(11, '0'), ['###.###.###-##']) : filter(String(res.cnpj).padStart(14, '0'), ['##.###.###/####-##'])) : '-',
-          status_empresa_id: res.status_empresa_id || null,
-          nome_fantasia: res.nome_fantasia || null,
-          razao_social: res.razao_social || null,
-          data_cadastro: res.data_cadastro ? this.$day(res.data_cadastro).format('DD/MM/YYYY HH:mm:ss') : null,
-          porte_empresa_id: res.porte_empresa_id || null,
-          empresa_endereco: `${res.logradouro}, ${res.numero} - ${res.bairro}`,
-          estado_empresa: res.estado_empresa || null,
-          cidade_empresa: res.cidade_empresa || null
+          licenca: res.licenca || null,
+          status_licenca_id: res.status_licenca_id || null,
+          tipo_licenca_id: res.tipo_licenca_id || null,
+          data_vencimento: res.data_vencimento ? this.$day(res.data_vencimento).format('DD/MM/YYYY') : null,
+          data_saida: res.data_saida ? this.$day(res.data_saida).format('DD/MM/YYYY') : null
         }
-
-        this.listarLicencasRegistros()
       }
       this.loading = false
-      this.modal = true
-      this.controle.exibir = true
+      this.controleLicenca.exibir = true
     },
     async salvarLicencaRegistro () {
-      if (await this.$refs.observer.validate()) {
+      if (await this.$refs.observerLicenca.validate()) {
         const dataCadastro = this.$dataValidade(this.formularioLicenca.data_saida)
         if (dataCadastro) {
-          if (dataCadastro) this.$refs.observer.setErrors({ data_saida: [dataCadastro] })
+          if (dataCadastro) this.$refs.observerLicenca.setErrors({ data_saida: [dataCadastro] })
           return
         }
         const dataVencimento = this.$dataValidade(this.formularioLicenca.data_vencimento)
         if (dataVencimento) {
-          if (dataVencimento) this.$refs.observer.setErrors({ data_vencimento: [dataVencimento] })
+          if (dataVencimento) this.$refs.observerLicenca.setErrors({ data_vencimento: [dataVencimento] })
           return
         }
         this.loading = true
         const form = {
-          id: this.formulario.id || null,
-          licenca: this.formulario.licenca || null,
-          tipo_licenca_id: this.formulario.tipo_licenca_id || null,
-          data_vencimento: this.formulario.data_vencimento || null,
-          data_saida: this.formulario.data_saida || null,
-          observacao: this.formulario.observacao || null
+          id: this.formularioLicenca.id || null,
+          processo_id: this.formulario.id || null,
+          licenca: this.formularioLicenca.licenca || null,
+          tipo_licenca_id: this.formularioLicenca.tipo_licenca_id || null,
+          data_vencimento: this.formularioLicenca.data_vencimento || null,
+          data_saida: this.formularioLicenca.data_saida || null,
+          observacao: this.formularioLicenca.observacao || null
         }
 
         let res
@@ -1604,12 +1616,24 @@ export default {
         else res = await this.salvarLicenca(form)
 
         if (res && !res.erro) {
-          this.modal = false
           this.resetFormularioLicenca()
-          this.exibirRegistroLicenca(res.id)
+          this.exibirLicencaRegistro(res.id)
+          this.controleLicenca = {
+            exibir: false,
+            editar: false,
+            inserir: false
+          }
         }
         this.loading = false
       }
+    },
+    async excluirLicencaRegistro () {
+      this.loading = true
+      const res = await this.excluirLicenca(this.formularioLicenca.id)
+      if (res && !res.erro) {
+        this.resetModalLicenca()
+      }
+      this.loading = false
     },
     // EMPRESA MODAL
     async listarRegistroEmpresas () {
@@ -1677,6 +1701,21 @@ export default {
       this.listarRegistro()
       this.loading = false
     },
+    async resetFormularioLicenca () {
+      this.formularioLicenca = {
+        id: null,
+        licenca: null,
+        status_licenca_id: null,
+        tipo_licenca_id: null,
+        data_vencimento: null,
+        data_saida: null,
+        observacao: null,
+        created_at: null,
+        created_by: null,
+        updated_at: null,
+        updated_by: null
+      }
+    },
     resetModalEmpresa () {
       this.modalBuscarEmpresa = false
       this.setRegistrosEmpresas([])
@@ -1688,6 +1727,16 @@ export default {
         razaoSocial: null,
         porte: []
       }
+    },
+    resetModalLicenca () {
+      this.modalLicenca = false
+      this.resetFormularioLicenca()
+      this.controleLicenca = {
+        exibir: false,
+        editar: false,
+        inserir: false
+      }
+      this.listarLicencasRegistros()
     },
     limparFiltros () {
       this.filtro = {
