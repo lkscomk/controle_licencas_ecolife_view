@@ -802,7 +802,7 @@
         <v-list-item
           @click="formularioAnexo = {
             value: true,
-            titulo: 'Anexos da Licença',
+            titulo: 'da Licença',
             tabela: 'licenca',
             tabelaId: formularioLicenca.id,
             tipoGrupoId: 8,

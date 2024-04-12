@@ -3,6 +3,26 @@
     <loading
       :value="loading"
     />
+    <aviso
+      v-model="aviso.modal"
+      :conteudo="aviso.conteudo"
+      :acao="aviso.acao"
+      @cancelar="aviso = {
+        modal: false,
+        conteudo: '',
+        acao: ''
+      }"
+      @excluirAnexo="aviso = {
+        modal: false,
+        conteudo: '',
+        acao: ''
+      }, excluirRegistroAnexo()"
+      @baixarRegistroAnexo="aviso = {
+        modal: false,
+        conteudo: '',
+        acao: ''
+      }, baixarRegistroAnexo()"
+    />
     <!-- listagem -->
     <v-dialog
       :value="value"
@@ -127,13 +147,13 @@
                             dark
                             dense
                             @blur="(controleAnexos.editarPrincipal = false)"
-                            @keydown.enter="editarRegistroAnexo()"
+                            @keydown.enter="formulario.extensao = anexo.extensao, editarRegistroAnexo()"
                             @click.prevent=""
                           />
                           <span
                             v-else
                             class="text-body-1 font-weight-bold white--text"
-                            @dblclick.stop="(controleAnexos.editarPrincipal = true, formulario.nome = anexo.arquivo, formulario.id = anexo.id )"
+                            @dblclick.stop="(controleAnexos.editarPrincipal = true, formulario.nome = anexo.nome, formulario.extensao = anexo.extensao, formulario.id = anexo.id )"
                           >
                             {{ anexo.nome }}{{ anexo.extensao }}
                           </span>
@@ -149,7 +169,7 @@
                         "
                     >
                       <v-menu
-                        v-if="alterarNome && excluir"
+                        v-if="alterarNome || excluir"
                         offset-y
                         left
                       >
@@ -179,7 +199,7 @@
                         >
                           <v-list-item
                             v-if="excluir"
-                            @click="aviso = {modal: true, key: 'excluirAnexo', text: 'Deseja excluir esse anexo?', footerCheckAccept: true}, formulario.id = anexo.id"
+                            @click="aviso = { modal: true, conteudo: 'Deseja excluir esse anexo?', acao: 'excluirAnexo'}, formulario.id = anexo.id"
                           >
                             <v-list-item-icon class="mr-3">
                               <v-icon color="error">
@@ -194,7 +214,7 @@
                           </v-list-item>
                           <v-list-item
                             v-if="alterarNome"
-                            @click="(controleAnexos.editarPrincipal = true, formulario.nome = anexo.arquivo, formulario.id = anexo.id )"
+                            @click="(controleAnexos.editarPrincipal = true, formulario.nome = anexo.nome, formulario.id = anexo.id )"
                           >
                             <v-list-item-icon class="mr-3">
                               <v-icon :color="$vuetify.theme.dark ? '' : 'primary'">
@@ -341,7 +361,7 @@
             >
               <v-list-item
                 v-if="excluir"
-                @click="aviso = {modal: true, key: 'excluirAnexo', text: 'Deseja excluir esse anexo?', footerCheckAccept: true}"
+                @click="aviso = { modal: true, conteudo: 'Deseja excluir esse anexo?', acao: 'excluirAnexo'}"
               >
                 <v-list-item-icon class="mr-3">
                   <v-icon color="error">
@@ -424,11 +444,11 @@
 
         <v-card-text class="pa-0">
           <div
-            v-if="['.png', '.jpg', '.jpeg', '.gif', '.bmp'].find(el => formulario.type === el)"
+            v-if="['.png', '.jpg', '.jpeg', '.gif', '.bmp'].find(el => formulario.extensao === el)"
             class="d-flex flex-column justify-space-between align-center"
           >
             <img
-              :src="formulario.conteudo"
+              :src="formulario.arquivo"
               style="
                   max-height: 700px;
                   max-width: 1200px;
@@ -439,7 +459,7 @@
           </div>
           <iframe
             v-else
-            :src="formulario.conteudo"
+            :src="formulario.arquivo"
             height="1200"
             width="1200"
           />
@@ -452,11 +472,11 @@
           <v-spacer />
 
           <v-btn
-            v-if="['.png', '.jpg', '.jpeg', '.gif', '.bmp'].find(el => formulario.type === el)"
+            v-if="['.png', '.jpg', '.jpeg', '.gif', '.bmp'].find(el => formulario.extensao === el)"
             :color="$vuetify.theme.dark ? 'accent' : 'primary'"
             class="ml-2 mr-2"
             small
-            @click="baixarRegistroAnexo(formulario.arquivo, formulario.type, formulario.nome)"
+            @click="baixarRegistroAnexo(formulario.arquivo, formulario.extensao, formulario.nome)"
           >
             <v-icon
               right
@@ -502,7 +522,7 @@
             icon
             left
             size="35"
-            @click="(formulario.arquivo = null, controleAnexos = { inserir: false, exibir: false, editar: false })"
+            @click="(formulario.arquivo = null, controleAnexos = { inserir: false, exibir: false, editar: false, editarPrincipal: false })"
           >
             <v-icon class="pa-0 ma-0">
               mdi-close
@@ -515,7 +535,7 @@
 
         <v-card-text class="pa-0">
           <div
-            v-if="['.png', '.jpg', '.jpeg', '.gif', '.bmp'].find(el => formulario.type === el)"
+            v-if="['.png', '.jpg', '.jpeg', '.gif', '.bmp'].find(el => formulario.extensao === el)"
             class="d-flex flex-column justify-space-between align-center"
           >
             <img
@@ -543,7 +563,7 @@
           <v-spacer />
 
           <v-btn
-            v-if="['.pdf', '.png', '.jpg', '.jpeg', '.gif', '.bmp'].find(el => formulario.type === el)"
+            v-if="['.pdf', '.png', '.jpg', '.jpeg', '.gif', '.bmp'].find(el => formulario.extensao === el)"
             :color="$vuetify.theme.dark ? 'accent' : 'primary'"
             class="ml-2 mr-2"
             small
@@ -560,7 +580,7 @@
           <v-btn
             color="error"
             small
-            @click="(formulario.arquivo = null, controleAnexos = { inserir: false, exibir: false, editar: false })"
+            @click="(formulario.arquivo = null, controleAnexos = { inserir: false, exibir: false, editar: false, editarPrincipal: false })"
           >
             <v-icon
               left
@@ -627,7 +647,7 @@ export default {
     subtipoGrupoId: {
       default: null,
       type: [String, Number]
-    },
+    }
   },
   data: () => ({
     anexosRegistros: [],
@@ -639,12 +659,9 @@ export default {
     moving: false,
     formulario: {
       id: null,
-      conteudo: null,
       typo: null,
       nome: null,
-      arquivo: null,
-      tabela: null,
-      tabelaId: null
+      arquivo: null
     },
     errorNomeArquivo: null,
     modalAnexos: false,
@@ -691,28 +708,28 @@ export default {
       if (res && !res.erro) {
         this.formulario = {
           id: dados.id,
-          type: dados.extensao ? dados.extensao.toLowerCase() : null,
+          extensao: dados.extensao ? dados.extensao.toLowerCase() : null,
           nome: dados.nome,
           arquivo: res || null
         }
       }
-      const type = this.formulario.type === '.pdf' ? 'application/pdf'
-        : this.formulario.type === '.jpeg' ? 'image/jpeg'
-          : this.formulario.type === '.jpg' ? 'image/jpg'
-            : this.formulario.type === '.png' ? 'image/png'
-              : this.formulario.type === '.bmp' ? 'image/bmp'
-                : this.formulario.type === '.gif' ? 'image/gif' : null
+      const type = this.formulario.extensao === '.pdf' ? 'application/pdf'
+        : this.formulario.extensao === '.jpeg' ? 'image/jpeg'
+          : this.formulario.extensao === '.jpg' ? 'image/jpg'
+            : this.formulario.extensao === '.png' ? 'image/png'
+              : this.formulario.extensao === '.bmp' ? 'image/bmp'
+                : this.formulario.extensao === '.gif' ? 'image/gif' : null
 
       if (type) {
         const buffer = Buffer.from(res)
         const blob = new Blob([buffer], { type })
-        this.formulario.conteudo = window.URL.createObjectURL(blob)
+        this.formulario.arquivo = window.URL.createObjectURL(blob)
         this.controleAnexos.exibir = true
       } else {
         this.aviso = {
           modal: true,
-          key: 'baixarAnexo',
-          text: 'Esse anexo será baixado, deseja continuar?'
+          acao: 'baixarRegistroAnexo',
+          conteudo: 'Não será possível abrir este aquivo pelo navegador. Deseja baixar o arquivo?'
         }
       }
 
@@ -754,14 +771,20 @@ export default {
       form.append('subtipo_item_id', this.subtipoGrupoId)
       form.append('file', this.selectedFile)
 
-      await this.salvarAnexo(form)
+      const res = await this.salvarAnexo(form)
 
-      //   if (res && !res.erro) {
-      //     setTimeout(() => {
-      //       this.controleAnexos.inserir = false
-      //     }, 500)
-      //     this.listarRegistroAnexo()
-      //   }
+      if (res && !res.erro) {
+        setTimeout(() => {
+          this.formulario.arquivo = null
+          this.controleAnexos = {
+            inserir: false,
+            exibir: false,
+            editar: false,
+            editarPrincipal: false
+          }
+        }, 500)
+        this.listarRegistroAnexo()
+      }
       this.loading = false
     },
     async editarRegistroAnexo () {
@@ -771,9 +794,8 @@ export default {
           const res = await this.editarAnexo(
             {
               id: this.formulario.id,
-              tabela: this.tabela,
-              tabelaId: this.tabelaId,
-              arquivo: this.formulario.nome
+              nome: this.formulario.nome,
+              extensao: this.formulario.extensao
             }
           )
           if (res && !res.erro) {
@@ -805,11 +827,7 @@ export default {
     async excluirRegistroAnexo () {
       this.loading = true
 
-      const res = await this.excluirAnexo({
-        anexoId: this.formulario.id,
-        tabela: this.tabela,
-        tabelaId: this.tabelaId
-      })
+      const res = await this.excluirAnexo(this.formulario.id)
 
       if (res && !res.erro) {
         this.controleAnexos.exibir = false
@@ -825,25 +843,33 @@ export default {
     },
     handleFileSelect (event) {
       this.selectedFile = event.target.files[0]
-      if (this.selectedFile) {
+      if (`${this.selectedFile.name.split('.').pop()}`.toLowerCase() !== '.PDF') {
+        this.$notificacao('O sistema só suporta arquivos PDF, outros tipos estão em desenvolvimento.', 'erro')
+        this.selectedFile = null
+        return
+      }
+      if (this.selectedFile && (this.selectedFile.size <= 5 * 1024 * 1024)) {
         const reader = new FileReader()
         reader.onload = () => {
           this.formulario = {
             id: null,
-            type: this.selectedFile.name ? `.${this.selectedFile.name.split('.').pop()}`.toLowerCase() : null,
+            extensao: this.selectedFile.name ? `.${this.selectedFile.name.split('.').pop()}`.toLowerCase() : null,
             nome: this.selectedFile.name,
             arquivo: reader.result
           }
           this.controleAnexos.inserir = true
         }
         reader.readAsDataURL(this.selectedFile)
+      } else {
+        this.$notificacao('Por favor, selecione um arquivo de até 5MB.', 'error')
+        this.selectedFile = null
+        event.target.files[0] = null
       }
     },
     resetFormulario () {
       this.formulario = {
         id: null,
-        conteudo: null,
-        typo: null,
+        extensao: null,
         nome: null,
         arquivo: null
       }

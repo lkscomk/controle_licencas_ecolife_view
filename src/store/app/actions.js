@@ -106,7 +106,26 @@ export const salvarAnexo = async ({ state }, params) => {
         'Content-Type': 'multipart/form-data'
       }
     })
-    return res
+    return res.data
+  } catch (error) {
+    return null
+  }
+}
+
+export const editarAnexo = async ({ state }, body) => {
+  try {
+    const res = await axios.put('/anexos/' + body.id, body)
+    return res.data
+  } catch (error) {
+    return null
+  }
+}
+
+export const excluirAnexo = async ({ commit }, id) => {
+  try {
+    const res = await axios.delete('/anexos/' + id)
+
+    return res.data
   } catch (error) {
     return null
   }
