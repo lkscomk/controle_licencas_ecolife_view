@@ -811,7 +811,7 @@
         >
           <v-list-item-icon class="mr-3">
             <v-icon :color="'primary'">
-              mdi-delete
+              mdi-paperclip
             </v-icon>
           </v-list-item-icon>
           <v-list-item-content>

@@ -843,7 +843,7 @@ export default {
     },
     handleFileSelect (event) {
       this.selectedFile = event.target.files[0]
-      if (`${this.selectedFile.name.split('.').pop()}`.toLowerCase() !== '.PDF') {
+      if (`.${this.selectedFile.name.split('.').pop()}`.toLowerCase() !== '.pdf') {
         this.$notificacao('O sistema só suporta arquivos PDF, outros tipos estão em desenvolvimento.', 'erro')
         this.selectedFile = null
         return
