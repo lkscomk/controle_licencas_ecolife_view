@@ -1434,7 +1434,7 @@ export default {
       registros: 100,
       totalRegistros: 0
     },
-    modal: false,
+    modal: false
   }),
   computed: {
     ...mapState('processo', [
