@@ -6,9 +6,29 @@
     titulo="Processos"
     :mais-opcoes="formulario.id ? maisOpcoes : null"
     :titulo-formulario="controle.editar ? 'Editar Registro' : controle.inserir ? 'Adicionar Registro' : 'Exibir Registro'"
-    @excluir="excluirRegistro()"
+    @excluir="aviso = { modal: true, conteudo: 'Deseja excluir esse registro?', acao: 'excluirRegistro'}"
     @voltar="resetFormulario()"
   >
+    <aviso
+      v-model="aviso.modal"
+      :conteudo="aviso.conteudo"
+      :acao="aviso.acao"
+      @cancelar="aviso = {
+        modal: false,
+        conteudo: '',
+        acao: ''
+      }"
+      @excluirRegistro="aviso = {
+        modal: false,
+        conteudo: '',
+        acao: ''
+      }, excluirRegistro()"
+      @excluirLicencaRegistro="aviso = {
+        modal: false,
+        conteudo: '',
+        acao: ''
+      }, excluirLicencaRegistro()"
+    />
     <template slot="listagem">
       <v-form @submit.prevent="''">
         <v-container
@@ -53,7 +73,7 @@
                       >
                         <v-text-field
                           v-model="filtro.cnpj"
-                          v-mask="['##.###.###/####-##', '###.###.###-##']"
+                          v-mask="`${filtro.cnpj ? (String(filtro.cnpj).match(/\d/g).join('').length <= 11 ? '###.###.###-##' : '##.###.###/####-##') : null}`"
                           hide-details
                           dense
                           label="CNPJ/CPF"
@@ -308,7 +328,7 @@
               >
                 <v-text-field
                   v-model="formulario.cnpj"
-                  v-mask="['##.###.###/####-##', '###.###.###-##']"
+                  v-mask="`${formulario.cnpj ? (String(formulario.cnpj).match(/\d/g).join('').length <= 11 ? '###.###.###-##' : '##.###.###/####-##') : null}`"
                   disabled
                   hide-details
                   dense
@@ -673,7 +693,7 @@
                         >
                           <v-text-field
                             v-model="filtroModalEmpresa.cnpj"
-                            v-mask="['###.###.###-##', '##.###.###/####-##']"
+                            v-mask="`${filtroModalEmpresa.cnpj ? (String(filtroModalEmpresa.cnpj).match(/\d/g).join('').length <= 11 ? '###.###.###-##' : '##.###.###/####-##') : null}`"
                             hide-details
                             dense
                             label="CNPJ/CPF"
@@ -786,7 +806,7 @@
     >
       <template slot="maisOpcoes">
         <v-list-item
-          @click="excluirLicencaRegistro()"
+          @click="aviso = { modal: true, conteudo: 'Deseja excluir esse registro?', acao: 'excluirLicencaRegistro'}"
         >
           <v-list-item-icon class="mr-3">
             <v-icon :color="'error'">
@@ -1174,6 +1194,11 @@ export default {
     loading: false,
     modalBuscarEmpresa: false,
     modalLicenca: false,
+    aviso: {
+      modal: false,
+      conteudo: '',
+      acao: ''
+    },
     colunasLicencas: [
       {
         text: 'Ação',

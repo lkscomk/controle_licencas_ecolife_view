@@ -163,7 +163,7 @@
                   >
                     <v-text-field
                       v-model="formulario.cpf"
-                      v-mask="'###.###.###-##'"
+                      v-mask="`${formulario.cnpj ? (String(formulario.cnpj).match(/\d/g).join('').length <= 11 ? '###.###.###-##' : '##.###.###/####-##') : null}`"
                       :error-messages="errors"
                       :hide-details="!errors.length"
                       :disabled="controle.exibir"

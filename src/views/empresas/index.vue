@@ -7,7 +7,7 @@
     :mais-opcoes="formulario.id ? maisOpcoes : null"
     :titulo-formulario="controle.editar ? 'Editar Registro' : controle.inserir ? 'Adicionar Registro' : 'Exibir Registro'"
     @voltar="modal = false, resetFormulario()"
-    @excluir="excluirRegistro()"
+    @excluir="aviso = { modal: true, conteudo: 'Deseja excluir esse registro?', acao: 'excluirRegistro'}"
   >
     <aviso
       v-model="aviso.modal"
@@ -23,6 +23,11 @@
         conteudo: '',
         acao: ''
       }, ativarRegistro()"
+      @excluirRegistro="aviso = {
+        modal: false,
+        conteudo: '',
+        acao: ''
+      }, excluirRegistro()"
     />
     <template slot="listagem">
       <v-form @submit.prevent="''">
@@ -69,7 +74,7 @@
                       >
                         <v-text-field
                           v-model="filtro.cnpj"
-                          v-mask="['###.###.###-##', '##.###.###/####-##']"
+                          v-mask="`${filtro.cnpj ? (String(filtro.cnpj).match(/\d/g).join('').length <= 11 ? '###.###.###-##' : '##.###.###/####-##') : null}`"
                           hide-details
                           dense
                           label="CNPJ/CPF"
@@ -239,6 +244,7 @@
                 >
                   <v-text-field
                     v-model="formulario.cnpj"
+                    v-mask="`${formulario.cnpj ? (String(formulario.cnpj).match(/\d/g).join('').length <= 11 ? '###.###.###-##' : '##.###.###/####-##') : null}`"
                     :disabled="controle.exibir"
                     :error-messages="errors"
                     :hide-details="!errors.length"
@@ -965,7 +971,6 @@ export default {
     async exibirRegistro (id) {
       this.loading = true
       const res = await this.exibir(id)
-      window.console.log(res.cnpj ? (String(res.cnpj).length <= 11 ? String(res.cnpj).padStart(11, '0') : String(res.cnpj).padStart(14, '0')) : '-')
       if (res && !res.erro) {
         this.formulario = {
           id: res.id || null,

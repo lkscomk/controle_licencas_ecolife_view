@@ -103,7 +103,7 @@
                       >
                         <v-text-field
                           v-model="filtro.cpf"
-                          v-mask="'###.###.###-##'"
+                          v-mask="`${filtro.cnpj ? (String(filtro.cnpj).match(/\d/g).join('').length <= 11 ? '###.###.###-##' : '##.###.###/####-##') : null}`"
                           hide-details
                           dense
                           label="CPF"
@@ -255,7 +255,7 @@
                 >
                   <v-text-field
                     v-model="formulario.cpf"
-                    v-mask="'###.###.###-##'"
+                    v-mask="`${formulario.cnpj ? (String(formulario.cnpj).match(/\d/g).join('').length <= 11 ? '###.###.###-##' : '##.###.###/####-##') : null}`"
                     :disabled="controle.exibir"
                     :error-messages="errors"
                     :hide-details="!errors.length"
