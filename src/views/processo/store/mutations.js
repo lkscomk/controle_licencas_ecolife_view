@@ -39,7 +39,7 @@ export default {
       element.tipo = { chip: true, color: element.tipo_cor, text: element.tipo_descricao }
       element.status = { chip: true, color: element.status_cor, text: element.status_descricao }
       element.cnpj = element.cnpj ? (String(element.cnpj).length <= 11 ? filter(String(element.cnpj).padStart(11, '0'), ['###.###.###-##']) : filter(String(element.cnpj).padStart(14, '0'), ['##.###.###/####-##'])) : '-'
-      element.processo = filter(element.processo, ['##.#####.##/####'])
+      element.processo = element.processo || null
       element.created_at = element.created_at ? day(element.created_at).format('DD/MM/YYYY HH:mm:ss') : null
     })
     state.registros = param
