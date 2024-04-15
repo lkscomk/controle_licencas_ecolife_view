@@ -180,7 +180,6 @@
                 >
                   <v-text-field
                     v-model="formulario.processo"
-                    v-mask="'##.#####.##/####'"
                     :error-messages="errors"
                     :hide-details="!errors.length"
                     :disabled="!controle.inserir"
