@@ -1637,7 +1637,7 @@ export default {
         this.loading = true
         const form = {
           id: this.formulario.id || null,
-          processo: this.formulario.processo ? String(this.formulario.processo).match(/\d/g).join('') : null,
+          processo: this.formulario.processo || null,
           empresa_id: this.formulario.empresa_id || null,
           observacao: this.formulario.observacao || null
         }
