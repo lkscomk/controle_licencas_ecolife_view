@@ -255,7 +255,7 @@
                 >
                   <v-text-field
                     v-model="formulario.cpf"
-                    v-mask="controle.exibir ? `${formulario.cnpj ? (String(formulario.cnpj).match(/\d/g).join('').length <= 11 ? '###.###.###-##' : '##.###.###/####-##') : ''}` :  ''"
+                    v-mask="'###.###.###-##'"
                     :disabled="controle.exibir"
                     :error-messages="errors"
                     :hide-details="!errors.length"
