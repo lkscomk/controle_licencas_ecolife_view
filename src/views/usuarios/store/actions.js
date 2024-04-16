@@ -40,22 +40,6 @@ export const exibir = async ({ commit }, id) => {
   }
 }
 
-export const listarRelacionamento = async ({ commit }, filtros) => {
-  try {
-    const res = await axios.get('/usuario', {
-      params: filtros
-    })
-
-    if (!res.data.erro) {
-      commit('setRegistrosRelacionamento', res.data)
-    }
-
-    return res.data
-  } catch (error) {
-    return null
-  }
-}
-
 export const excluir = async ({ commit }, id) => {
   try {
     const res = await axios.delete('/usuario/' + id)
@@ -85,3 +69,14 @@ export const editar = async ({ commit }, dados) => {
     return null
   }
 }
+
+export const resetSenha = async ({ commit }, id) => {
+  try {
+    const res = await axios.put('/usuario/reset-senha/' + id)
+
+    return res.data
+  } catch (error) {
+    return null
+  }
+}
+

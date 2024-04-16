@@ -7,8 +7,29 @@
     :mais-opcoes="formulario.id ? maisOpcoes : null"
     :titulo-formulario="controle.editar ? 'Editar Registro' : controle.inserir ? 'Adicionar Registro' : 'Exibir Registro'"
     @voltar="resetFormulario()"
-    @excluir="excluirRegistro()"
+    @excluir="aviso = { modal: true, conteudo: 'Deseja excluir esse registro?', acao: 'excluirRegistro'}"
+    @resetSenha="aviso = { modal: true, conteudo: 'Deseja resetar a senha desse usuário?', acao: 'resetSenhaRegistro'}"
   >
+  <aviso
+      v-model="aviso.modal"
+      :conteudo="aviso.conteudo"
+      :acao="aviso.acao"
+      @cancelar="aviso = {
+        modal: false,
+        conteudo: '',
+        acao: ''
+      }"
+      @excluirRegistro="aviso = {
+        modal: false,
+        conteudo: '',
+        acao: ''
+      }, excluirRegistro()"
+      @resetSenhaRegistro="aviso = {
+        modal: false,
+        conteudo: '',
+        acao: ''
+      }, resetSenhaRegistro()"
+    />
     <template slot="listagem">
       <v-form @submit.prevent="''">
         <v-container
@@ -427,6 +448,11 @@ export default {
   data: () => ({
     loading: false,
     perfil: window.atob(localStorage.getItem('umbrella:perfil')),
+    aviso: {
+      modal: false,
+      conteudo: '',
+      acao: ''
+    },
     colunas: [
       {
         text: 'Ação',
@@ -530,6 +556,12 @@ export default {
           color: 'error',
           icone: 'mdi-delete',
           titulo: 'Excluir'
+        },
+        {
+          acao: 'resetSenha',
+          color: 'error',
+          icone: 'mdi-refresh',
+          titulo: 'Resetar Senha'
         }
       ]
     }
@@ -548,6 +580,7 @@ export default {
       'editar',
       'salvar',
       'excluir',
+      'resetSenha',
       'buscarDropdownTiposUsuarios'
     ]),
     async listarRegistro () {
@@ -621,6 +654,11 @@ export default {
       if (res && !res.erro) {
         this.resetFormulario()
       }
+      this.loading = false
+    },
+    async resetSenhaRegistro () {
+      this.loading = true
+      this.resetSenha(this.formulario.id)
       this.loading = false
     },
     resetFormulario () {
