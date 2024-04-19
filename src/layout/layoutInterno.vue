@@ -217,10 +217,11 @@
                 </v-btn>
                 <v-btn
                   :color="notificacao.cor"
+                  :disabled="notificacao.ciente_em"
                   class="mx-1"
                   outlined
                   small
-                  @click="notificacaoRegistro = notificacao, aviso = { modal: true, conteudo: 'Após dá ciente, esta notificação não será mais exibida aqui. Deseja continuar?', acao: 'registrarCienciaRegistro'}"
+                  @click="registrarCienciaRegistro(notificacao)"
                 >
                   <v-icon :color="notificacao.cor">
                     {{ !notificacao.ciente_em ? 'mdi-checkbox-blank-outline' : 'mdi-checkbox-marked' }}
@@ -357,8 +358,8 @@ export default {
         window.console.log(res)
       }
     },
-    async registrarCienciaRegistro () {
-      const res = this.registrarCiencia(this.notificacaoRegistro)
+    async registrarCienciaRegistro (notificacao) {
+      const res = this.registrarCiencia(notificacao)
 
       if (res && !res.erro) {
         this.notificacaoRegistro = null
