@@ -11,8 +11,8 @@ import store from './store'
 import '@/plugins/validate'
 import vuetify from './plugins/vuetify'
 import '@mdi/font/css/materialdesignicons.css'
-import VueMask from 'v-mask'
 import Vupper from '@/plugins/uppercase'
+import InputFacade from 'vue-input-facade'
 
 Vue.config.productionTip = false
 
@@ -26,7 +26,20 @@ Vue.component('filtro', () => import('./components/filtro'))
 Vue.component('pagina', () => import('./components/pagina'))
 Vue.component('loading', () => import('./components/loading'))
 
-Vue.use(VueMask)
+const options = {
+  // rename the directive from: v-facade to: v-mask
+  name: 'mask',
+
+  // use these tokens instead of the default
+  tokens: {
+    '#': { pattern: /\d/ },
+    A: { pattern: /[a-z]/i },
+    N: { pattern: /[0-9a-z]/i },
+    X: { pattern: /./ }
+  }
+}
+
+Vue.use(InputFacade, options)
 Vue.use(Vupper)
 
 Vue.directive('sortable-table', SortableTable)

@@ -74,7 +74,7 @@
                       >
                         <v-text-field
                           v-model="filtro.cnpj"
-                          v-mask="`${filtro.cnpj ? (String(filtro.cnpj).match(/\d/g).join('').length <= 11 ? '###.###.###-##' : '##.###.###/####-##') : null}`"
+                          v-mask="['###.###.###-##', '##.###.###/####-##']"
                           hide-details
                           dense
                           label="CNPJ/CPF"
@@ -187,6 +187,7 @@
                 titulo="Listagem de Empresas"
                 @paginacao="paginacao = $event"
                 @exibir="exibirRegistro($event)"
+                @dblclick="exibirRegistro($event.id)"
               />
             </v-col>
           </v-row>
@@ -244,7 +245,7 @@
                 >
                   <v-text-field
                     v-model="formulario.cnpj"
-                    v-mask="`${formulario.cnpj ? (String(formulario.cnpj).match(/\d/g).join('').length <= 11 ? '###.###.###-##' : '##.###.###/####-##') : null}`"
+                    v-mask="['###.###.###-##', '##.###.###/####-##']"
                     :disabled="controle.exibir"
                     :error-messages="errors"
                     :hide-details="!errors.length"
@@ -1031,6 +1032,11 @@ export default {
         else res = await this.salvar(form)
         if (res && !res.erro) {
           this.modal = false
+          this.controle = {
+            exibir: false,
+            editar: false,
+            inserir: false
+          }
           this.exibirRegistro(res.id)
         }
         this.loading = false

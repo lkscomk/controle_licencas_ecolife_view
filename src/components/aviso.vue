@@ -12,9 +12,13 @@
           height="50px"
           dark
         >
-        <div class="text-h6 font-weight-bold">{{ titulo }}</div>
+          <div class="text-h6 font-weight-bold">
+            {{ titulo }}
+          </div>
         </v-toolbar>
-        <v-card-text class="py-5">{{ conteudo }}</v-card-text>
+        <v-card-text class="py-5">
+          {{ conteudo }}
+        </v-card-text>
         <v-card-actions>
           <v-spacer />
           <v-btn

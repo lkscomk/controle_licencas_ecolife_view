@@ -1,6 +1,21 @@
 <template>
   <v-app>
     <loading :value="loading" />
+    <aviso
+      v-model="aviso.modal"
+      :conteudo="aviso.conteudo"
+      :acao="aviso.acao"
+      @cancelar="aviso = {
+        modal: false,
+        conteudo: '',
+        acao: ''
+      }"
+      @registrarCienciaRegistro="aviso = {
+        modal: false,
+        conteudo: '',
+        acao: ''
+      }, registrarCienciaRegistro()"
+    />
     <v-app-bar
       app
       color="primary"
@@ -168,7 +183,6 @@
         </v-col>
       </v-row>
       <v-divider />
-      Etapa Ainda em Desenvolvimento
       <v-list
         class="mt-2"
         nav
@@ -183,6 +197,9 @@
             cols="12"
             class="text-start"
           >
+            <!-- :style="{
+                borderLeft: '8px solid '+ (!notificacao.importancia ? '' : +notificacao.importancia === 1 ? '#2979FF' : +notificacao.importancia === 2 ? '#F2C037' : '#eb2f06') +' !important',
+              }" -->
             <v-alert
               :color="notificacao.cor"
               :icon="notificacao.icone && notificacao.icone.toLowerCase()"
@@ -192,16 +209,42 @@
               prominent
               style="cursor: pointer;"
               class="pl-1 ml-0 cardNotificacao"
-              :style="{
-                borderLeft: '8px solid '+ (!notificacao.importancia ? '' : +notificacao.importancia === 1 ? '#2979FF' : +notificacao.importancia === 2 ? '#F2C037' : '#eb2f06') +' !important',
-              }"
-              @click="openUrlNew(notificacao.detail)"
             >
               <h3 class="text-h6">
-                {{ notificacao.titulo }}
+                {{ notificacao.descricao }}
               </h3>
               <span>
-                <b>{{ notificacao.quantidade }}</b> {{ notificacao.conteudo }}
+                <b>1</b> {{ notificacao.conteudo }}
+              </span>
+              <v-spacer />
+              <v-col>
+                <v-btn
+                  :color="notificacao.cor"
+                  class="mx-1"
+                  outlined
+                  small
+                  @click="openUrlNew(notificacao.url)"
+                >
+                  <v-icon :color="notificacao.cor">
+                    mdi-open-in-new
+                  </v-icon>
+                  Abrir
+                </v-btn>
+                <v-btn
+                  :color="notificacao.cor"
+                  class="mx-1"
+                  outlined
+                  small
+                  @click="notificacaoRegistro = notificacao, aviso = { modal: true, conteudo: 'Após dá ciente, esta notificação não será mais exibida aqui. Deseja continuar?', acao: 'registrarCienciaRegistro'}"
+                >
+                  <v-icon :color="notificacao.cor">
+                    {{ !notificacao.ciente_em ? 'mdi-checkbox-blank-outline' : 'mdi-checkbox-marked' }}
+                  </v-icon>
+                  Ciencia
+                </v-btn>
+              </v-col>
+              <span v-if="notificacao.ciente_por">
+                Ciente: {{ notificacao.ciente_por }} - {{ $day(notificacao.ciente_em).format('DD/MM/YYYY HH:mm:ss') }}
               </span>
             </v-alert>
           </v-col>
@@ -250,6 +293,7 @@ export default {
   data: () => ({
     perfil: window.atob(localStorage.getItem('umbrella:perfil')),
     modalNotificacoes: false,
+    notificacaoRegistro: null,
     loading: true,
     dataAtual: '',
     drawer: false,
@@ -261,6 +305,11 @@ export default {
       alta: 1,
       media: 2,
       baixa: 3
+    },
+    aviso: {
+      modal: false,
+      conteudo: '',
+      acao: ''
     }
   }),
 
@@ -270,6 +319,7 @@ export default {
       'registrosNotificacoes'
     ])
   },
+
   watch: {
     group () {
       this.drawer = false
@@ -282,7 +332,7 @@ export default {
     }, 200)
     setTimeout(async () => {
       await this.buscarAcessos(this.perfil)
-      // this.buscarNotificacoesRegistros()
+      this.buscarNotificacoesRegistros()
     }, 200)
   },
 
@@ -291,7 +341,8 @@ export default {
       'logout',
       'buscarAcessos',
       'buscarPathImagem',
-      'buscarNotificacoes'
+      'buscarNotificacoes',
+      'registrarCiencia'
     ]),
     async buscarImagem () {
       const res = await this.buscarPathImagem(this.perfil)
@@ -321,15 +372,16 @@ export default {
         window.console.log(res)
       }
     },
+    async registrarCienciaRegistro () {
+      const res = this.registrarCiencia(this.notificacaoRegistro)
+
+      if (res && !res.erro) {
+        this.notificacaoRegistro = null
+        this.modalNotificacoes = true
+      }
+    },
     openUrlNew (valor) {
-      // const param = this.$route.fullPath
-      // window.console.log(this.$route)
-      this.$router.replace({
-        name: 'TelaLicencas',
-        query: {
-          id: window.btoa(JSON.stringify(valor))
-        }
-      })
+      window.open(valor, '_blank')
     },
     atualizarData () {
       this.dataAtual = this.$day().format('dddd - DD - MMMM - YYYY HH:mm:ss')

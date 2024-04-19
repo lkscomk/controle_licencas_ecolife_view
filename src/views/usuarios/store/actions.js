@@ -79,4 +79,3 @@ export const resetSenha = async ({ commit }, id) => {
     return null
   }
 }
-

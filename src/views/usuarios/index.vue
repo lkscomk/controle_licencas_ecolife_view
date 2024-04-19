@@ -10,7 +10,7 @@
     @excluir="aviso = { modal: true, conteudo: 'Deseja excluir esse registro?', acao: 'excluirRegistro'}"
     @resetSenha="aviso = { modal: true, conteudo: 'Deseja resetar a senha desse usuário?', acao: 'resetSenhaRegistro'}"
   >
-  <aviso
+    <aviso
       v-model="aviso.modal"
       :conteudo="aviso.conteudo"
       :acao="aviso.acao"
@@ -124,7 +124,7 @@
                       >
                         <v-text-field
                           v-model="filtro.cpf"
-                          v-mask="`${filtro.cnpj ? (String(filtro.cnpj).match(/\d/g).join('').length <= 11 ? '###.###.###-##' : '##.###.###/####-##') : null}`"
+                          v-mask="['###.###.###-##', '##.###.###/####-##']"
                           hide-details
                           dense
                           label="CPF"
