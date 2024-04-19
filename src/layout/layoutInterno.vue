@@ -1,21 +1,6 @@
 <template>
   <v-app>
     <loading :value="loading" />
-    <aviso
-      v-model="aviso.modal"
-      :conteudo="aviso.conteudo"
-      :acao="aviso.acao"
-      @cancelar="aviso = {
-        modal: false,
-        conteudo: '',
-        acao: ''
-      }"
-      @registrarCienciaRegistro="aviso = {
-        modal: false,
-        conteudo: '',
-        acao: ''
-      }, registrarCienciaRegistro()"
-    />
     <v-app-bar
       app
       color="primary"
