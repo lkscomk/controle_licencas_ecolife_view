@@ -7,27 +7,26 @@
     :mais-opcoes="formulario.id ? maisOpcoes : null"
     :titulo-formulario="controle.editar ? 'Editar Registro' : controle.inserir ? 'Adicionar Registro' : 'Exibir Registro'"
     @voltar="resetFormulario()"
-    @excluir="aviso = { modal: true, conteudo: 'Deseja excluir esse registro?', acao: 'excluirRegistro'}"
-    @resetSenha="aviso = { modal: true, conteudo: 'Deseja resetar a senha desse usuário?', acao: 'resetSenhaRegistro'}"
+    @excluir="aviso = { modal: true, text: 'Deseja excluir esse registro?', key: 'excluirRegistro'}"
+    @resetSenha="aviso = { modal: true, text: 'Deseja resetar a senha desse usuário?', key: 'resetSenhaRegistro'}"
   >
     <aviso
       v-model="aviso.modal"
-      :conteudo="aviso.conteudo"
-      :acao="aviso.acao"
+      :options="aviso"
       @cancelar="aviso = {
         modal: false,
-        conteudo: '',
-        acao: ''
+        text: '',
+        key: ''
       }"
       @excluirRegistro="aviso = {
         modal: false,
-        conteudo: '',
-        acao: ''
+        text: '',
+        key: ''
       }, excluirRegistro()"
       @resetSenhaRegistro="aviso = {
         modal: false,
-        conteudo: '',
-        acao: ''
+        text: '',
+        key: ''
       }, resetSenhaRegistro()"
     />
     <template slot="listagem">

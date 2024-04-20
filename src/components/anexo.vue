@@ -5,22 +5,21 @@
     />
     <aviso
       v-model="aviso.modal"
-      :conteudo="aviso.conteudo"
-      :acao="aviso.acao"
+      :options="aviso"
       @cancelar="aviso = {
         modal: false,
-        conteudo: '',
-        acao: ''
+        key: null,
+        text: ''
       }"
       @excluirAnexo="aviso = {
         modal: false,
-        conteudo: '',
-        acao: ''
+        key: null,
+        text: ''
       }, excluirRegistroAnexo()"
       @baixarRegistroAnexo="aviso = {
         modal: false,
-        conteudo: '',
-        acao: ''
+        key: null,
+        text: ''
       }, baixarRegistroAnexo()"
     />
     <!-- listagem -->
@@ -199,7 +198,7 @@
                         >
                           <v-list-item
                             v-if="excluir"
-                            @click="aviso = { modal: true, conteudo: 'Deseja excluir esse anexo?', acao: 'excluirAnexo'}, formulario.id = anexo.id"
+                            @click="aviso = {modal: true, key: 'excluirAnexo', text: 'Deseja excluir esse anexo?'}, formulario.id = anexo.id"
                           >
                             <v-list-item-icon class="mr-3">
                               <v-icon color="error">
@@ -361,7 +360,7 @@
             >
               <v-list-item
                 v-if="excluir"
-                @click="aviso = { modal: true, conteudo: 'Deseja excluir esse anexo?', acao: 'excluirAnexo'}"
+                @click="aviso = { modal: true, text: 'Deseja excluir esse anexo?', key: 'excluirAnexo'}"
               >
                 <v-list-item-icon class="mr-3">
                   <v-icon color="error">
@@ -728,8 +727,8 @@ export default {
       } else {
         this.aviso = {
           modal: true,
-          acao: 'baixarRegistroAnexo',
-          conteudo: 'Não será possível abrir este aquivo pelo navegador. Deseja baixar o arquivo?'
+          key: 'baixarRegistroAnexo',
+          text: 'Não será possível abrir este aquivo pelo navegador. Deseja baixar o arquivo?'
         }
       }
 

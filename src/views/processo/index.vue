@@ -6,27 +6,26 @@
     titulo="Processos"
     :mais-opcoes="formulario.id ? maisOpcoes : null"
     :titulo-formulario="controle.editar ? 'Editar Registro' : controle.inserir ? 'Adicionar Registro' : 'Exibir Registro'"
-    @excluir="aviso = { modal: true, conteudo: 'Deseja excluir esse registro?', acao: 'excluirRegistro'}"
+    @excluir="aviso = { modal: true, text: 'Deseja excluir esse registro?', key: 'excluirRegistro'}"
     @voltar="resetFormulario()"
   >
     <aviso
       v-model="aviso.modal"
-      :conteudo="aviso.conteudo"
-      :acao="aviso.acao"
+      :options="aviso"
       @cancelar="aviso = {
         modal: false,
-        conteudo: '',
-        acao: ''
+        text: '',
+        key: ''
       }"
       @excluirRegistro="aviso = {
         modal: false,
-        conteudo: '',
-        acao: ''
+        text: '',
+        key: ''
       }, excluirRegistro()"
       @excluirLicencaRegistro="aviso = {
         modal: false,
-        conteudo: '',
-        acao: ''
+        text: '',
+        key: ''
       }, excluirLicencaRegistro()"
     />
     <template slot="listagem">
@@ -805,7 +804,7 @@
     >
       <template slot="maisOpcoes">
         <v-list-item
-          @click="aviso = { modal: true, conteudo: 'Deseja excluir esse registro?', acao: 'excluirLicencaRegistro'}"
+          @click="aviso = { modal: true, text: 'Deseja excluir esse registro?', key: 'excluirLicencaRegistro'}"
         >
           <v-list-item-icon class="mr-3">
             <v-icon :color="'error'">
@@ -900,8 +899,8 @@
               <v-row dense>
                 <v-col
                   v-show="formularioLicenca.id"
-                  xl="1"
-                  lg="1"
+                  xl="2"
+                  lg="2"
                   md="1"
                   sm="4"
                   cols="12"
@@ -916,9 +915,9 @@
                   />
                 </v-col>
                 <v-col
-                  :xl="formularioLicenca.id ? 1 : 2"
-                  :lg="formularioLicenca.id ? 1 : 2"
-                  :md="formularioLicenca.id ? 1 : 2"
+                  :xl="formularioLicenca.id ? 2 : 3"
+                  :lg="formularioLicenca.id ? 2 : 3"
+                  :md="formularioLicenca.id ? 2 : 3"
                   sm="4"
                   cols="12"
                 >
@@ -941,9 +940,9 @@
                   </validation-provider>
                 </v-col>
                 <v-col
-                  xl="2"
-                  lg="2"
-                  md="2"
+                  :xl="formularioLicenca.id ? 2 : 3"
+                  :lg="formularioLicenca.id ? 2 : 3"
+                  :md="formularioLicenca.id ? 2 : 3"
                   sm="4"
                   cols="12"
                 >
@@ -960,9 +959,9 @@
                   />
                 </v-col>
                 <v-col
-                  xl="2"
-                  lg="2"
-                  md="2"
+                  xl="6"
+                  lg="6"
+                  md="6"
                   sm="12"
                   cols="12"
                 >
@@ -988,9 +987,9 @@
                   </validation-provider>
                 </v-col>
                 <v-col
-                  xl="2"
-                  lg="2"
-                  md="2"
+                  xl="6"
+                  lg="6"
+                  md="6"
                   sm="12"
                   cols="12"
                 >
@@ -1016,9 +1015,9 @@
                   </validation-provider>
                 </v-col>
                 <v-col
-                  xl="2"
-                  lg="2"
-                  md="2"
+                  xl="3"
+                  lg="3"
+                  md="3"
                   sm="12"
                   cols="12"
                 >
@@ -1042,9 +1041,9 @@
                   </validation-provider>
                 </v-col>
                 <v-col
-                  xl="2"
-                  lg="2"
-                  md="2"
+                  xl="3"
+                  lg="3"
+                  md="3"
                   sm="12"
                   cols="12"
                 >
@@ -1878,6 +1877,7 @@ export default {
         razaoSocial: null,
         porte: []
       }
+      this.listarRegistro()
     }
   }
 }

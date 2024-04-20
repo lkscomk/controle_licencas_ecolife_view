@@ -229,7 +229,10 @@
                   Ciencia
                 </v-btn>
               </v-col>
-              <span v-if="notificacao.ciente_por">
+              <span
+                v-if="notificacao.ciente_por"
+                class="font-weight-medium text-caption"
+              >
                 Ciente: {{ notificacao.ciente_por }} - {{ $day(notificacao.ciente_em).format('DD/MM/YYYY HH:mm:ss') }}
               </span>
             </v-alert>
@@ -359,12 +362,14 @@ export default {
       }
     },
     async registrarCienciaRegistro (notificacao) {
+      this.loading = true
       const res = this.registrarCiencia(notificacao)
 
       if (res && !res.erro) {
         this.notificacaoRegistro = null
         this.modalNotificacoes = true
       }
+      this.loading = false
     },
     openUrlNew (valor) {
       window.open(valor, '_blank')

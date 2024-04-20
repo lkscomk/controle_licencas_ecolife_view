@@ -7,26 +7,25 @@
     :mais-opcoes="formulario.id ? maisOpcoes : null"
     :titulo-formulario="controle.editar ? 'Editar Registro' : controle.inserir ? 'Adicionar Registro' : 'Exibir Registro'"
     @voltar="modal = false, resetFormulario()"
-    @excluir="aviso = { modal: true, conteudo: 'Deseja excluir esse registro?', acao: 'excluirRegistro'}"
+    @excluir="aviso = { modal: true, text: 'Deseja excluir esse registro?', key: 'excluirRegistro'}"
   >
     <aviso
       v-model="aviso.modal"
-      :conteudo="aviso.conteudo"
-      :acao="aviso.acao"
+      :options="aviso"
       @cancelar="aviso = {
         modal: false,
-        conteudo: '',
-        acao: ''
+        text: '',
+        key: ''
       }"
       @ativarEmpresa="aviso = {
         modal: false,
-        conteudo: '',
-        acao: ''
+        text: '',
+        key: ''
       }, ativarRegistro()"
       @excluirRegistro="aviso = {
         modal: false,
-        conteudo: '',
-        acao: ''
+        text: '',
+        key: ''
       }, excluirRegistro()"
     />
     <template slot="listagem">
@@ -707,7 +706,7 @@
         color="warning"
         small
         @click="
-          aviso = { modal: true, conteudo: 'Após Ativado, não será possível EDITAR qualquer informação dessa empresa/pessoa. Deseja continuar?', acao: 'ativarEmpresa'}"
+          aviso = { modal: true, text: 'Após Ativado, não será possível EDITAR qualquer informação dessa empresa/pessoa. Deseja continuar?', key: 'ativarEmpresa'}"
       >
         <v-icon
           left
