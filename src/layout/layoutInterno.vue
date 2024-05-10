@@ -368,6 +368,7 @@ export default {
       if (res && !res.erro) {
         this.notificacaoRegistro = null
         this.modalNotificacoes = true
+        this.buscarNotificacoesRegistros()
       }
       this.loading = false
     },
