@@ -2192,7 +2192,7 @@ export default {
           data_vencimento: res.data_vencimento ? this.$day(res.data_vencimento).format('DD/MM/YYYY') : null,
           data_saida: res.data_saida ? this.$day(res.data_saida).format('DD/MM/YYYY') : null
         }
-        this.listarRmaRegistro()
+        if (this.formularioLicenca.id) this.listarRmaRegistro()
       }
       this.loading = false
       this.controleLicenca.exibir = true
