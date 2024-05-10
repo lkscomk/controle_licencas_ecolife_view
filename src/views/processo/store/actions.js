@@ -1,5 +1,19 @@
 import axios from '@/plugins/axios_local'
 
+export const buscarDropdownStatusRma = async ({ commit }) => {
+  try {
+    const res = await axios.get('/sistema/opcoes/9')
+
+    if (!res.data.erro) {
+      commit('dropdownStatusRma', res.data)
+    }
+
+    return res.data
+  } catch (error) {
+    return null
+  }
+}
+
 export const buscarDropdownStatusLicencas = async ({ commit }) => {
   try {
     const res = await axios.get('/sistema/opcoes/6')
@@ -27,6 +41,7 @@ export const buscarDropdownPorteLicencas = async ({ commit }, grupo) => {
     return null
   }
 }
+
 export const buscarDropdownTiposLicencas = async ({ commit }, grupo) => {
   try {
     const res = await axios.get('/sistema/opcoes/3')
@@ -40,6 +55,7 @@ export const buscarDropdownTiposLicencas = async ({ commit }, grupo) => {
     return null
   }
 }
+
 export const buscarDropdownStatusEmpresa = async ({ commit }) => {
   try {
     const res = await axios.get('/sistema/opcoes/4')
@@ -95,6 +111,7 @@ export const buscarDropdownCidade = async ({ commit }, uf) => {
     return null
   }
 }
+
 export const buscarDropdownCidadeEmpresa = async ({ commit }, uf) => {
   try {
     const res = await axios.get('/sistema/cidade/' + uf)
@@ -243,6 +260,83 @@ export const editarLicenca = async ({ commit }, dados) => {
 export const excluirLicenca = async ({ commit }, id) => {
   try {
     const res = await axios.delete('/licenca/' + id)
+
+    return res.data
+  } catch (error) {
+    return null
+  }
+}
+
+export const ativarLicenca = async ({ commit }, dados) => {
+  try {
+    const res = await axios.put('/licenca/ativar/' + dados.id, dados)
+
+    return res.data
+  } catch (error) {
+    return null
+  }
+}
+
+// rma
+export const listarRma = async ({ commit }, filtros) => {
+  try {
+    const res = await axios.get('/rma', {
+      params: filtros
+    })
+
+    if (!res.data.erro) {
+      commit('setRegistrosRma', res.data)
+    }
+
+    return res.data
+  } catch (error) {
+    return null
+  }
+}
+
+export const exibirRma = async ({ commit }, id) => {
+  try {
+    const res = await axios.get('/rma/' + id)
+
+    return res.data
+  } catch (error) {
+    return null
+  }
+}
+
+export const excluirRma = async ({ commit }, id) => {
+  try {
+    const res = await axios.delete('/rma/' + id)
+
+    return res.data
+  } catch (error) {
+    return null
+  }
+}
+
+export const salvarRma = async ({ commit }, dados) => {
+  try {
+    const res = await axios.post('/rma', dados)
+
+    return res.data
+  } catch (error) {
+    return null
+  }
+}
+
+export const editarRma = async ({ commit }, dados) => {
+  try {
+    const res = await axios.put('/rma/' + dados.id, dados)
+
+    return res.data
+  } catch (error) {
+    return null
+  }
+}
+
+export const gerarRma = async ({ commit }, dados) => {
+  try {
+    const res = await axios.post('/rma/gerar-rma/' + dados.id, dados)
 
     return res.data
   } catch (error) {

@@ -16,6 +16,9 @@ export default {
   dropdownPortesEmpresa (state, param) {
     state.dropdownPortesEmpresa = param
   },
+  dropdownStatusRma (state, param) {
+    state.dropdownStatusRma = param
+  },
   dropdownStatusEmpresa (state, param) {
     state.dropdownStatusEmpresa = param
   },
@@ -43,6 +46,15 @@ export default {
       element.created_at = element.created_at ? day(element.created_at).format('DD/MM/YYYY HH:mm:ss') : null
     })
     state.registros = param
+  },
+  setRegistrosRma (state, param) {
+    param.forEach(element => {
+      element.status = { chip: true, color: element.status_cor, text: element.status_descricao }
+      element.periodo_inicio = element.periodo_inicio ? day(element.periodo_inicio).format('DD/MM/YYYY') : null
+      element.periodo_fim = element.periodo_fim ? day(element.periodo_fim).format('DD/MM/YYYY') : null
+      element.created_at = element.created_at ? day(element.created_at).format('DD/MM/YYYY HH:mm:ss') : null
+    })
+    state.registrosRma = param
   },
   setRegistrosLicencas (state, param) {
     param.forEach(element => {

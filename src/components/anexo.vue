@@ -764,7 +764,7 @@ export default {
     async salvarRegistroAnexo () {
       this.loading = true
       const form = new FormData()
-      form.append('tabela', 'licenca')
+      form.append('tabela', this.tabela)
       form.append('tabela_id', this.tabelaId)
       form.append('tipo_grupo_id', this.tipoGrupoId)
       form.append('subtipo_item_id', this.subtipoGrupoId)

@@ -27,6 +27,16 @@
         text: '',
         key: ''
       }, excluirLicencaRegistro()"
+      @ativarLicencaRegistro="aviso = {
+        modal: false,
+        text: '',
+        key: ''
+      }, ativarLicencaRegistro()"
+      @excluirRmaRegistro="aviso = {
+        modal: false,
+        text: '',
+        key: ''
+      }, excluirRmaRegistro()"
     />
     <template slot="listagem">
       <v-form @submit.prevent="''">
@@ -189,7 +199,6 @@
                   />
                 </validation-provider>
               </v-col>
-
               <v-col
                 cols="12"
                 xl="12"
@@ -804,16 +813,36 @@
     >
       <template slot="maisOpcoes">
         <v-list-item
-          @click="aviso = { modal: true, text: 'Deseja excluir esse registro?', key: 'excluirLicencaRegistro'}"
+          v-if="Number(formularioLicenca.status_licenca_id) === Number(enumStatusLicenca.digitacao)"
+          @click="Number(formularioLicenca.status_licenca_id) === Number(enumStatusLicenca.digitacao) ?
+          aviso = { modal: true, text: 'Essa ação não poderá ser desfeita. Deseja continuar?', key: 'ativarLicencaRegistro'} :
+          $notificacao('Só é possível ativar licença em digitação.', 'erro')"
         >
           <v-list-item-icon class="mr-3">
-            <v-icon :color="'error'">
-              mdi-delete
+            <v-icon :color="'primary'">
+              mdi-check
             </v-icon>
           </v-list-item-icon>
           <v-list-item-content>
             <v-list-item-title>
-              Excluir Licença
+              Ativar Licença
+            </v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+        <v-list-item
+          v-if="Number(formularioLicenca.status_licenca_id) === Number(enumStatusLicenca.ativa)"
+          @click="Number(formularioLicenca.status_licenca_id) === Number(enumStatusLicenca.ativa) ?
+          aviso = { modal: true, text: 'Essa ação não poderá ser desfeita. Deseja continuar?', key: 'encerrarLicencaRegistro'} :
+          $notificacao('Só é possível encerrar licença ativa.', 'erro')"
+        >
+          <v-list-item-icon class="mr-3">
+            <v-icon :color="'error'">
+              mdi-cancel
+            </v-icon>
+          </v-list-item-icon>
+          <v-list-item-content>
+            <v-list-item-title>
+              Encerrar Licença
             </v-list-item-title>
           </v-list-item-content>
         </v-list-item>
@@ -838,24 +867,24 @@
             </v-list-item-title>
           </v-list-item-content>
         </v-list-item>
+        <v-list-item
+          @click="Number(formularioLicenca.status_licenca_id) === Number(enumStatusLicenca.digicacao) ?
+          aviso = { modal: true, text: 'Deseja excluir esse registro?', key: 'excluirLicencaRegistro'} :
+          $notificacao('Só é possível excluir licença em digitação.', 'erro')"
+        >
+          <v-list-item-icon class="mr-3">
+            <v-icon :color="'error'">
+              mdi-delete
+            </v-icon>
+          </v-list-item-icon>
+          <v-list-item-content>
+            <v-list-item-title>
+              Excluir Licença
+            </v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
       </template>
       <template slot="botoes">
-        <v-btn
-          v-if="formularioLicenca.id"
-          :block="$vuetify.breakpoint.xsOnly"
-          :class="$vuetify.breakpoint.xsOnly ? 'my-1' : 'mx-1'"
-          color="warning"
-          small
-          @click="$notificacao('Fluxo ainda em desenvolvimento', 'erro')"
-        >
-          <v-icon
-            left
-            size="20"
-          >
-            mdi-text
-          </v-icon>
-          Gerar RMAs
-        </v-btn>
         <v-btn
           v-if="!!(!controleLicenca.exibir && (controleLicenca.inserir || controleLicenca.editar))"
           :block="$vuetify.breakpoint.xsOnly"
@@ -878,7 +907,9 @@
           :class="$vuetify.breakpoint.xsOnly ? 'my-1' : 'mx-1'"
           color="success"
           small
-          @click="controleLicenca.editar = true, controleLicenca.exibir = false"
+          @click="Number(formularioLicenca.status_licenca_id) === Number(enumStatusLicenca.digitacao) ?
+          (controleLicenca.editar = true, controleLicenca.exibir = false) :
+          $notificacao('Só é possível editar licença em digitação.', 'erro')"
         >
           <v-icon
             left
@@ -901,7 +932,7 @@
                   v-show="formularioLicenca.id"
                   xl="2"
                   lg="2"
-                  md="1"
+                  md="2"
                   sm="4"
                   cols="12"
                 >
@@ -1094,7 +1125,6 @@
                     />
                   </validation-provider>
                 </v-col>
-
                 <v-col
                   v-show="formularioLicenca.id"
                   xl="3"
@@ -1163,6 +1193,387 @@
                     outlined
                   />
                 </v-col>
+                <v-col cols="12">
+                  <v-card
+                   outlined
+                  >
+                    <v-container
+                      class="my-2 pa-0 px-1"
+                      fluid
+                    >
+                      <v-row dense>
+                        <v-col
+                          xl="6"
+                          lg="6"
+                          md="5"
+                          sm="4"
+                          cols="12"
+                        >
+                          Relatórios de Monitoramento Ambiental
+                        </v-col>
+                        <v-col
+                          xl="2"
+                          lg="2"
+                          md="2"
+                          sm="12"
+                          cols="12"
+                        >
+                          <v-btn
+                            small
+                            block
+                            color="warning"
+                            @click="formularioLicenca.status_licenca_id === enumStatusLicenca.ativa ?
+                            gerarRmaRegistro() :
+                            $notificacao('Só é possível gerar RMAS em licença ATIVAS.', 'erro')"
+                          >
+                            <v-icon dark>
+                              mdi-plus-thick
+                            </v-icon>
+                            Gerar RMAs
+                          </v-btn>
+                        </v-col>
+                        <v-col
+                          xl="1"
+                          lg="1"
+                          md="1"
+                          sm="12"
+                          cols="12"
+                        >
+                          <v-btn
+                            small
+                            block
+                            color="primary"
+                            @click="listarRmaRegistro()"
+                          >
+                            <v-icon dark>
+                              mdi-refresh
+                            </v-icon>
+                          </v-btn>
+                        </v-col>
+                        <v-col
+                          xl="3"
+                          lg="3"
+                          md="4"
+                          sm="12"
+                          cols="12"
+                        >
+                          <v-btn
+                            small
+                            block
+                            color="primary"
+                            @click="modalRma = true, controleRma.inserir = true, formularioRma.status_rma_id = enumStatusRma.digitacao"
+                          >
+                            <v-icon dark>
+                              mdi-plus
+                            </v-icon>
+                            Adicionar Novo RMA
+                          </v-btn>
+                        </v-col>
+                        <v-col
+                          xl="12"
+                          lg="12"
+                          md="12"
+                          sm="12"
+                          cols="12"
+                        >
+                          <tabela
+                            :colunas="colunasRma"
+                            :registros="registrosRma"
+                            :paginacao="paginacaoRma"
+                            :registros-por-pagina="100"
+                            :sort-by-cli="['id']"
+                            :sort-desc-cli="true"
+                            height-auto
+                            exibir
+                            @paginacao="paginacaoRma = $event"
+                            @exibir="exibirRmaRegistro($event), modalRma = true"
+                          />
+                        </v-col>
+                      </v-row>
+                    </v-container>
+                  </v-card>
+                </v-col>
+              </v-row>
+            </v-container>
+          </validation-observer>
+        </v-form>
+      </template>
+    </modal>
+
+    <modal
+      v-model="modalRma"
+      width="100%"
+      :titulo="'Rma'"
+      :mais-opcoes="!!formularioRma.id"
+      @fechar="resetModalRma()"
+    >
+      <template slot="maisOpcoes">
+        <v-list-item
+          @click="Number(formularioRma.status_rma_id) === Number(enumStatusRma.digitacao) ?
+          aviso = { modal: true, text: 'Deseja excluir esse registro?', key: 'excluirRmaRegistro'} :
+          $notificacao('Só é possível excluir rma em digitação.', 'erro')"
+        >
+          <v-list-item-icon class="mr-3">
+            <v-icon :color="'error'">
+              mdi-delete
+            </v-icon>
+          </v-list-item-icon>
+          <v-list-item-content>
+            <v-list-item-title>
+              Excluir RMA
+            </v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+        <v-list-item
+          @click="formularioAnexo = {
+            value: true,
+            titulo: 'do RMA',
+            tabela: 'rma',
+            tabelaId: formularioRma.id,
+            tipoGrupoId: 8,
+            subTipoGrupoId: 2
+          }"
+        >
+          <v-list-item-icon class="mr-3">
+            <v-icon :color="'primary'">
+              mdi-paperclip
+            </v-icon>
+          </v-list-item-icon>
+          <v-list-item-content>
+            <v-list-item-title>
+              Anexos
+            </v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+      </template>
+      <template slot="botoes">
+        <v-btn
+          v-if="!!(!controleRma.exibir && (controleRma.inserir || controleRma.editar))"
+          :block="$vuetify.breakpoint.xsOnly"
+          :class="$vuetify.breakpoint.xsOnly ? 'my-1' : 'mx-1'"
+          color="success"
+          small
+          @click="salvarRmaRegistro()"
+        >
+          <v-icon
+            left
+            size="20"
+          >
+            mdi-content-save
+          </v-icon>
+          Salvar
+        </v-btn>
+        <v-btn
+          v-if="!!(controleRma.exibir && !controleRma.inserir)"
+          :block="$vuetify.breakpoint.xsOnly"
+          :class="$vuetify.breakpoint.xsOnly ? 'my-1' : 'mx-1'"
+          color="success"
+          small
+          @click="Number(formularioRma.status_rma_id) === Number(enumStatusRma.digitacao) ?
+          (controleRma.editar = true, controleRma.exibir = false) :
+          $notificacao('Só é possível editar Rma em digitação.', 'erro')"
+        >
+          <v-icon
+            left
+            size="20"
+          >
+            mdi-pencil
+          </v-icon>
+          Editar
+        </v-btn>
+      </template>
+      <template>
+        <v-form @submit.prevent="''">
+          <validation-observer ref="observerRma">
+            <v-container
+              class="ma-0 pa-0"
+              fluid
+            >
+              <v-row dense>
+                <v-col
+                  v-show="formularioRma.id"
+                  xl="2"
+                  lg="2"
+                  md="1"
+                  sm="4"
+                  cols="12"
+                >
+                  <v-text-field
+                    v-model="formularioRma.id"
+                    hide-details
+                    disabled
+                    dense
+                    label="Código Rma"
+                    outlined
+                  />
+                </v-col>
+                <v-col
+                  :xl="formularioRma.id ? 2 : 3"
+                  :lg="formularioRma.id ? 2 : 3"
+                  :md="formularioRma.id ? 2 : 3"
+                  sm="4"
+                  cols="12"
+                >
+                  <v-autocomplete
+                    v-model="formularioRma.status_rma_id"
+                    :items="dropdownStatusRma"
+                    disabled
+                    hide-details
+                    dense
+                    item-value="item"
+                    item-text="descricao"
+                    label="Status"
+                    outlined
+                  />
+                </v-col>
+                <v-col
+                  xl="3"
+                  lg="3"
+                  md="3"
+                  sm="12"
+                  cols="12"
+                >
+                  <validation-provider
+                    v-slot="{ errors }"
+                    name="Data Inicial"
+                    rules="required"
+                    vid="data_inicial"
+                  >
+                    <v-text-field
+                      v-model="formularioRma.periodo_inicio"
+                      v-mask="'##/##/####'"
+                      :disabled="controleRma.exibir"
+                      :error-messages="errors"
+                      :hide-details="!errors.length"
+                      class="required"
+                      dense
+                      label="Data de Inicio"
+                      outlined
+                    />
+                  </validation-provider>
+                </v-col>
+                <v-col
+                  xl="3"
+                  lg="3"
+                  md="3"
+                  sm="12"
+                  cols="12"
+                >
+                  <validation-provider
+                    v-slot="{ errors }"
+                    name="Data Fim"
+                    rules="required"
+                    vid="data_fim"
+                  >
+                    <v-text-field
+                      v-model="formularioRma.periodo_fim"
+                      v-mask="'##/##/####'"
+                      :disabled="controleRma.exibir"
+                      :error-messages="errors"
+                      :hide-details="!errors.length"
+                      class="required"
+                      dense
+                      label="Data Fim"
+                      outlined
+                    />
+                  </validation-provider>
+                </v-col>
+                <v-col
+                  cols="12"
+                  xl="12"
+                  lg="12"
+                  md="12"
+                  sm="12"
+                >
+                  <validation-provider
+                    v-slot="{ errors }"
+                    name="Observação"
+                    rules="max:500"
+                    vid="observacao"
+                  >
+                    <v-textarea
+                      v-model="formularioRma.observacao"
+                      v-uppercase
+                      :disabled="controleRma.exibir"
+                      :error-messages="errors"
+                      :hide-details="!(errors.length || (formularioRma.observacao && formularioRma.observacao.length > 0) && !controleRma.exibir)"
+                      :counter="500"
+                      dense
+                      label="Observação"
+                      outlined
+                      rows="3"
+                      spellcheck="false"
+                    />
+                  </validation-provider>
+                </v-col>
+                <v-col
+                  v-show="formularioRma.id"
+                  xl="3"
+                  lg="3"
+                  md="3"
+                  sm="6"
+                  cols="12"
+                >
+                  <v-text-field
+                    v-model="formularioRma.created_by"
+                    hide-details
+                    disabled
+                    dense
+                    label="Criado Por"
+                    outlined
+                  />
+                </v-col>
+                <v-col
+                  v-show="formularioRma.id"
+                  xl="3"
+                  lg="3"
+                  md="3"
+                  sm="6"
+                  cols="12"
+                >
+                  <v-text-field
+                    v-model="formularioRma.created_at"
+                    hide-details
+                    disabled
+                    dense
+                    label="Criado Em"
+                    outlined
+                  />
+                </v-col>
+                <v-col
+                  v-show="formularioRma.id"
+                  xl="3"
+                  lg="3"
+                  md="3"
+                  sm="6"
+                  cols="12"
+                >
+                  <v-text-field
+                    v-model="formularioRma.updated_by"
+                    hide-details
+                    disabled
+                    dense
+                    label="Última Alteração Por"
+                    outlined
+                  />
+                </v-col>
+                <v-col
+                  v-show="formularioRma.id"
+                  xl="3"
+                  lg="3"
+                  md="3"
+                  sm="6"
+                  cols="12"
+                >
+                  <v-text-field
+                    v-model="formularioRma.updated_at"
+                    hide-details
+                    disabled
+                    dense
+                    label="Última Alteração Em"
+                    outlined
+                  />
+                </v-col>
               </v-row>
             </v-container>
           </validation-observer>
@@ -1192,11 +1603,56 @@ export default {
     loading: false,
     modalBuscarEmpresa: false,
     modalLicenca: false,
+    modalRma: false,
     aviso: {
       modal: false,
       conteudo: '',
       acao: ''
     },
+    colunasRma: [
+      {
+        text: 'Ação',
+        align: 'start',
+        sortable: false,
+        value: 'acao'
+      },
+      {
+        text: 'Código',
+        align: 'start',
+        sortable: false,
+        value: 'id'
+      },
+      {
+        text: 'Status',
+        align: 'start',
+        sortable: false,
+        value: 'status'
+      },
+      {
+        text: 'Data Inicio',
+        align: 'start',
+        sortable: false,
+        value: 'periodo_inicio'
+      },
+      {
+        text: 'Data Final',
+        align: 'start',
+        sortable: false,
+        value: 'periodo_fim'
+      },
+      {
+        text: 'Criado Por',
+        align: 'start',
+        sortable: false,
+        value: 'created_by'
+      },
+      {
+        text: 'Criado Em',
+        align: 'start',
+        sortable: false,
+        value: 'created_at'
+      }
+    ],
     colunasLicencas: [
       {
         text: 'Ação',
@@ -1380,6 +1836,11 @@ export default {
       editar: false,
       inserir: false
     },
+    controleRma: {
+      exibir: false,
+      editar: false,
+      inserir: false
+    },
     formulario: {
       id: null,
       processo: null,
@@ -1435,7 +1896,23 @@ export default {
       tipoGrupoId: null,
       subTipoGrupoId: null
     },
+    formularioRma: {
+      id: null,
+      status_rma_id: null,
+      observacao: null,
+      arquivo_submetido: null,
+      periodo_inicio: null,
+      periodo_fim: null,
+      created_at: null,
+      created_by: null,
+      updated_at: null,
+      updated_by: null
+    },
     enumStatusLicenca: {
+      digitacao: 1,
+      ativa: 2
+    },
+    enumStatusRma: {
       digitacao: 1
     },
     enumStatusEmpresas: {
@@ -1457,14 +1934,21 @@ export default {
       registros: 100,
       totalRegistros: 0
     },
+    paginacaoRma: {
+      pagina: 1,
+      registros: 100,
+      totalRegistros: 0
+    },
     modal: false
   }),
   computed: {
     ...mapState('processo', [
       'registros',
+      'registrosRma',
       'registrosLicencas',
       'registrosEmpresas',
       'dropdownStatusLicencas',
+      'dropdownStatusRma',
       'dropdownPorteLicencas',
       'dropdownTiposLicencas',
       'dropdownStatusEmpresa',
@@ -1552,6 +2036,7 @@ export default {
     await this.buscarDropdownTiposLicencas()
     await this.buscarDropdownPorteLicencas()
     await this.buscarDropdownStatusLicencas()
+    await this.buscarDropdownStatusRma()
     await this.buscarDropdownPortesEmpresa()
     await this.buscarDropdownStatusEmpresa()
     await this.buscarDropdownEstados()
@@ -1562,6 +2047,7 @@ export default {
     ...mapMutations('processo', [
       'setRegistrosEmpresas',
       'setRegistrosLicencas',
+      'setRegistrosRma',
       'setRegistro'
     ]),
     ...mapActions('processo', [
@@ -1586,7 +2072,16 @@ export default {
       'exibirLicenca',
       'salvarLicenca',
       'editarLicenca',
-      'excluirLicenca'
+      'excluirLicenca',
+      'ativarLicenca',
+
+      'listarRma',
+      'exibirRma',
+      'editarRma',
+      'salvarRma',
+      'excluirRma',
+      'gerarRma',
+      'buscarDropdownStatusRma'
     ]),
     async listarRegistro () {
       this.loading = true
@@ -1691,6 +2186,7 @@ export default {
           data_vencimento: res.data_vencimento ? this.$day(res.data_vencimento).format('DD/MM/YYYY') : null,
           data_saida: res.data_saida ? this.$day(res.data_saida).format('DD/MM/YYYY') : null
         }
+        this.listarRmaRegistro()
       }
       this.loading = false
       this.controleLicenca.exibir = true
@@ -1740,6 +2236,105 @@ export default {
       const res = await this.excluirLicenca(this.formularioLicenca.id)
       if (res && !res.erro) {
         this.resetModalLicenca()
+      }
+      this.loading = false
+    },
+    async ativarLicencaRegistro () {
+      this.loading = true
+      const res = await this.ativarLicenca(this.formularioLicenca)
+      if (res && !res.erro) {
+        this.exibirLicencaRegistro(this.formularioLicenca.id)
+      }
+      this.loading = false
+    },
+    // RMA
+    async listarRmaRegistro () {
+      this.loading = true
+      await this.listarRma({
+        licenca_id: this.formularioLicenca.id || null
+      })
+      this.loading = false
+    },
+    async exibirRmaRegistro (registro) {
+      this.loading = true
+      const res = await this.exibirRma(registro)
+      if (res && !res.erro) {
+        this.formularioRma = {
+          id: res.id || null,
+          status_rma_id: res.status_rma_id || null,
+          observacao: res.observacao || null,
+          arquivo_submetido: res.arquivo_submetido || null,
+          periodo_inicio: res.periodo_inicio ? this.$day(res.periodo_inicio).format('DD/MM/YYYY') : null,
+          periodo_fim: res.periodo_fim ? this.$day(res.periodo_fim).format('DD/MM/YYYY') : null,
+          created_at: res.created_at ? this.$day(res.created_at).format('DD/MM/YYYY HH:mm:ss') : null,
+          created_by: res.created_by || null,
+          updated_at: res.updated_at ? this.$day(res.updated_at).format('DD/MM/YYYY HH:mm:ss') : null,
+          updated_by: res.updated_by || null
+        }
+      }
+      this.loading = false
+      this.controleRma.exibir = true
+    },
+    async gerarRmaRegistro () {
+      this.loading = true
+      if (this.registrosRma && this.registrosRma.length) {
+        this.$notificacao('Só é possível gerar RMAS se não houver RMAS criados.', 'erro')
+      } else {
+        const res = await this.gerarRma({
+          id: this.formularioLicenca.id,
+          data_inicial_licenca: this.formularioLicenca.data_saida ? this.$day(this.formularioLicenca.data_saida, 'DD/MM/YYYY').format('YYYY-MM-DD') : null,
+          data_final_licenca: this.formularioLicenca.data_vencimento ? this.$day(this.formularioLicenca.data_vencimento, 'DD/MM/YYYY').format('YYYY-MM-DD') : null
+        })
+        if (res && !res.erro) {
+          this.exibirLicencaRegistro(this.formularioLicenca.id)
+        }
+      }
+      this.loading = false
+    },
+    async salvarRmaRegistro () {
+      if (await this.$refs.observerRma.validate()) {
+        const periodoInicio = this.$dataValidade(this.formularioRma.periodo_inicio)
+        if (periodoInicio) {
+          if (periodoInicio) this.$refs.observerRma.setErrors({ periodo_inicio: [periodoInicio] })
+          return
+        }
+        const periodoFim = this.$dataValidade(this.formularioRma.periodo_fim)
+        if (periodoFim) {
+          if (periodoFim) this.$refs.observerRma.setErrors({ periodo_fim: [periodoFim] })
+          return
+        }
+        this.loading = true
+        const form = {
+          id: this.formularioRma.id || null,
+          licenca_id: this.formularioLicenca.id || null,
+          observacao: this.formularioRma.observacao || null,
+          periodo_inicio: this.formularioRma.periodo_inicio || null,
+          periodo_fim: this.formularioRma.periodo_fim || null
+        }
+
+        let res
+        if (form.id) res = await this.editarRma(form)
+        else res = await this.salvarRma(form)
+
+        if (res && !res.erro) {
+          this.resetFormularioRma()
+          this.exibirRmaRegistro(res.id)
+          this.controleRma = {
+            exibir: false,
+            editar: false,
+            inserir: false
+          }
+          this.listarRmaRegistro()
+        }
+        this.loading = false
+      }
+    },
+    async excluirRmaRegistro () {
+      this.loading = true
+      const res = await this.excluirRma(this.formularioRma.id)
+      if (res && !res.erro) {
+        this.resetModalRma()
+        this.listarRmaRegistro()
       }
       this.loading = false
     },
@@ -1836,6 +2431,30 @@ export default {
         razaoSocial: null,
         porte: []
       }
+    },
+    resetFormularioRma () {
+      this.formularioRma = {
+        id: null,
+        status_rma_id: null,
+        observacao: null,
+        arquivo_submetido: null,
+        periodo_inicio: null,
+        periodo_fim: null,
+        created_at: null,
+        created_by: null,
+        updated_at: null,
+        updated_by: null
+      }
+    },
+    resetModalRma () {
+      this.modalRma = false
+      this.resetFormularioRma()
+      this.controleRma = {
+        exibir: false,
+        editar: false,
+        inserir: false
+      }
+      this.listarLicencasRegistros()
     },
     resetModalLicenca () {
       this.modalLicenca = false

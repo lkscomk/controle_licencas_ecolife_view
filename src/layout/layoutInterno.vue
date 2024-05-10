@@ -217,7 +217,7 @@
                 </v-btn>
                 <v-btn
                   :color="notificacao.cor"
-                  :disabled="notificacao.ciente_em"
+                  :disabled="!!notificacao.ciente_em"
                   class="mx-1"
                   outlined
                   small
