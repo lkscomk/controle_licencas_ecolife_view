@@ -37,6 +37,11 @@
         text: '',
         key: ''
       }, excluirRmaRegistro()"
+      @encerrarLicencaRegistro="aviso = {
+        modal: false,
+        text: '',
+        key: ''
+      }, encerrarLicencaRegistro()"
     />
     <template slot="listagem">
       <v-form @submit.prevent="''">
@@ -89,7 +94,6 @@
                           outlined
                         />
                       </v-col>
-
                       <v-col
                         xl="2"
                         lg="2"
@@ -99,7 +103,6 @@
                       >
                         <v-text-field
                           v-model="filtro.processo"
-                          v-mask="'##.#####.##/####'"
                           hide-details
                           dense
                           label="Processo"
@@ -1224,7 +1227,7 @@
                             color="warning"
                             @click="formularioLicenca.status_licenca_id === enumStatusLicenca.ativa ?
                             gerarRmaRegistro() :
-                            $notificacao('Só é possível gerar RMAS em licença ATIVAS.', 'erro')"
+                            $notificacao('Só é possível gerar RMAS em licenças ATIVAS.', 'erro')"
                           >
                             <v-icon dark>
                               mdi-plus-thick
@@ -1261,7 +1264,9 @@
                             small
                             block
                             color="primary"
-                            @click="modalRma = true, controleRma.inserir = true, formularioRma.status_rma_id = enumStatusRma.digitacao"
+                            @click="formularioLicenca.status_licenca_id === enumStatusLicenca.ativa ?
+                            (modalRma = true, controleRma.inserir = true, formularioRma.status_rma_id = enumStatusRma.digitacao) :
+                            $notificacao('Só é possível criar RMAS em licenças ATIVAS.', 'erro')"
                           >
                             <v-icon dark>
                               mdi-plus
@@ -2074,6 +2079,7 @@ export default {
       'editarLicenca',
       'excluirLicenca',
       'ativarLicenca',
+      'encerrarLicenca',
 
       'listarRma',
       'exibirRma',
@@ -2242,6 +2248,14 @@ export default {
     async ativarLicencaRegistro () {
       this.loading = true
       const res = await this.ativarLicenca(this.formularioLicenca)
+      if (res && !res.erro) {
+        this.exibirLicencaRegistro(this.formularioLicenca.id)
+      }
+      this.loading = false
+    },
+    async encerrarLicencaRegistro () {
+      this.loading = true
+      const res = await this.encerrarLicenca(this.formularioLicenca)
       if (res && !res.erro) {
         this.exibirLicencaRegistro(this.formularioLicenca.id)
       }
@@ -2425,7 +2439,7 @@ export default {
       this.setRegistrosEmpresas([])
       this.filtroModalEmpresa = {
         id: null,
-        cnpj: null,
+        cnpj: ' ',
         status: [],
         nomeFantasia: null,
         razaoSocial: null,
@@ -2465,6 +2479,7 @@ export default {
         inserir: false
       }
       this.listarLicencasRegistros()
+      this.setRegistrosRma([])
     },
     resetFormularioAnexo () {
       this.formularioAnexo = {

@@ -277,6 +277,16 @@ export const ativarLicenca = async ({ commit }, dados) => {
   }
 }
 
+export const encerrarLicenca = async ({ commit }, dados) => {
+  try {
+    const res = await axios.put('/licenca/encerrar/' + dados.id, dados)
+
+    return res.data
+  } catch (error) {
+    return null
+  }
+}
+
 // rma
 export const listarRma = async ({ commit }, filtros) => {
   try {
