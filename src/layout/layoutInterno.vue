@@ -1,6 +1,15 @@
 <template>
   <v-app>
     <loading :value="loading" />
+    <aviso
+      v-model="aviso.modal"
+      :options="aviso"
+      @registrarCienciaRegistro="aviso = {
+        modal: false,
+        text: '',
+        key: ''
+      }, registrarCienciaRegistro()"
+    />
     <v-app-bar
       app
       color="primary"
@@ -221,7 +230,8 @@
                   class="mx-1"
                   outlined
                   small
-                  @click="registrarCienciaRegistro(notificacao)"
+                  @click="aviso = { modal: true, text: 'Ao dá ciencia nesta notificação, a mesma permanecerá aqui por três. Depois não será mais notificado. Deseja continuar?', key: 'registrarCienciaRegistro'}
+                  notificacaoRegistro = notificacao"
                 >
                   <v-icon :color="notificacao.cor">
                     {{ !notificacao.ciente_em ? 'mdi-checkbox-blank-outline' : 'mdi-checkbox-marked' }}
@@ -354,21 +364,18 @@ export default {
       }
     },
     async buscarNotificacoesRegistros () {
-      const res = await this.buscarNotificacoes({
+      await this.buscarNotificacoes({
         usuarioId: this.perfil
       })
-      if (res && !res.erro) {
-        window.console.log(res)
-      }
     },
-    async registrarCienciaRegistro (notificacao) {
+    async registrarCienciaRegistro () {
       this.loading = true
-      const res = this.registrarCiencia(notificacao)
+      const res = await this.registrarCiencia(this.notificacaoRegistro)
 
       if (res && !res.erro) {
+        this.buscarNotificacoesRegistros()
         this.notificacaoRegistro = null
         this.modalNotificacoes = true
-        this.buscarNotificacoesRegistros()
       }
       this.loading = false
     },

@@ -7,6 +7,14 @@
     :mais-opcoes="formulario.id ? maisOpcoes : null"
     :titulo-formulario="controle.editar ? 'Editar Registro' : controle.inserir ? 'Adicionar Registro' : 'Exibir Registro'"
     @excluir="aviso = { modal: true, text: 'Deseja excluir esse registro?', key: 'excluirRegistro'}"
+    @anexos="formularioAnexo = {
+            value: true,
+            titulo: 'do Processo',
+            tabela: 'processo',
+            tabelaId: formulario.id,
+            tipoGrupoId: 8,
+            subTipoGrupoId: 3
+          }"
     @voltar="resetFormulario()"
   >
     <aviso
@@ -145,6 +153,7 @@
                 titulo="Listagem de Processos"
                 @paginacao="paginacao = $event"
                 @exibir="exibirRegistro($event)"
+                @dblclick="exibirRegistro($event.id)"
               />
             </v-col>
           </v-row>
@@ -1995,6 +2004,12 @@ export default {
     },
     maisOpcoes () {
       return [
+        {
+          acao: 'anexos',
+          color: 'primary',
+          icone: 'mdi-paperclip',
+          titulo: 'Anexos Processo'
+        },
         {
           acao: 'excluir',
           color: 'error',
