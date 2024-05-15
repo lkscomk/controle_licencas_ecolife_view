@@ -353,3 +353,13 @@ export const gerarRma = async ({ commit }, dados) => {
     return null
   }
 }
+
+export const ativarRma = async ({ commit }, dados) => {
+  try {
+    const res = await axios.put('/rma/ativar/' + dados.id, dados)
+
+    return res.data
+  } catch (error) {
+    return null
+  }
+}

@@ -50,6 +50,11 @@
         text: '',
         key: ''
       }, encerrarLicencaRegistro()"
+      @ativarRmaRegistro="aviso = {
+        modal: false,
+        text: '',
+        key: ''
+      }, ativarRmaRegistro()"
     />
     <template slot="listagem">
       <v-form @submit.prevent="''">
@@ -1339,6 +1344,23 @@
           </v-list-item-content>
         </v-list-item>
         <v-list-item
+          v-if="Number(formularioRma.status_rma_id) === Number(enumStatusRma.digitacao)"
+          @click="Number(formularioRma.status_rma_id) === Number(enumStatusRma.digitacao) ?
+          aviso = { modal: true, text: 'Essa ação não poderá ser desfeita. Deseja continuar?', key: 'ativarRmaRegistro'} :
+          $notificacao('Só é possível entregar RMA em digitação.', 'erro')"
+        >
+          <v-list-item-icon class="mr-3">
+            <v-icon :color="'primary'">
+              mdi-check
+            </v-icon>
+          </v-list-item-icon>
+          <v-list-item-content>
+            <v-list-item-title>
+              Entrega Feita
+            </v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+        <v-list-item
           @click="formularioAnexo = {
             value: true,
             titulo: 'do RMA',
@@ -2102,6 +2124,7 @@ export default {
       'salvarRma',
       'excluirRma',
       'gerarRma',
+      'ativarRma',
       'buscarDropdownStatusRma'
     ]),
     async listarRegistro () {
@@ -2364,6 +2387,14 @@ export default {
       if (res && !res.erro) {
         this.resetModalRma()
         this.listarRmaRegistro()
+      }
+      this.loading = false
+    },
+    async ativarRmaRegistro () {
+      this.loading = true
+      const res = await this.ativarRma(this.formularioRma)
+      if (res && !res.erro) {
+        this.exibirRmaRegistro(this.formularioRma.id)
       }
       this.loading = false
     },
