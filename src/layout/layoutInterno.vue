@@ -230,7 +230,7 @@
                   class="mx-1"
                   outlined
                   small
-                  @click="aviso = { modal: true, text: 'Ao dá ciencia nesta notificação, a mesma permanecerá aqui por três. Depois não será mais notificado. Deseja continuar?', key: 'registrarCienciaRegistro'}
+                  @click="aviso = { modal: true, text: 'Ao dá ciencia nesta notificação, a mesma permanecerá aqui por três dias. Depois não será mais notificado. Deseja continuar? \n \n <br>IMPORTANTE: Essa notificação só irá parar de ser notificada se o problema for resolvido!</br>', key: 'registrarCienciaRegistro'}
                   notificacaoRegistro = notificacao"
                 >
                   <v-icon :color="notificacao.cor">

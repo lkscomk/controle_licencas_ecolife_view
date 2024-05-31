@@ -333,7 +333,7 @@
                     v-model="formulario.empresa_id"
                     :error-messages="errors"
                     :hide-details="!errors.length"
-                    :disabled="controle.exibir"
+                    :disabled="controle.exibir || (registrosLicencas && registrosLicencas.length)"
                     append-icon="mdi-magnify"
                     dense
                     label="Empresa (clique na lupa)"
@@ -885,7 +885,7 @@
           </v-list-item-content>
         </v-list-item>
         <v-list-item
-          @click="Number(formularioLicenca.status_licenca_id) === Number(enumStatusLicenca.digicacao) ?
+          @click="Number(formularioLicenca.status_licenca_id) === Number(enumStatusLicenca.digitacao) ?
           aviso = { modal: true, text: 'Deseja excluir esse registro?', key: 'excluirLicencaRegistro'} :
           $notificacao('Só é possível excluir licença em digitação.', 'erro')"
         >
