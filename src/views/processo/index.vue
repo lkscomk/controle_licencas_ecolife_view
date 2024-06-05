@@ -333,7 +333,7 @@
                     v-model="formulario.empresa_id"
                     :error-messages="errors"
                     :hide-details="!errors.length"
-                    :disabled="controle.exibir || (registrosLicencas && registrosLicencas.length)"
+                    :disabled="controle.exibir"
                     append-icon="mdi-magnify"
                     dense
                     label="Empresa (clique na lupa)"
