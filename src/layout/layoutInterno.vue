@@ -30,7 +30,7 @@
       <v-app-bar-nav-icon
         class="mx-1"
         title="Notificações do Sistema"
-        @click="modalNotificacoes = !modalNotificacoes"
+        @click="modalNotificacoes = !modalNotificacoes, buscarNotificacoesRegistros()"
       >
         <v-avatar
           icon
@@ -208,7 +208,7 @@
                 {{ notificacao.descricao }}
               </h3>
               <span>
-                <b>1</b> {{ notificacao.conteudo }}
+                <b>{{ notificacao.tabela_id }} - </b> {{ notificacao.conteudo }}
               </span>
               <v-spacer />
               <v-col>

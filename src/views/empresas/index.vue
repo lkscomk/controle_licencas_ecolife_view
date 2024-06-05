@@ -931,6 +931,11 @@ export default {
     }
   },
   watch: {
+    async 'formulario.cep' (value) {
+      if (value && (String(value).match(/\d/g).join('').length === 8)) {
+        this.buscarRegistroCep(String(value).match(/\d/g).join(''))
+      }
+    },
     async 'formulario.estado' (value) {
       if (value && (this.formulario.estado === 'RO' || this.formulario.estado === 'AM' || this.formulario.estado === 'AC')) await this.buscarDropdownCidade(value)
     }
@@ -950,6 +955,7 @@ export default {
       'salvar',
       'ativar',
       'excluir',
+      'buscarCep',
       'buscarDropdownPortesEmpresa',
       'buscarDropdownStatusEmpresa',
       'buscarDropdownEstados',
@@ -1057,6 +1063,17 @@ export default {
       if (res && !res.erro) {
         this.modal = false
         this.exibirRegistro(this.formulario.id)
+      }
+      this.loading = false
+    },
+    async buscarRegistroCep (cep) {
+      this.loading = true
+      const res = await this.buscarCep(`viacep.com.br/ws/${cep}/json`)
+      if (res && !res.erro) {
+        this.formulario.bairro = res.bairro
+        this.formulario.logradouro = res.logradouro
+        this.formulario.estado = res.uf
+        this.formulario.cidade = res.ibge
       }
       this.loading = false
     },

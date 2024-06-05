@@ -137,3 +137,13 @@ export const editar = async ({ commit }, dados) => {
     return null
   }
 }
+
+export const buscarCep = async ({ commit }, path) => {
+  try {
+    const res = await axios.get('/sistema/proxy/' + path)
+
+    return res.data
+  } catch (error) {
+    return null
+  }
+}
