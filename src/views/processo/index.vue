@@ -2135,7 +2135,7 @@ export default {
         status: this.filtro.status || null,
         tipo: this.filtro.tipo || null,
         razaoSocial: this.filtro.razaoSocial || null,
-        processo: this.filtro.processo ? String(this.filtro.processo).match(/\d/g).join('') : null,
+        processo: this.filtro.processo || null,
         dataVencimento: this.filtro.dataVencimento ? this.$day(this.filtro.dataVencimento, 'DD/MM/YYYY').format('YYYY-MM-DD') : null
       })
       this.loading = false
