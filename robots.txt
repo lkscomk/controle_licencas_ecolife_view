@@ -1,0 +1,17 @@
+# Permitir acesso a todas as páginas
+User-agent: *
+Allow: /
+
+# Bloquear pastas específicas que não precisam ser indexadas
+Disallow: /node_modules/
+Disallow: /public/
+Disallow: /src/
+
+# Bloquear arquivos específicos que não precisam ser indexados
+Disallow: /README.md
+Disallow: /package.json
+Disallow: /package-lock.json
+Disallow: /webpack.config.js
+
+# Bloquear URLs com parâmetros de consulta (opcional, se necessário)
+Disallow: /*?
