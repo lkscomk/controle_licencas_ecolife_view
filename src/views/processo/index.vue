@@ -900,7 +900,7 @@
             tabelaId: formularioLicenca.id,
             tipoGrupoId: 8,
             subTipoGrupoId: 1,
-            adicionar: Number(formularioLicenca.status_licenca_id) === Number(enumStatusLicenca.ativa)
+            adicionar: true
           }"
         >
           <v-list-item-icon class="mr-3">
