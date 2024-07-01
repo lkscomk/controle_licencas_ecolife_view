@@ -323,6 +323,23 @@
                 cols="12"
               >
                 <v-text-field
+                  v-model="formulario.ultimo_login"
+                  disabled
+                  hide-details
+                  dense
+                  label="Último Login Em"
+                  outlined
+                />
+              </v-col>
+              <v-col
+                v-if="formulario.id"
+                xl="2"
+                lg="2"
+                md="3"
+                sm="12"
+                cols="12"
+              >
+                <v-text-field
                   v-model="formulario.created_by"
                   disabled
                   hide-details
@@ -516,7 +533,11 @@ export default {
       data_nascimento: null,
       email: null,
       cpf: null,
-      created_at: null
+      ultimo_login: null,
+      created_at: null,
+      created_by: null,
+      updated_at: null,
+      updated_by: null
     },
     paginacao: {
       pagina: 1,
@@ -608,7 +629,8 @@ export default {
           created_at: res.created_at ? this.$day(res.created_at).format('DD/MM/YYYY HH:mm:ss') : null,
           created_by: res.created_by || null,
           updated_at: res.updated_at ? this.$day(res.updated_at).format('DD/MM/YYYY HH:mm:ss') : null,
-          updated_by: res.updated_by || null
+          updated_by: res.updated_by || null,
+          ultimo_login: res.ultimo_login ? this.$day(res.ultimo_login).format('DD/MM/YYYY HH:mm:ss') : null
         }
       }
       this.modal = true
