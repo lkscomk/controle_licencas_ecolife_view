@@ -1,5 +1,19 @@
 import axios from '@/plugins/axios_local'
 
+export const buscarDropdownStatusProcesso = async ({ commit }) => {
+  try {
+    const res = await axios.get('/sistema/opcoes/10')
+
+    if (!res.data.erro) {
+      commit('dropdownStatusProcesso', res.data)
+    }
+
+    return res.data
+  } catch (error) {
+    return null
+  }
+}
+
 export const buscarDropdownStatusRma = async ({ commit }) => {
   try {
     const res = await axios.get('/sistema/opcoes/9')
@@ -209,6 +223,15 @@ export const excluir = async ({ commit }, id) => {
   }
 }
 
+export const desativar = async ({ commit }, dados) => {
+  try {
+    const res = await axios.put('/processo/desativar/' + dados.id, dados)
+
+    return res.data
+  } catch (error) {
+    return null
+  }
+}
 // licenca
 
 export const listarLicencas = async ({ commit }, filtros) => {

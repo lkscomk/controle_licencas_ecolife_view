@@ -2,6 +2,7 @@ export default {
   registros: [],
   registrosRma: [],
   registrosLicencas: [],
+  dropdownStatusProcesso: [],
   dropdownPorteLicencas: [],
   dropdownStatusLicencas: [],
   dropdownStatusRma: [],

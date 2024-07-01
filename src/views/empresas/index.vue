@@ -932,7 +932,7 @@ export default {
   },
   watch: {
     async 'formulario.cep' (value) {
-      if (value && (String(value).match(/\d/g).join('').length === 8) && controle.inserir) {
+      if (value && (String(value).match(/\d/g).join('').length === 8) && this.controle.inserir) {
         this.buscarRegistroCep(String(value).match(/\d/g).join(''))
       }
     },

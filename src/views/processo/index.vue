@@ -7,6 +7,7 @@
     :mais-opcoes="formulario.id ? maisOpcoes : null"
     :titulo-formulario="controle.editar ? 'Editar Registro' : controle.inserir ? 'Adicionar Registro' : 'Exibir Registro'"
     @excluir="aviso = { modal: true, text: 'Deseja excluir esse registro?', key: 'excluirRegistro'}"
+    @desativar="aviso = { modal: true, text: 'Deseja desativar esse registro?', key: 'desativarRegistro'}"
     @anexos="formularioAnexo = {
             value: true,
             titulo: 'do Processo',
@@ -55,7 +56,13 @@
         text: '',
         key: ''
       }, ativarRmaRegistro()"
+      @desativarRegistro="aviso = {
+        modal: false,
+        text: '',
+        key: ''
+      }, desativarRegistro()"
     />
+
     <template slot="listagem">
       <v-form @submit.prevent="''">
         <v-container
@@ -67,7 +74,7 @@
               <filtro
                 :options="optionsFilter"
                 @clearFilters="limparFiltros()"
-                @adicionar="controle.inserir = true, modal = true, formulario.status_licenca_id === enumStatusLicenca.digitacao"
+                @adicionar="controle.inserir = true, modal = true, formulario.status_processo_id === enumStatusProcesso.digitacao"
                 @pesquisar="listarRegistro()"
               >
                 <template slot="filtros">
@@ -191,11 +198,31 @@
                   outlined
                 />
               </v-col>
+
               <v-col
-                :xl="formulario.id ? 10 : 12"
-                :lg="formulario.id ? 10 : 12"
-                :md="formulario.id ? 10 : 12"
-                :sm="formulario.id ? 10 : 12"
+                xl="2"
+                lg="2"
+                md="3"
+                sm="4"
+                cols="12"
+              >
+                <v-autocomplete
+                  v-model="formulario.status_processo_id"
+                  disabled
+                  :items="dropdownStatusProcesso"
+                  hide-details
+                  dense
+                  item-value="item"
+                  item-text="descricao"
+                  label="Status Processo"
+                  outlined
+                />
+              </v-col>
+              <v-col
+                :xl="formulario.id ? 8 : 10"
+                :lg="formulario.id ? 8 : 10"
+                :md="formulario.id ? 7 : 9"
+                :sm="formulario.id ? 6 : 8"
                 cols="12"
               >
                 <validation-provider
@@ -582,7 +609,9 @@
                   small
                   block
                   color="primary"
-                  @click="modalLicenca = true, controleLicenca.inserir = true, formularioLicenca.status_licenca_id = enumStatusLicenca.digitacao"
+                  @click="Number(formulario.status_processo_id) === Number(enumStatusProcesso.desativado) ?
+                  $notificacao('Só é possível adicionar nova licença em processo ativo ou em digitação.', 'erro') :
+                  (modalLicenca = true, controleLicenca.inserir = true, formularioLicenca.status_licenca_id = enumStatusLicenca.digitacao)"
                 >
                   <v-icon dark>
                     mdi-plus
@@ -870,7 +899,8 @@
             tabela: 'licenca',
             tabelaId: formularioLicenca.id,
             tipoGrupoId: 8,
-            subTipoGrupoId: 1
+            subTipoGrupoId: 1,
+            adicionar: Number(formularioLicenca.status_licenca_id) === Number(enumStatusLicenca.ativa)
           }"
         >
           <v-list-item-icon class="mr-3">
@@ -1624,6 +1654,7 @@
       :tabela-id="formularioAnexo.tabelaId"
       :tipo-grupo-id="formularioAnexo.tipoGrupoId"
       :subtipo-grupo-id="formularioAnexo.subTipoGrupoId"
+      :adicionar="formularioAnexo.adicionar"
       @fechar="resetFormularioAnexo"
     />
   </pagina>
@@ -1821,16 +1852,22 @@ export default {
         value: 'cnpj'
       },
       {
-        text: 'Razão Social/Nome',
+        text: 'Status',
         align: 'start',
         sortable: false,
-        value: 'razao_social'
+        value: 'status'
       },
       {
         text: 'N. Processo',
         align: 'start',
         sortable: false,
         value: 'processo'
+      },
+      {
+        text: 'Razão Social/Nome',
+        align: 'start',
+        sortable: false,
+        value: 'razao_social'
       },
       {
         text: 'Criado Por',
@@ -1856,7 +1893,7 @@ export default {
     filtro: {
       id: null,
       cnpj: null,
-      status: null,
+      status_processo_id: null,
       tipo: null,
       razaoSocial: null,
       processo: null,
@@ -1880,6 +1917,7 @@ export default {
     formulario: {
       id: null,
       processo: null,
+      status_processo_id: null,
       observacao: null,
       created_at: null,
       created_by: null,
@@ -1930,7 +1968,8 @@ export default {
       tabela: null,
       tabelaId: null,
       tipoGrupoId: null,
-      subTipoGrupoId: null
+      subTipoGrupoId: null,
+      adicionar: null
     },
     formularioRma: {
       id: null,
@@ -1943,6 +1982,11 @@ export default {
       created_by: null,
       updated_at: null,
       updated_by: null
+    },
+    enumStatusProcesso: {
+      digitacao: 1,
+      ativa: 2,
+      desativada: 3
     },
     enumStatusLicenca: {
       digitacao: 1,
@@ -1983,6 +2027,7 @@ export default {
       'registrosRma',
       'registrosLicencas',
       'registrosEmpresas',
+      'dropdownStatusProcesso',
       'dropdownStatusLicencas',
       'dropdownStatusRma',
       'dropdownPorteLicencas',
@@ -2026,6 +2071,12 @@ export default {
     },
     maisOpcoes () {
       return [
+        {
+          acao: 'desativar',
+          color: 'error',
+          icone: 'mdi-cancel',
+          titulo: 'Desativar Processo'
+        },
         {
           acao: 'anexos',
           color: 'primary',
@@ -2082,6 +2133,7 @@ export default {
     await this.buscarDropdownPortesEmpresa()
     await this.buscarDropdownStatusEmpresa()
     await this.buscarDropdownEstados()
+    await this.buscarDropdownStatusProcesso()
     this.listarRegistro()
     this.listarRegistroEmpresas()
   },
@@ -2098,9 +2150,11 @@ export default {
       'salvar',
       'editar',
       'excluir',
+      'desativar',
       'buscarDropdownStatusLicencas',
       'buscarDropdownTiposLicencas',
       'buscarDropdownPorteLicencas',
+      'buscarDropdownStatusProcesso',
 
       'listarEmpresas',
       'exibirEmpresas',
@@ -2132,7 +2186,7 @@ export default {
       await this.listar({
         id: this.filtro.id || null,
         cnpj: this.filtro.cnpj ? String(this.filtro.cnpj).match(/\d/g).join('') : null,
-        status: this.filtro.status || null,
+        status_processo_id: this.filtro.status_processo_id || null,
         tipo: this.filtro.tipo || null,
         razaoSocial: this.filtro.razaoSocial || null,
         processo: this.filtro.processo || null,
@@ -2147,6 +2201,7 @@ export default {
         this.formulario = {
           id: res.id || null,
           processo: res.processo || null,
+          status_processo_id: res.status_processo_id || null,
           observacao: res.observacao || null,
           created_at: res.created_at ? this.$day(res.created_at).format('DD/MM/YYYY HH:mm:ss') : null,
           created_by: res.created_by || null,
@@ -2198,6 +2253,14 @@ export default {
       if (res && !res.erro) {
         this.modal = false
         this.resetFormulario()
+      }
+      this.loading = false
+    },
+    async desativarRegistro () {
+      this.loading = true
+      const res = await this.desativar(this.formulario)
+      if (res && !res.erro) {
+        this.exibirRegistro(this.formulario.id)
       }
       this.loading = false
     },
@@ -2443,6 +2506,7 @@ export default {
       this.formulario = {
         id: null,
         processo: null,
+        status_processo_id: null,
         observacao: null,
         created_at: null,
         created_by: null,
@@ -2525,6 +2589,7 @@ export default {
         inserir: false
       }
       this.listarLicencasRegistros()
+      this.exibirRegistro(this.formulario.id)
       this.setRegistrosRma([])
     },
     resetFormularioAnexo () {

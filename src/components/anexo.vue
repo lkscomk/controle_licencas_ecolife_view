@@ -241,13 +241,11 @@
               <v-col
                 cols="12"
                 class="d-flex justify-center"
-                @click="adicionar ? controleAnexos.inserir = true : null"
               >
                 <v-icon
                   left
                   color="primary"
                   size="100"
-                  :style="adicionar ? 'cursor: pointer;' : null"
                 >
                   mdi-file-cancel-outline
                 </v-icon>

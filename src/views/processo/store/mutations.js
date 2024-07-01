@@ -16,6 +16,9 @@ export default {
   dropdownPortesEmpresa (state, param) {
     state.dropdownPortesEmpresa = param
   },
+  dropdownStatusProcesso (state, param) {
+    state.dropdownStatusProcesso = param
+  },
   dropdownStatusRma (state, param) {
     state.dropdownStatusRma = param
   },
@@ -39,7 +42,6 @@ export default {
   },
   setRegistros (state, param) {
     param.forEach(element => {
-      element.tipo = { chip: true, color: element.tipo_cor, text: element.tipo_descricao }
       element.status = { chip: true, color: element.status_cor, text: element.status_descricao }
       element.cnpj = element.cnpj ? (String(element.cnpj).length <= 11 ? filter(String(element.cnpj).padStart(11, '0'), ['###.###.###-##']) : filter(String(element.cnpj).padStart(14, '0'), ['##.###.###/####-##'])) : '-'
       element.processo = element.processo || null
