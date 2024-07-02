@@ -807,16 +807,16 @@ export default {
         value: 'status'
       },
       {
-        text: 'Nome Fantasia',
-        align: 'start',
-        sortable: true,
-        value: 'nome_fantasia'
-      },
-      {
         text: 'Razão Social',
         align: 'start',
         sortable: true,
         value: 'razao_social'
+      },
+      {
+        text: 'Nome Fantasia',
+        align: 'start',
+        sortable: true,
+        value: 'nome_fantasia'
       },
       {
         text: 'Data Cadastro',
