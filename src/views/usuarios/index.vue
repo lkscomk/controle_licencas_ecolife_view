@@ -507,6 +507,12 @@ export default {
         value: 'cpf'
       },
       {
+        text: 'Último Login Em',
+        align: 'start',
+        sortable: false,
+        value: 'ultimo_login'
+      },
+      {
         text: 'Criado Em',
         align: 'start',
         sortable: false,
