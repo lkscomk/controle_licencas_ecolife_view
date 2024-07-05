@@ -839,29 +839,31 @@ export default {
       this.$refs.fileInput.click()
     },
     handleFileSelect (event) {
-      window.console.log(event)
       this.selectedFile = event.target.files[0]
-      if (`.${this.selectedFile.name.split('.').pop()}`.toLowerCase() !== '.pdf') {
-        this.$notificacao('O sistema só suporta arquivos PDF, outros tipos estão em desenvolvimento.', 'erro')
-        this.selectedFile = null
-        return
-      }
-      if (this.selectedFile && (this.selectedFile.size <= 5 * 1024 * 1024)) {
-        const reader = new FileReader()
-        reader.onload = () => {
-          this.formulario = {
-            id: null,
-            extensao: this.selectedFile.name ? `.${this.selectedFile.name.split('.').pop()}`.toLowerCase() : null,
-            nome: this.selectedFile.name,
-            arquivo: reader.result
-          }
-          this.controleAnexos.inserir = true
+      if (this.selectedFile) {
+        if (`.${this.selectedFile.name.split('.').pop()}`.toLowerCase() !== '.pdf') {
+          this.$notificacao('O sistema só suporta arquivos PDF, outros tipos estão em desenvolvimento.', 'erro')
+          this.selectedFile = null
+          return
         }
-        reader.readAsDataURL(this.selectedFile)
+        if (this.selectedFile && (this.selectedFile.size <= 5 * 1024 * 1024)) {
+          const reader = new FileReader()
+          reader.onload = () => {
+            this.formulario = {
+              id: null,
+              extensao: this.selectedFile.name ? `.${this.selectedFile.name.split('.').pop()}`.toLowerCase() : null,
+              nome: this.selectedFile.name,
+              arquivo: reader.result
+            }
+            this.controleAnexos.inserir = true
+          }
+          reader.readAsDataURL(this.selectedFile)
+        }
       } else {
         this.$notificacao('Por favor, selecione um arquivo de até 5MB.', 'error')
         this.selectedFile = null
         event.target.files[0] = null
+        event.target.value = null
       }
     },
     resetFormulario () {
