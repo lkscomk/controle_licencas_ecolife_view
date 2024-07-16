@@ -62,7 +62,6 @@
         key: ''
       }, desativarRegistro()"
     />
-
     <template slot="listagem">
       <v-form @submit.prevent="''">
         <v-container
@@ -86,8 +85,8 @@
                       <v-col
                         xl="1"
                         lg="1"
-                        md="2"
-                        sm="4"
+                        md="4"
+                        sm="3"
                         cols="12"
                       >
                         <v-text-field
@@ -117,7 +116,25 @@
                       <v-col
                         xl="2"
                         lg="2"
-                        md="6"
+                        md="4"
+                        sm="4"
+                        cols="12"
+                      >
+                        <v-autocomplete
+                          v-model="filtro.status_processo_id"
+                          :items="dropdownStatusProcesso"
+                          hide-details
+                          dense
+                          item-value="item"
+                          item-text="descricao"
+                          label="Status Processo"
+                          outlined
+                        />
+                      </v-col>
+                      <v-col
+                        xl="2"
+                        lg="2"
+                        md="4"
                         sm="4"
                         cols="12"
                       >
@@ -130,9 +147,9 @@
                         />
                       </v-col>
                       <v-col
-                        xl="7"
-                        lg="7"
-                        md="12"
+                        xl="5"
+                        lg="5"
+                        md="8"
                         sm="8"
                         cols="12"
                       >
@@ -1270,7 +1287,7 @@
                             block
                             color="warning"
                             @click="formularioLicenca.status_licenca_id === enumStatusLicenca.ativa ?
-                            gerarRmaRegistro() :
+                            (formularioLicenca.tipo_licenca_id === enumTipoLicenca.dispensa || formularioLicenca.tipo_licenca_id === enumTipoLicenca.declaracao ? $notificacao('Não é possível gerar RMAS para licenças do tipo dispensa ou declaração.', 'erro') : gerarRmaRegistro()) :
                             $notificacao('Só é possível gerar RMAS em licenças ATIVAS.', 'erro')"
                           >
                             <v-icon dark>
@@ -1354,7 +1371,7 @@
       width="100%"
       :titulo="'Rma'"
       :mais-opcoes="!!formularioRma.id"
-      @fechar="resetModalRma()"
+      @fechar="listarRmaRegistro(), resetModalRma()"
     >
       <template slot="maisOpcoes">
         <v-list-item
@@ -1987,6 +2004,10 @@ export default {
       digitacao: 1,
       ativa: 2,
       desativada: 3
+    },
+    enumTipoLicenca: {
+      dispensa: 1,
+      declaracao: 7
     },
     enumStatusLicenca: {
       digitacao: 1,
