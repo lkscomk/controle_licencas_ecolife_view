@@ -1331,7 +1331,7 @@
                             block
                             color="primary"
                             @click="formularioLicenca.status_licenca_id === enumStatusLicenca.ativa ?
-                            (modalRma = true, controleRma.inserir = true, formularioRma.status_rma_id = enumStatusRma.digitacao) :
+                            (formularioLicenca.tipo_licenca_id === enumTipoLicenca.dispensa || formularioLicenca.tipo_licenca_id === enumTipoLicenca.declaracao ? $notificacao('Não é possível gerar RMAS para licenças do tipo dispensa ou declaração.', 'erro') : (modalRma = true, controleRma.inserir = true, formularioRma.status_rma_id = enumStatusRma.digitacao)) :
                             $notificacao('Só é possível criar RMAS em licenças ATIVAS.', 'erro')"
                           >
                             <v-icon dark>
