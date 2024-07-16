@@ -62,7 +62,7 @@
         key: ''
       }, desativarRegistro()"
     />
-    {{  $vuetify.breakpoint.name }}
+
     <template slot="listagem">
       <v-form @submit.prevent="''">
         <v-container
