@@ -95,6 +95,7 @@
                           dense
                           label="Código"
                           outlined
+                          @keydown.enter="!loading ? listarRegistro() : null"
                         />
                       </v-col>
                       <v-col
@@ -111,6 +112,7 @@
                           dense
                           label="CNPJ/CPF"
                           outlined
+                          @keydown.enter="!loading ? listarRegistro() : null"
                         />
                       </v-col>
                       <v-col
@@ -120,7 +122,7 @@
                         sm="4"
                         cols="12"
                       >
-                        <v-autocomplete
+                        <selecao-all
                           v-model="filtro.status_processo_id"
                           :items="dropdownStatusProcesso"
                           hide-details
@@ -129,6 +131,7 @@
                           item-text="descricao"
                           label="Status Processo"
                           outlined
+                          @keydown.enter="!loading ? listarRegistro() : null"
                         />
                       </v-col>
                       <v-col
@@ -144,6 +147,7 @@
                           dense
                           label="Processo"
                           outlined
+                          @keydown.enter="!loading ? listarRegistro() : null"
                         />
                       </v-col>
                       <v-col
@@ -160,6 +164,7 @@
                           dense
                           label="Razão Social"
                           outlined
+                          @keydown.enter="!loading ? listarRegistro() : null"
                         />
                       </v-col>
                     </v-row>
@@ -2207,7 +2212,7 @@ export default {
       await this.listar({
         id: this.filtro.id || null,
         cnpj: this.filtro.cnpj ? String(this.filtro.cnpj).match(/\d/g).join('') : null,
-        status_processo_id: this.filtro.status_processo_id || null,
+        status_processo_id: this.filtro.status_processo_id && this.filtro.status_processo_id.length ? this.filtro.status_processo_id : null,
         tipo: this.filtro.tipo || null,
         razaoSocial: this.filtro.razaoSocial || null,
         processo: this.filtro.processo || null,
