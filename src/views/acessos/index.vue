@@ -244,6 +244,7 @@
       </v-btn>
     </template>
     <template
+      v-if="formulario.id"
       slot="relacionamento"
     >
       <v-card

@@ -283,7 +283,7 @@
           <v-btn
             color="error"
             small
-            @click="$emit('fechar'), resetFormulario(), setRegistrosAnexos([])"
+            @click="$emit('fechar'), resetFormulario(), setRegistrosAnexos([]), resetFileInput()"
           >
             <v-icon
               left
@@ -839,32 +839,42 @@ export default {
       this.$refs.fileInput.click()
     },
     handleFileSelect (event) {
-      this.selectedFile = event.target.files[0]
+      const file = event.target.files[0]
+      this.selectedFile = file
+
       if (this.selectedFile) {
-        if (`.${this.selectedFile.name.split('.').pop()}`.toLowerCase() !== '.pdf') {
+        const fileExtension = `.${this.selectedFile.name.split('.').pop()}`.toLowerCase()
+
+        if (fileExtension !== '.pdf') {
           this.$notificacao('O sistema só suporta arquivos PDF, outros tipos estão em desenvolvimento.', 'erro')
-          this.selectedFile = null
+          this.resetFileInput(event)
           return
         }
-        if (this.selectedFile && (this.selectedFile.size <= 5 * 1024 * 1024)) {
+
+        if (this.selectedFile.size <= 5 * 1024 * 1024) { // Limite de 5MB
           const reader = new FileReader()
           reader.onload = () => {
             this.formulario = {
               id: null,
-              extensao: this.selectedFile.name ? `.${this.selectedFile.name.split('.').pop()}`.toLowerCase() : null,
+              extensao: fileExtension,
               nome: this.selectedFile.name,
               arquivo: reader.result
             }
             this.controleAnexos.inserir = true
           }
           reader.readAsDataURL(this.selectedFile)
+        } else {
+          this.$notificacao('Por favor, selecione um arquivo de até 5MB.', 'erro')
+          this.resetFileInput(event)
         }
       } else {
-        this.$notificacao('Por favor, selecione um arquivo de até 5MB.', 'error')
-        this.selectedFile = null
-        event.target.files[0] = null
-        event.target.value = null
+        this.$notificacao('Nenhum arquivo selecionado.', 'erro')
+        this.resetFileInput(event)
       }
+    },
+    resetFileInput (event) {
+      this.selectedFile = null
+      event.target.value = null
     },
     resetFormulario () {
       this.formulario = {
