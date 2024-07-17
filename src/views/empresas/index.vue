@@ -62,6 +62,7 @@
                           dense
                           label="Código"
                           outlined
+                          @keydown.enter="!loading ? listarRegistro() : null"
                         />
                       </v-col>
                       <v-col
@@ -78,6 +79,7 @@
                           dense
                           label="CNPJ/CPF"
                           outlined
+                          @keydown.enter="!loading ? listarRegistro() : null"
                         />
                       </v-col>
                       <v-col
@@ -96,6 +98,7 @@
                           item-text="descricao"
                           label="Status"
                           outlined
+                          @keydown.enter="!loading ? listarRegistro() : null"
                         />
                       </v-col>
                       <v-col
@@ -112,6 +115,7 @@
                           dense
                           label="Nome Fantasia"
                           outlined
+                          @keydown.enter="!loading ? listarRegistro() : null"
                         />
                       </v-col>
                       <v-col
@@ -128,6 +132,7 @@
                           dense
                           label="Razão Social"
                           outlined
+                          @keydown.enter="!loading ? listarRegistro() : null"
                         />
                       </v-col>
                       <v-col
@@ -146,6 +151,7 @@
                           item-text="descricao"
                           label="Porte"
                           outlined
+                          @keydown.enter="!loading ? listarRegistro() : null"
                         />
                       </v-col>
                       <v-col
@@ -164,6 +170,7 @@
                           item-text="nome"
                           label="Cidade"
                           outlined
+                          @keydown.enter="!loading ? listarRegistro() : null"
                         />
                       </v-col>
                     </v-row>

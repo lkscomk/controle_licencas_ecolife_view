@@ -208,7 +208,7 @@
                 {{ notificacao.descricao }}
               </h3>
               <span>
-                <b>{{ notificacao.tabela_id }} - </b> {{ notificacao.conteudo }}
+                {{ notificacao.conteudo }}
               </span>
               <v-spacer />
               <v-col>

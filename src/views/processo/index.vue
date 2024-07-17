@@ -151,10 +151,10 @@
                         />
                       </v-col>
                       <v-col
-                        xl="5"
-                        lg="5"
-                        md="8"
-                        sm="8"
+                        xl="3"
+                        lg="3"
+                        md="5"
+                        sm="5"
                         cols="12"
                       >
                         <v-text-field
@@ -163,6 +163,23 @@
                           hide-details
                           dense
                           label="Razão Social"
+                          outlined
+                          @keydown.enter="!loading ? listarRegistro() : null"
+                        />
+                      </v-col>
+                      <v-col
+                        xl="2"
+                        lg="2"
+                        md="3"
+                        sm="3"
+                        cols="12"
+                      >
+                        <v-text-field
+                          v-model="filtro.created_by"
+                          v-uppercase
+                          hide-details
+                          dense
+                          label="Criado Por"
                           outlined
                           @keydown.enter="!loading ? listarRegistro() : null"
                         />
@@ -922,7 +939,8 @@
             tabelaId: formularioLicenca.id,
             tipoGrupoId: 8,
             subTipoGrupoId: 1,
-            adicionar: true
+            excluir: (formularioLicenca.status_licenca_id === enumStatusLicenca.digitacao || formularioLicenca.status_licenca_id === enumStatusLicenca.ativa),
+            adicionar: (formularioLicenca.status_licenca_id === enumStatusLicenca.digitacao || formularioLicenca.status_licenca_id === enumStatusLicenca.ativa)
           }"
         >
           <v-list-item-icon class="mr-3">
@@ -1419,7 +1437,9 @@
             tabela: 'rma',
             tabelaId: formularioRma.id,
             tipoGrupoId: 8,
-            subTipoGrupoId: 2
+            subTipoGrupoId: 2,
+            excluir: formularioRma.status_rma_id === enumStatusRma.digitacao,
+            adicionar: formularioRma.status_rma_id === enumStatusRma.digitacao
           }"
         >
           <v-list-item-icon class="mr-3">
@@ -1676,6 +1696,7 @@
       :tabela-id="formularioAnexo.tabelaId"
       :tipo-grupo-id="formularioAnexo.tipoGrupoId"
       :subtipo-grupo-id="formularioAnexo.subTipoGrupoId"
+      :excluir="formularioAnexo.excluir"
       :adicionar="formularioAnexo.adicionar"
       @fechar="resetFormularioAnexo"
     />
@@ -1919,7 +1940,7 @@ export default {
       tipo: null,
       razaoSocial: null,
       processo: null,
-      dataVencimento: null
+      created_by: null
     },
     controle: {
       exibir: false,
@@ -2007,8 +2028,8 @@ export default {
     },
     enumStatusProcesso: {
       digitacao: 1,
-      ativa: 2,
-      desativada: 3
+      ativo: 2,
+      desativado: 3
     },
     enumTipoLicenca: {
       dispensa: 1,
@@ -2088,34 +2109,39 @@ export default {
           this.filtro.id ||
           this.filtro.cnpj ||
           (this.filtro.status ? this.filtro.status.length : null) ||
-          (this.filtro.tipo ? this.filtro.tipo.length : null) ||
           this.filtro.razaoSocial ||
           this.filtro.processo ||
-          this.filtro.dataVencimento
+          this.filtro.created_by
         )
       }
     },
     maisOpcoes () {
-      return [
-        {
+      const res = []
+      if (this.formulario.status_processo_id === this.enumStatusProcesso.digitacao || this.formulario.status_processo_id === this.enumStatusProcesso.ativo) {
+        res.push({
           acao: 'desativar',
           color: 'error',
           icone: 'mdi-cancel',
           titulo: 'Desativar Processo'
-        },
-        {
+        })
+      }
+      if (this.formulario.id) {
+        res.push({
           acao: 'anexos',
           color: 'primary',
           icone: 'mdi-paperclip',
           titulo: 'Anexos Processo'
-        },
-        {
+        })
+      }
+      if (this.formulario.status_processo_id === this.enumStatusProcesso.digitacao || this.formulario.status_processo_id === this.enumStatusProcesso.ativo) {
+        res.push({
           acao: 'excluir',
           color: 'error',
           icone: 'mdi-delete',
           titulo: 'Excluir'
-        }
-      ]
+        })
+      }
+      return res
     }
   },
   watch: {
@@ -2216,7 +2242,7 @@ export default {
         tipo: this.filtro.tipo || null,
         razaoSocial: this.filtro.razaoSocial || null,
         processo: this.filtro.processo || null,
-        dataVencimento: this.filtro.dataVencimento ? this.$day(this.filtro.dataVencimento, 'DD/MM/YYYY').format('YYYY-MM-DD') : null
+        created_by: this.filtro.created_by || null
       })
       this.loading = false
     },
