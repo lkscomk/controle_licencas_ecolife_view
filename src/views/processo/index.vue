@@ -1885,13 +1885,13 @@ export default {
       {
         text: 'Código',
         align: 'start',
-        sortable: false,
+        sortable: true,
         value: 'id'
       },
       {
         text: 'CNPJ/CPF',
         align: 'start',
-        sortable: false,
+        sortable: true,
         value: 'cnpj'
       },
       {
@@ -1903,25 +1903,25 @@ export default {
       {
         text: 'N. Processo',
         align: 'start',
-        sortable: false,
+        sortable: true,
         value: 'processo'
       },
       {
         text: 'Razão Social/Nome',
         align: 'start',
-        sortable: false,
+        sortable: true,
         value: 'razao_social'
       },
       {
         text: 'Criado Por',
         align: 'start',
-        sortable: false,
+        sortable: true,
         value: 'created_by'
       },
       {
         text: 'Criado Em',
         align: 'start',
-        sortable: false,
+        sortable: true,
         value: 'created_at'
       }
     ],
