@@ -492,7 +492,7 @@ export default {
       {
         text: 'Código',
         align: 'start',
-        sortable: false,
+        sortable: true,
         value: 'id'
       },
       {
@@ -510,25 +510,25 @@ export default {
       {
         text: 'Ciente Por',
         align: 'start',
-        sortable: false,
+        sortable: true,
         value: 'ciente_por'
       },
       {
         text: 'Ciente Em',
         align: 'start',
-        sortable: false,
+        sortable: true,
         value: 'ciente_em'
       },
       {
         text: 'Criado Por',
         align: 'start',
-        sortable: false,
+        sortable: true,
         value: 'created_by'
       },
       {
         text: 'Criado Em',
         align: 'start',
-        sortable: false,
+        sortable: true,
         value: 'created_at'
       }
     ],
