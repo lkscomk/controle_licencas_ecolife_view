@@ -441,7 +441,7 @@ export default {
     perfil: window.atob(localStorage.getItem('umbrella:perfil')),
     modalNotificacoes: false,
     notificacaoRegistro: null,
-    loading: true,
+    loading: false,
     dataAtual: '',
     drawer: false,
     group: null,
@@ -602,6 +602,7 @@ export default {
       }
     },
     async listarRegistroNotificacoes () {
+      this.loading = true
       await this.buscarNotificacoes({
         usuarioId: this.perfil,
         id: this.filtroNotificacoes.id || null,
@@ -609,6 +610,7 @@ export default {
         conteudo: this.filtroNotificacoes.conteudo || null,
         ciente: this.filtroNotificacoes.ciente || null
       })
+      this.loading = false
     },
     async registrarCienciaRegistro () {
       this.loading = true
