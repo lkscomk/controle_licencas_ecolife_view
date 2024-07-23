@@ -57,7 +57,9 @@ export const buscarPathImagem = async ({ commit }, id) => {
 
 export const buscarNotificacoes = async ({ commit }, params) => {
   try {
-    const res = await axios.get('/notificacoes')
+    const res = await axios.get('/notificacoes', {
+      params
+    })
 
     if (!res.data.erro) {
       commit('setRegistrosNotificacoes', res.data)

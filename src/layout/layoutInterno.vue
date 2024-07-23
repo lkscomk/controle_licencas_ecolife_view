@@ -30,7 +30,7 @@
       <v-app-bar-nav-icon
         class="mx-1"
         title="Notificações do Sistema"
-        @click="modalNotificacoes = !modalNotificacoes, buscarNotificacoesRegistros()"
+        @click="modalNotificacoes = !modalNotificacoes, listarRegistroNotificacoes()"
       >
         <v-avatar
           icon
@@ -146,7 +146,7 @@
       </v-list>
     </v-navigation-drawer>
 
-    <v-navigation-drawer
+    <!-- <v-navigation-drawer
       v-model="modalNotificacoes"
       :color="$vuetify.theme.dark
         ? ''
@@ -191,9 +191,6 @@
             cols="12"
             class="text-start"
           >
-            <!-- :style="{
-                borderLeft: '8px solid '+ (!notificacao.importancia ? '' : +notificacao.importancia === 1 ? '#2979FF' : +notificacao.importancia === 2 ? '#F2C037' : '#eb2f06') +' !important',
-              }" -->
             <v-alert
               :color="notificacao.cor"
               :icon="notificacao.icone && notificacao.icone.toLowerCase()"
@@ -249,11 +246,159 @@
           </v-col>
         </v-row>
       </v-list>
-    </v-navigation-drawer>
+    </v-navigation-drawer> -->
 
     <v-main>
       <router-view />
     </v-main>
+
+    <modal
+      v-model="modalNotificacoes"
+      width="100%"
+      :titulo="'Notificações'"
+      :mais-opcoes="false"
+      @fechar="limparFiltroNotificacoes(), modalNotificacoes = false"
+    >
+      <template>
+        <v-form @submit.prevent="''">
+          <v-container
+            class="ma-0 pa-0"
+            fluid
+          >
+            <v-row dense>
+              <v-col cols="12">
+                <filtro
+                  :options="optionsFilterModalNotificacoes"
+                  @clearFilters="limparFiltroNotificacoes()"
+                  @pesquisar="listarRegistroNotificacoes()"
+                >
+                  <template slot="filtros">
+                    <v-container
+                      class="my-0 py-0"
+                      fluid
+                    >
+                      <v-row dense>
+                        <v-col
+                          xl="1"
+                          lg="1"
+                          md="4"
+                          sm="4"
+                          cols="12"
+                        >
+                          <v-text-field
+                            v-model="filtroNotificacoes.id"
+                            v-mask="'###########'"
+                            hide-details
+                            dense
+                            label="Código"
+                            outlined
+                          />
+                        </v-col>
+                        <v-col
+                          xl="4"
+                          lg="4"
+                          md="4"
+                          sm="8"
+                          cols="12"
+                        >
+                          <v-text-field
+                            v-model="filtroNotificacoes.descricao"
+                            v-uppercase
+                            hide-details
+                            dense
+                            label="Título"
+                            outlined
+                          />
+                        </v-col>
+                        <v-col
+                          xl="4"
+                          lg="4"
+                          md="4"
+                          sm="8"
+                          cols="12"
+                        >
+                          <v-text-field
+                            v-model="filtroNotificacoes.conteudo"
+                            v-uppercase
+                            hide-details
+                            dense
+                            label="Descrição"
+                            outlined
+                          />
+                        </v-col>
+                        <v-col
+                          xl="3"
+                          lg="3"
+                          md="3"
+                          sm="4"
+                          cols="12"
+                        >
+                          <v-autocomplete
+                            v-model="filtroNotificacoes.ciente"
+                            :items="dropdownSimNao"
+                            hide-details
+                            dense
+                            item-value="id"
+                            item-text="descricao"
+                            label="Ciente"
+                            outlined
+                            clearable
+                          />
+                        </v-col>
+                      </v-row>
+                    </v-container>
+                  </template>
+                </filtro>
+              </v-col>
+              <v-col cols="12">
+                <tabela
+                  :colunas="colunasNotificacoes"
+                  :registros="registrosNotificacoes"
+                  :paginacao="paginacaoNotificacoes"
+                  :registros-por-pagina="100"
+                  :sort-by-cli="['id']"
+                  :sort-desc-cli="true"
+                  height-auto
+                  class="mt-2"
+                  toolbar-grid
+                  titulo="Listagem de Notificações"
+                  @paginacao="paginacaoNotificacoes = $event"
+                >
+                  <template v-slot:acao="{ registro }">
+                    <v-btn
+                      :color="registro.cor"
+                      :disabled="!!registro.ciente_em"
+                      class="mx-1"
+                      icon
+                      small
+                      @click="aviso = { modal: true, text: 'Ao dá ciencia nesta notificação, a mesma permanecerá aqui por três dias. Depois não será mais notificado. Deseja continuar? \n \n <br>IMPORTANTE: Essa notificação só irá parar de ser notificada se o problema for resolvido!</br>', key: 'registrarCienciaRegistro'}
+                      notificacaoRegistro = registro"
+                    >
+                      <v-icon :color="registro.cor">
+                        {{ !registro.ciente_em ? 'mdi-checkbox-blank-outline' : 'mdi-checkbox-marked' }}
+                      </v-icon>
+                    </v-btn>
+                  </template>
+                  <template v-slot:personalizado="{ registro }">
+                    <v-btn
+                      :color="registro.cor"
+                      class="mx-1"
+                      icon
+                      small
+                      @click="openUrlNew(registro.url)"
+                    >
+                      <v-icon :color="registro.cor">
+                        mdi-open-in-new
+                      </v-icon>
+                    </v-btn>
+                  </template>
+                </tabela>
+              </v-col>
+            </v-row>
+          </v-container>
+        </v-form>
+      </template>
+    </modal>
 
     <v-footer
       :color="$vuetify.theme.dark
@@ -305,10 +450,89 @@ export default {
       media: 2,
       baixa: 3
     },
+    dropdownSimNao: [
+      {
+        id: 1,
+        descricao: 'Sim'
+      },
+      {
+        id: 2,
+        descricao: 'Não'
+      }
+    ],
     aviso: {
       modal: false,
       conteudo: '',
       acao: ''
+    },
+    filtroNotificacoes: {
+      id: null,
+      descricao: null,
+      conteudo: null,
+      ciente: null
+    },
+    colunasNotificacoes: [
+      {
+        text: 'Dar Ciente',
+        align: 'start',
+        sortable: false,
+        value: 'acao',
+        width: 20
+      },
+      {
+        text: 'Abrir Janela',
+        align: 'start',
+        sortable: false,
+        value: 'personalizado',
+        width: 20
+      },
+      {
+        text: 'Código',
+        align: 'start',
+        sortable: false,
+        value: 'id'
+      },
+      {
+        text: 'Título',
+        align: 'start',
+        sortable: true,
+        value: 'status'
+      },
+      {
+        text: 'Descrição',
+        align: 'start',
+        sortable: true,
+        value: 'conteudo'
+      },
+      {
+        text: 'Ciente Por',
+        align: 'start',
+        sortable: false,
+        value: 'ciente_por'
+      },
+      {
+        text: 'Ciente Em',
+        align: 'start',
+        sortable: false,
+        value: 'ciente_em'
+      },
+      {
+        text: 'Criado Por',
+        align: 'start',
+        sortable: false,
+        value: 'created_by'
+      },
+      {
+        text: 'Criado Em',
+        align: 'start',
+        sortable: false,
+        value: 'created_at'
+      }
+    ],
+    paginacaoNotificacoes: {
+      pagina: 1,
+      registros: 100,
+      totalRegistros: 0
     }
   }),
 
@@ -316,7 +540,18 @@ export default {
     ...mapState('app', [
       'acessos_usuario',
       'registrosNotificacoes'
-    ])
+    ]),
+    optionsFilterModalNotificacoes () {
+      return {
+        adicionar: false,
+        values: !!(
+          this.filtroNotificacoes.id ||
+          this.filtroNotificacoes.descricao ||
+          this.filtroNotificacoes.conteudo ||
+          this.filtroNotificacoes.ciente
+        )
+      }
+    }
   },
 
   watch: {
@@ -331,7 +566,7 @@ export default {
     }, 200)
     setTimeout(async () => {
       await this.buscarAcessos(this.perfil)
-      this.buscarNotificacoesRegistros()
+      this.listarRegistroNotificacoes()
     }, 200)
   },
 
@@ -363,9 +598,13 @@ export default {
         this.imagemPerfil = imageUrl
       }
     },
-    async buscarNotificacoesRegistros () {
+    async listarRegistroNotificacoes () {
       await this.buscarNotificacoes({
-        usuarioId: this.perfil
+        usuarioId: this.perfil,
+        id: this.filtroNotificacoes.id || null,
+        descricao: this.filtroNotificacoes.descricao || null,
+        conteudo: this.filtroNotificacoes.conteudo || null,
+        ciente: this.filtroNotificacoes.ciente || null
       })
     },
     async registrarCienciaRegistro () {
@@ -373,7 +612,7 @@ export default {
       const res = await this.registrarCiencia(this.notificacaoRegistro)
 
       if (res && !res.erro) {
-        this.buscarNotificacoesRegistros()
+        this.listarRegistroNotificacoes()
         this.notificacaoRegistro = null
         this.modalNotificacoes = true
       }
@@ -406,6 +645,14 @@ export default {
       this.$router.push('/login')
       this.$notificacao('Usuário desconectado com sucesso!')
       this.loading = false
+    },
+    limparFiltroNotificacoes () {
+      this.filtroNotificacoes = {
+        id: null,
+        descricao: null,
+        conteudo: null,
+        ciente: null
+      }
     }
   }
 }
