@@ -292,6 +292,7 @@
                             dense
                             label="Código"
                             outlined
+                            @keydown.enter="!loading ? listarRegistroNotificacoes() : null"
                           />
                         </v-col>
                         <v-col
@@ -308,6 +309,7 @@
                             dense
                             label="Título"
                             outlined
+                            @keydown.enter="!loading ? listarRegistroNotificacoes() : null"
                           />
                         </v-col>
                         <v-col
@@ -324,6 +326,7 @@
                             dense
                             label="Descrição"
                             outlined
+                            @keydown.enter="!loading ? listarRegistroNotificacoes() : null"
                           />
                         </v-col>
                         <v-col
@@ -343,6 +346,7 @@
                             label="Ciente"
                             outlined
                             clearable
+                            @keydown.enter="!loading ? listarRegistroNotificacoes() : null"
                           />
                         </v-col>
                       </v-row>
