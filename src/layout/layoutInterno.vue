@@ -321,6 +321,7 @@
                         >
                           <v-text-field
                             v-model="filtroNotificacoes.conteudo"
+                            v-uppercase
                             hide-details
                             dense
                             label="Descrição"
