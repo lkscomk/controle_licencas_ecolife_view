@@ -2111,7 +2111,8 @@ export default {
     },
     enumStatusEmpresas: {
       digitacao: 1,
-      ativa: 2
+      ativa: 2,
+      empresaFechada: 3
     },
     paginacao: {
       pagina: 1,
@@ -2607,7 +2608,7 @@ export default {
     // EMPRESA MODAL
     async listarRegistroEmpresas () {
       this.loading = true
-      this.filtroModalEmpresa.status = [this.enumStatusEmpresas.ativa]
+      this.filtroModalEmpresa.status = [this.enumStatusEmpresas.ativa, this.enumStatusEmpresas.empresaFechada]
       await this.listarEmpresas({
         id: this.filtroModalEmpresa.id || null,
         cnpj: this.filtroModalEmpresa.cnpj ? String(this.filtroModalEmpresa.cnpj).match(/\d/g).join('') : undefined,
