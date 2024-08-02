@@ -232,6 +232,16 @@ export const desativar = async ({ commit }, dados) => {
     return null
   }
 }
+
+export const incluirArquivoMorto = async ({ commit }, dados) => {
+  try {
+    const res = await axios.put('/processo/incluir-arquivo-morto/' + dados.id, dados)
+
+    return res.data
+  } catch (error) {
+    return null
+  }
+}
 // licenca
 
 export const listarLicencas = async ({ commit }, filtros) => {

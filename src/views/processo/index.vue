@@ -8,13 +8,17 @@
     :titulo-formulario="controle.editar ? 'Editar Registro' : controle.inserir ? 'Adicionar Registro' : 'Exibir Registro'"
     @excluir="aviso = { modal: true, text: 'Deseja excluir esse registro?', key: 'excluirRegistro'}"
     @desativar="aviso = { modal: true, text: 'Deseja desativar esse registro?', key: 'desativarRegistro'}"
+    @arquivoMorto="aviso = { modal: true, text: 'Deseja incluir este processo em arquivo morto?', key: 'arquivoMortoRegistro'}"
     @anexos="formularioAnexo = {
             value: true,
             titulo: 'do Processo',
             tabela: 'processo',
             tabelaId: formulario.id,
             tipoGrupoId: 8,
-            subTipoGrupoId: 3
+            subTipoGrupoId: 3,
+            excluir: (formulario.status_processo_id === enumStatusProcesso.digitacao || formulario.status_processo_id === enumStatusProcesso.ativo),
+            adicionar: (formulario.status_processo_id === enumStatusProcesso.digitacao || formulario.status_processo_id === enumStatusProcesso.ativo)
+
           }"
     @voltar="resetFormulario()"
   >
@@ -60,7 +64,12 @@
         modal: false,
         text: '',
         key: ''
-      }, desativarRegistro()"
+      }, formularioJustificativa.modal = true"
+      @arquivoMortoRegistro="aviso = {
+        modal: false,
+        text: '',
+        key: ''
+      }, arquivoMortoRegistro()"
     />
     <template slot="listagem">
       <v-form @submit.prevent="''">
@@ -733,6 +742,60 @@
         Voltar
       </v-btn>
     </template>
+
+    <modal
+      v-model="formularioJustificativa.modal"
+      width="50%"
+      :titulo="'Justificativa'"
+      :mais-opcoes="false"
+      @fechar="formularioJustificativa.modal = false, formularioJustificativa.conteudo = null"
+    >
+    <template slot="botoes">
+        <v-btn
+          :block="$vuetify.breakpoint.xsOnly"
+          :class="$vuetify.breakpoint.xsOnly ? 'my-1' : 'mx-1'"
+          color="success"
+          small
+          @click="formularioJustificativa.conteudo && formularioJustificativa.conteudo.length  ?
+          desativarRegistro() :
+          $notificacao('Por favor, escreva uma justificativa.', 'erro')"
+        >
+          <v-icon
+            left
+            size="20"
+          >
+            mdi-content-save
+          </v-icon>
+          Salvar
+        </v-btn>
+      </template>
+      <template>
+        <v-form @submit.prevent="''">
+          <v-container
+            class="ma-0 pa-0"
+            fluid
+          >
+            <v-row dense>
+              <v-col
+                cols="12"
+              >
+              <v-textarea
+                v-model="formularioJustificativa.conteudo"
+                v-uppercase
+                :hide-details="!(formularioJustificativa.conteudo && formularioJustificativa.conteudo.length > 0)"
+                :counter="500"
+                dense
+                label="Poque você está desativando este processo?"
+                outlined
+                rows="3"
+                spellcheck="false"
+              />
+              </v-col>
+            </v-row>
+          </v-container>
+        </v-form>
+      </template>
+    </modal>
 
     <modal
       v-model="modalBuscarEmpresa"
@@ -1977,6 +2040,10 @@ export default {
       estado_empresa: null,
       cidade_empresa: null
     },
+    formularioJustificativa: {
+      modal: false,
+      conteudo: null
+    },
     formularioEmpresa: {
       id: null,
       cnpj: null,
@@ -2125,6 +2192,14 @@ export default {
           titulo: 'Desativar Processo'
         })
       }
+      if (this.formulario.status_processo_id === this.enumStatusProcesso.digitacao || this.formulario.status_processo_id === this.enumStatusProcesso.ativo || this.formulario.status_processo_id === this.enumStatusProcesso.desativado) {
+        res.push({
+          acao: 'arquivoMorto',
+          color: 'error',
+          icone: 'mdi-file-document-arrow-right',
+          titulo: 'Incluir em Arquivo Morto'
+        })
+      }
       if (this.formulario.id) {
         res.push({
           acao: 'anexos',
@@ -2223,6 +2298,7 @@ export default {
       'excluirLicenca',
       'ativarLicenca',
       'encerrarLicenca',
+      'incluirArquivoMorto',
 
       'listarRma',
       'exibirRma',
@@ -2308,10 +2384,25 @@ export default {
       }
       this.loading = false
     },
+    async arquivoMortoRegistro () {
+      this.loading = true
+      const res = await this.incluirArquivoMorto(this.formulario)
+      if (res && !res.erro) {
+        this.exibirRegistro(this.formulario.id)
+      }
+      this.loading = false
+    },
     async desativarRegistro () {
       this.loading = true
-      const res = await this.desativar(this.formulario)
+      const res = await this.desativar({
+        id: this.formulario.id,
+        justificativa: `${this.formulario.observacao && this.formulario.observacao.length ? `${this.formulario.observacao}\n` : ''}[${window.atob(localStorage.getItem('umbrella:login'))}] MOTIVO DESATIVAÇÃO: ${this.formularioJustificativa.conteudo}`
+      })
       if (res && !res.erro) {
+        this.formularioJustificativa = {
+          modal: false,
+          conteudo: null
+        }
         this.exibirRegistro(this.formulario.id)
       }
       this.loading = false

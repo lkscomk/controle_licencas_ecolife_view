@@ -17,6 +17,11 @@
         text: '',
         key: ''
       }"
+      @fecharEmpresaRegistro="aviso = {
+        modal: false,
+        text: '',
+        key: ''
+      }, fecharEmpresaRegistro()"
       @ativarEmpresa="aviso = {
         modal: false,
         text: '',
@@ -724,6 +729,23 @@
         Ativar Registro
       </v-btn>
       <v-btn
+        v-if="formulario.id && formulario.status === enumStatusEmpresas.ativa && controle.exibir"
+        :block="$vuetify.breakpoint.xsOnly"
+        :class="$vuetify.breakpoint.xsOnly ? 'my-1' : 'mx-1'"
+        color="warning"
+        small
+        @click="
+          aviso = { modal: true, text: 'Após Fechar Empresa, não será possível usar esta empresa para cadastrar processos. Deseja continuar?', key: 'fecharEmpresaRegistro'}"
+      >
+        <v-icon
+          left
+          size="20"
+        >
+          mdi-store-alert
+        </v-icon>
+        Fechar Empresa
+      </v-btn>
+      <v-btn
         v-if="!!(!controle.exibir && (controle.inserir || controle.editar))"
         :block="$vuetify.breakpoint.xsOnly"
         :class="$vuetify.breakpoint.xsOnly ? 'my-1' : 'mx-1'"
@@ -961,6 +983,7 @@ export default {
       'editar',
       'salvar',
       'ativar',
+      'fecharEmpresa',
       'excluir',
       'buscarCep',
       'buscarDropdownPortesEmpresa',
@@ -1067,6 +1090,15 @@ export default {
     async ativarRegistro () {
       this.loading = true
       const res = await this.ativar(this.formulario.id)
+      if (res && !res.erro) {
+        this.modal = false
+        this.exibirRegistro(this.formulario.id)
+      }
+      this.loading = false
+    },
+    async fecharEmpresaRegistro () {
+      this.loading = true
+      const res = await this.fecharEmpresa(this.formulario.id)
       if (res && !res.erro) {
         this.modal = false
         this.exibirRegistro(this.formulario.id)

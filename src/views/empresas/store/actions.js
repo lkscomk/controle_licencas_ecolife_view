@@ -118,6 +118,16 @@ export const ativar = async ({ commit }, id) => {
   }
 }
 
+export const fecharEmpresa = async ({ commit }, id) => {
+  try {
+    const res = await axios.put('/empresa/fechar-empresa/' + id)
+
+    return res.data
+  } catch (error) {
+    return null
+  }
+}
+
 export const salvar = async ({ commit }, dados) => {
   try {
     const res = await axios.post('/empresa', dados)
