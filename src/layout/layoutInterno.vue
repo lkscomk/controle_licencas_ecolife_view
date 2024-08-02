@@ -321,6 +321,7 @@
                         >
                           <v-text-field
                             v-model="filtroNotificacoes.conteudo"
+                            v-uppercase
                             hide-details
                             dense
                             label="Descrição"
@@ -441,7 +442,7 @@ export default {
     perfil: window.atob(localStorage.getItem('umbrella:perfil')),
     modalNotificacoes: false,
     notificacaoRegistro: null,
-    loading: true,
+    loading: false,
     dataAtual: '',
     drawer: false,
     group: null,
@@ -492,7 +493,7 @@ export default {
       {
         text: 'Código',
         align: 'start',
-        sortable: false,
+        sortable: true,
         value: 'id'
       },
       {
@@ -510,25 +511,25 @@ export default {
       {
         text: 'Ciente Por',
         align: 'start',
-        sortable: false,
+        sortable: true,
         value: 'ciente_por'
       },
       {
         text: 'Ciente Em',
         align: 'start',
-        sortable: false,
+        sortable: true,
         value: 'ciente_em'
       },
       {
         text: 'Criado Por',
         align: 'start',
-        sortable: false,
+        sortable: true,
         value: 'created_by'
       },
       {
         text: 'Criado Em',
         align: 'start',
-        sortable: false,
+        sortable: true,
         value: 'created_at'
       }
     ],
@@ -602,6 +603,7 @@ export default {
       }
     },
     async listarRegistroNotificacoes () {
+      this.loading = true
       await this.buscarNotificacoes({
         usuarioId: this.perfil,
         id: this.filtroNotificacoes.id || null,
@@ -609,6 +611,7 @@ export default {
         conteudo: this.filtroNotificacoes.conteudo || null,
         ciente: this.filtroNotificacoes.ciente || null
       })
+      this.loading = false
     },
     async registrarCienciaRegistro () {
       this.loading = true
