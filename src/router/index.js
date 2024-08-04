@@ -5,10 +5,21 @@ Vue.use(VueRouter)
 const routes = [
   {
     path: '/',
-    component: () => import('@/layout/layoutInterno.vue'),
+    component: () => import('@/layout/layoutExterno.vue'),
     children: [
       {
         path: '/',
+        name: 'home',
+        component: () => import('@/views/site/index.vue')
+      }
+    ]
+  },
+  {
+    path: '/interno',
+    component: () => import('@/layout/layoutInterno.vue'),
+    children: [
+      {
+        path: '/interno',
         name: 'home',
         component: () => import('@/views/home/index.vue')
       },
@@ -69,7 +80,7 @@ const routes = [
     ],
     beforeEnter: (to, from, next) => {
       if (localStorage.getItem('umbrella:token')) {
-        next('/')
+        next('/interno')
       } else {
         localStorage.removeItem('umbrella:token')
         localStorage.removeItem('umbrella:nome')

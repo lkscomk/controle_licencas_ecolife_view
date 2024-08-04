@@ -183,7 +183,7 @@ export default {
           senha: this.formulario.senha ? this.$crypto(this.formulario.senha, 'sha256') : undefined
         })
         if (res && !res.erro) {
-          this.abrirJenela('/')
+          this.abrirJenela('/interno')
         }
         this.loading = false
       }
