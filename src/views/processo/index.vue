@@ -10,16 +10,16 @@
     @desativar="aviso = { modal: true, text: 'Deseja desativar esse registro?', key: 'desativarRegistro'}"
     @arquivoMorto="aviso = { modal: true, text: 'Deseja incluir este processo em arquivo morto?', key: 'arquivoMortoRegistro'}"
     @anexos="formularioAnexo = {
-            value: true,
-            titulo: 'do Processo',
-            tabela: 'processo',
-            tabelaId: formulario.id,
-            tipoGrupoId: 8,
-            subTipoGrupoId: 3,
-            excluir: (formulario.status_processo_id === enumStatusProcesso.digitacao || formulario.status_processo_id === enumStatusProcesso.ativo),
-            adicionar: (formulario.status_processo_id === enumStatusProcesso.digitacao || formulario.status_processo_id === enumStatusProcesso.ativo)
+      value: true,
+      titulo: 'do Processo',
+      tabela: 'processo',
+      tabelaId: formulario.id,
+      tipoGrupoId: 8,
+      subTipoGrupoId: 3,
+      excluir: (formulario.status_processo_id === enumStatusProcesso.digitacao || formulario.status_processo_id === enumStatusProcesso.ativo),
+      adicionar: (formulario.status_processo_id === enumStatusProcesso.digitacao || formulario.status_processo_id === enumStatusProcesso.ativo)
 
-          }"
+    }"
     @voltar="resetFormulario()"
   >
     <aviso
@@ -658,8 +658,8 @@
                   block
                   color="primary"
                   @click="Number(formulario.status_processo_id) === Number(enumStatusProcesso.desativado) ?
-                  $notificacao('Só é possível adicionar nova licença em processo ativo ou em digitação.', 'erro') :
-                  (modalLicenca = true, controleLicenca.inserir = true, formularioLicenca.status_licenca_id = enumStatusLicenca.digitacao)"
+                    $notificacao('Só é possível adicionar nova licença em processo ativo ou em digitação.', 'erro') :
+                    (modalLicenca = true, controleLicenca.inserir = true, formularioLicenca.status_licenca_id = enumStatusLicenca.digitacao)"
                 >
                   <v-icon dark>
                     mdi-plus
@@ -750,15 +750,15 @@
       :mais-opcoes="false"
       @fechar="formularioJustificativa.modal = false, formularioJustificativa.conteudo = null"
     >
-    <template slot="botoes">
+      <template slot="botoes">
         <v-btn
           :block="$vuetify.breakpoint.xsOnly"
           :class="$vuetify.breakpoint.xsOnly ? 'my-1' : 'mx-1'"
           color="success"
           small
-          @click="formularioJustificativa.conteudo && formularioJustificativa.conteudo.length  ?
-          desativarRegistro() :
-          $notificacao('Por favor, escreva uma justificativa.', 'erro')"
+          @click="formularioJustificativa.conteudo && formularioJustificativa.conteudo.length ?
+            desativarRegistro() :
+            $notificacao('Por favor, escreva uma justificativa.', 'erro')"
         >
           <v-icon
             left
@@ -779,17 +779,17 @@
               <v-col
                 cols="12"
               >
-              <v-textarea
-                v-model="formularioJustificativa.conteudo"
-                v-uppercase
-                :hide-details="!(formularioJustificativa.conteudo && formularioJustificativa.conteudo.length > 0)"
-                :counter="500"
-                dense
-                label="Poque você está desativando este processo?"
-                outlined
-                rows="3"
-                spellcheck="false"
-              />
+                <v-textarea
+                  v-model="formularioJustificativa.conteudo"
+                  v-uppercase
+                  :hide-details="!(formularioJustificativa.conteudo && formularioJustificativa.conteudo.length > 0)"
+                  :counter="500"
+                  dense
+                  label="Poque você está desativando este processo?"
+                  outlined
+                  rows="3"
+                  spellcheck="false"
+                />
               </v-col>
             </v-row>
           </v-container>
@@ -963,8 +963,8 @@
         <v-list-item
           v-if="Number(formularioLicenca.status_licenca_id) === Number(enumStatusLicenca.digitacao)"
           @click="Number(formularioLicenca.status_licenca_id) === Number(enumStatusLicenca.digitacao) ?
-          aviso = { modal: true, text: 'Essa ação não poderá ser desfeita. Deseja continuar?', key: 'ativarLicencaRegistro'} :
-          $notificacao('Só é possível ativar licença em digitação.', 'erro')"
+            aviso = { modal: true, text: 'Essa ação não poderá ser desfeita. Deseja continuar?', key: 'ativarLicencaRegistro'} :
+            $notificacao('Só é possível ativar licença em digitação.', 'erro')"
         >
           <v-list-item-icon class="mr-3">
             <v-icon :color="'primary'">
@@ -980,8 +980,8 @@
         <v-list-item
           v-if="Number(formularioLicenca.status_licenca_id) === Number(enumStatusLicenca.ativa)"
           @click="Number(formularioLicenca.status_licenca_id) === Number(enumStatusLicenca.ativa) ?
-          aviso = { modal: true, text: 'Essa ação não poderá ser desfeita. Deseja continuar?', key: 'encerrarLicencaRegistro'} :
-          $notificacao('Só é possível encerrar licença ativa.', 'erro')"
+            aviso = { modal: true, text: 'Essa ação não poderá ser desfeita. Deseja continuar?', key: 'encerrarLicencaRegistro'} :
+            $notificacao('Só é possível encerrar licença ativa.', 'erro')"
         >
           <v-list-item-icon class="mr-3">
             <v-icon :color="'error'">
@@ -1019,8 +1019,8 @@
         </v-list-item>
         <v-list-item
           @click="Number(formularioLicenca.status_licenca_id) === Number(enumStatusLicenca.digitacao) ?
-          aviso = { modal: true, text: 'Deseja excluir esse registro?', key: 'excluirLicencaRegistro'} :
-          $notificacao('Só é possível excluir licença em digitação.', 'erro')"
+            aviso = { modal: true, text: 'Deseja excluir esse registro?', key: 'excluirLicencaRegistro'} :
+            $notificacao('Só é possível excluir licença em digitação.', 'erro')"
         >
           <v-list-item-icon class="mr-3">
             <v-icon :color="'error'">
@@ -1058,8 +1058,8 @@
           color="success"
           small
           @click="Number(formularioLicenca.status_licenca_id) === Number(enumStatusLicenca.digitacao) ?
-          (controleLicenca.editar = true, controleLicenca.exibir = false) :
-          $notificacao('Só é possível editar licença em digitação.', 'erro')"
+            (controleLicenca.editar = true, controleLicenca.exibir = false) :
+            $notificacao('Só é possível editar licença em digitação.', 'erro')"
         >
           <v-icon
             left
@@ -1345,7 +1345,7 @@
                 </v-col>
                 <v-col cols="12">
                   <v-card
-                   outlined
+                    outlined
                   >
                     <v-container
                       class="my-2 pa-0 px-1"
@@ -1373,8 +1373,8 @@
                             block
                             color="warning"
                             @click="formularioLicenca.status_licenca_id === enumStatusLicenca.ativa ?
-                            (formularioLicenca.tipo_licenca_id === enumTipoLicenca.dispensa || formularioLicenca.tipo_licenca_id === enumTipoLicenca.declaracao ? $notificacao('Não é possível gerar RMAS para licenças do tipo dispensa ou declaração.', 'erro') : gerarRmaRegistro()) :
-                            $notificacao('Só é possível gerar RMAS em licenças ATIVAS.', 'erro')"
+                              (formularioLicenca.tipo_licenca_id === enumTipoLicenca.dispensa || formularioLicenca.tipo_licenca_id === enumTipoLicenca.declaracao ? $notificacao('Não é possível gerar RMAS para licenças do tipo dispensa ou declaração.', 'erro') : gerarRmaRegistro()) :
+                              $notificacao('Só é possível gerar RMAS em licenças ATIVAS.', 'erro')"
                           >
                             <v-icon dark>
                               mdi-plus-thick
@@ -1412,8 +1412,8 @@
                             block
                             color="primary"
                             @click="formularioLicenca.status_licenca_id === enumStatusLicenca.ativa ?
-                            (formularioLicenca.tipo_licenca_id === enumTipoLicenca.dispensa || formularioLicenca.tipo_licenca_id === enumTipoLicenca.declaracao ? $notificacao('Não é possível gerar RMAS para licenças do tipo dispensa ou declaração.', 'erro') : (modalRma = true, controleRma.inserir = true, formularioRma.status_rma_id = enumStatusRma.digitacao)) :
-                            $notificacao('Só é possível criar RMAS em licenças ATIVAS.', 'erro')"
+                              (formularioLicenca.tipo_licenca_id === enumTipoLicenca.dispensa || formularioLicenca.tipo_licenca_id === enumTipoLicenca.declaracao ? $notificacao('Não é possível gerar RMAS para licenças do tipo dispensa ou declaração.', 'erro') : (modalRma = true, controleRma.inserir = true, formularioRma.status_rma_id = enumStatusRma.digitacao)) :
+                              $notificacao('Só é possível criar RMAS em licenças ATIVAS.', 'erro')"
                           >
                             <v-icon dark>
                               mdi-plus
@@ -1462,8 +1462,8 @@
       <template slot="maisOpcoes">
         <v-list-item
           @click="Number(formularioRma.status_rma_id) === Number(enumStatusRma.digitacao) ?
-          aviso = { modal: true, text: 'Deseja excluir esse registro?', key: 'excluirRmaRegistro'} :
-          $notificacao('Só é possível excluir rma em digitação.', 'erro')"
+            aviso = { modal: true, text: 'Deseja excluir esse registro?', key: 'excluirRmaRegistro'} :
+            $notificacao('Só é possível excluir rma em digitação.', 'erro')"
         >
           <v-list-item-icon class="mr-3">
             <v-icon :color="'error'">
@@ -1479,8 +1479,8 @@
         <v-list-item
           v-if="Number(formularioRma.status_rma_id) === Number(enumStatusRma.digitacao)"
           @click="Number(formularioRma.status_rma_id) === Number(enumStatusRma.digitacao) ?
-          aviso = { modal: true, text: 'Essa ação não poderá ser desfeita. Deseja continuar?', key: 'ativarRmaRegistro'} :
-          $notificacao('Só é possível entregar RMA em digitação.', 'erro')"
+            aviso = { modal: true, text: 'Essa ação não poderá ser desfeita. Deseja continuar?', key: 'ativarRmaRegistro'} :
+            $notificacao('Só é possível entregar RMA em digitação.', 'erro')"
         >
           <v-list-item-icon class="mr-3">
             <v-icon :color="'primary'">
@@ -1541,8 +1541,8 @@
           color="success"
           small
           @click="Number(formularioRma.status_rma_id) === Number(enumStatusRma.digitacao) ?
-          (controleRma.editar = true, controleRma.exibir = false) :
-          $notificacao('Só é possível editar Rma em digitação.', 'erro')"
+            (controleRma.editar = true, controleRma.exibir = false) :
+            $notificacao('Só é possível editar Rma em digitação.', 'erro')"
         >
           <v-icon
             left

@@ -6,16 +6,17 @@
       app
       color="primary"
       dark
-      height="100"
+      height="80"
       class="elevation-1"
     >
       <div
         @click="abrirJenela('/')"
       >
-      <v-img
+        <v-img
           max-width="40%"
           :src="require('@/assets/logoEcolife.png')"
           class="my-3 white"
+          height="80"
         />
       </div>
       <v-spacer />
@@ -66,7 +67,6 @@
     <v-main>
       <router-view />
     </v-main>
-
   </v-app>
 </template>
 

@@ -376,7 +376,7 @@
                       icon
                       small
                       @click="aviso = { modal: true, text: 'Ao dá ciencia nesta notificação, a mesma permanecerá aqui por três dias. Depois não será mais notificado. Deseja continuar? \n \n <br>IMPORTANTE: Essa notificação só irá parar de ser notificada se o problema for resolvido!</br>', key: 'registrarCienciaRegistro'}
-                      notificacaoRegistro = registro"
+                              notificacaoRegistro = registro"
                     >
                       <v-icon :color="registro.cor">
                         {{ !registro.ciente_em ? 'mdi-checkbox-blank-outline' : 'mdi-checkbox-marked' }}
