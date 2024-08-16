@@ -2567,8 +2567,8 @@ export default {
           id: this.formularioRma.id || null,
           licenca_id: this.formularioLicenca.id || null,
           observacao: this.formularioRma.observacao || null,
-          periodo_inicio: this.formularioRma.periodo_inicio ? this.$day(this.formularioRma.periodo_inicio, 'DD/MM/YYYY').format('YYYY-MM-DD') || null,
-          periodo_fim: this.formularioRma.periodo_fim ? this.$day(this.formularioRma.periodo_fim, 'DD/MM/YYYY').format('YYYY-MM-DD') || null
+          periodo_inicio: this.formularioRma.periodo_inicio ? this.$day(this.formularioRma.periodo_inicio, 'DD/MM/YYYY').format('YYYY-MM-DD') : null,
+          periodo_fim: this.formularioRma.periodo_fim ? this.$day(this.formularioRma.periodo_fim, 'DD/MM/YYYY').format('YYYY-MM-DD') : null
         }
         let res
         if (form.id) res = await this.editarRma(form)
