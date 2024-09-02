@@ -281,8 +281,8 @@
                         <v-col
                           xl="1"
                           lg="1"
-                          md="4"
-                          sm="4"
+                          md="3"
+                          sm="2"
                           cols="12"
                         >
                           <v-text-field
@@ -296,10 +296,44 @@
                           />
                         </v-col>
                         <v-col
-                          xl="4"
-                          lg="4"
+                        xl="2"
+                        lg="2"
+                        md="3"
+                        sm="4"
+                        cols="12"
+                      >
+                        <v-text-field
+                          v-model="filtroNotificacoes.cnpj"
+                          v-mask="['###.###.###-##', '##.###.###/####-##']"
+                          hide-details
+                          dense
+                          label="CNPJ/CPF"
+                          outlined
+                          @keydown.enter="!loading ? listarRegistro() : null"
+                        />
+                      </v-col>
+                      <v-col
+                        xl="3"
+                        lg="3"
+                        md="6"
+                        sm="6"
+                        cols="12"
+                      >
+                        <v-text-field
+                          v-model="filtroNotificacoes.razaoSocial"
+                          v-uppercase
+                          hide-details
+                          dense
+                          label="Razão Social"
+                          outlined
+                          @keydown.enter="!loading ? listarRegistro() : null"
+                        />
+                      </v-col>
+                        <v-col
+                          xl="3"
+                          lg="3"
                           md="4"
-                          sm="8"
+                          sm="5"
                           cols="12"
                         >
                           <v-text-field
@@ -313,10 +347,10 @@
                           />
                         </v-col>
                         <v-col
-                          xl="4"
-                          lg="4"
-                          md="4"
-                          sm="8"
+                          xl="3"
+                          lg="3"
+                          md="5"
+                          sm="5"
                           cols="12"
                         >
                           <v-text-field
@@ -330,10 +364,10 @@
                           />
                         </v-col>
                         <v-col
-                          xl="3"
-                          lg="3"
+                          xl="2"
+                          lg="2"
                           md="3"
-                          sm="4"
+                          sm="2"
                           cols="12"
                         >
                           <v-autocomplete
@@ -471,6 +505,8 @@ export default {
     },
     filtroNotificacoes: {
       id: null,
+      cnpj: null,
+      razaoSocial: null,
       descricao: null,
       conteudo: null,
       ciente: null
@@ -497,10 +533,16 @@ export default {
         value: 'id'
       },
       {
-        text: 'Título',
+        text: 'CNPJ/CPF',
         align: 'start',
         sortable: true,
-        value: 'status'
+        value: 'cnpj'
+      },
+      {
+        text: 'Razão Social',
+        align: 'start',
+        sortable: true,
+        value: 'razao_social'
       },
       {
         text: 'Descrição',
@@ -552,6 +594,8 @@ export default {
           this.filtroNotificacoes.id ||
           this.filtroNotificacoes.descricao ||
           this.filtroNotificacoes.conteudo ||
+          this.filtroNotificacoes.cnpj ||
+          this.filtroNotificacoes.razaoSocial ||
           this.filtroNotificacoes.ciente
         )
       }
@@ -609,6 +653,8 @@ export default {
         id: this.filtroNotificacoes.id || null,
         descricao: this.filtroNotificacoes.descricao || null,
         conteudo: this.filtroNotificacoes.conteudo || null,
+        cnpj: this.filtroNotificacoes.cnpj ? String(this.filtroNotificacoes.cnpj).match(/\d/g).join('') : undefined,
+        razaoSocial: this.filtroNotificacoes.razaoSocial || null,
         ciente: this.filtroNotificacoes.ciente || null
       })
       this.loading = false
