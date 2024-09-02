@@ -296,40 +296,6 @@
                           />
                         </v-col>
                         <v-col
-                        xl="2"
-                        lg="2"
-                        md="3"
-                        sm="4"
-                        cols="12"
-                      >
-                        <v-text-field
-                          v-model="filtroNotificacoes.cnpj"
-                          v-mask="['###.###.###-##', '##.###.###/####-##']"
-                          hide-details
-                          dense
-                          label="CNPJ/CPF"
-                          outlined
-                          @keydown.enter="!loading ? listarRegistro() : null"
-                        />
-                      </v-col>
-                      <v-col
-                        xl="3"
-                        lg="3"
-                        md="6"
-                        sm="6"
-                        cols="12"
-                      >
-                        <v-text-field
-                          v-model="filtroNotificacoes.razaoSocial"
-                          v-uppercase
-                          hide-details
-                          dense
-                          label="Razão Social"
-                          outlined
-                          @keydown.enter="!loading ? listarRegistro() : null"
-                        />
-                      </v-col>
-                        <v-col
                           xl="3"
                           lg="3"
                           md="4"
@@ -363,6 +329,40 @@
                             @keydown.enter="!loading ? listarRegistroNotificacoes() : null"
                           />
                         </v-col>
+                        <v-col
+                        xl="2"
+                        lg="2"
+                        md="3"
+                        sm="4"
+                        cols="12"
+                      >
+                        <v-text-field
+                          v-model="filtroNotificacoes.cnpj"
+                          v-mask="['###.###.###-##', '##.###.###/####-##']"
+                          hide-details
+                          dense
+                          label="CNPJ/CPF"
+                          outlined
+                          @keydown.enter="!loading ? listarRegistro() : null"
+                        />
+                      </v-col>
+                      <v-col
+                        xl="3"
+                        lg="3"
+                        md="6"
+                        sm="6"
+                        cols="12"
+                      >
+                        <v-text-field
+                          v-model="filtroNotificacoes.razaoSocial"
+                          v-uppercase
+                          hide-details
+                          dense
+                          label="Razão Social"
+                          outlined
+                          @keydown.enter="!loading ? listarRegistro() : null"
+                        />
+                      </v-col>
                         <v-col
                           xl="2"
                           lg="2"
@@ -533,6 +533,18 @@ export default {
         value: 'id'
       },
       {
+        text: 'Título',
+        align: 'start',
+        sortable: true,
+        value: 'descricao'
+      },
+      {
+        text: 'Descrição',
+        align: 'start',
+        sortable: true,
+        value: 'conteudo'
+      },
+      {
         text: 'CNPJ/CPF',
         align: 'start',
         sortable: true,
@@ -543,12 +555,6 @@ export default {
         align: 'start',
         sortable: true,
         value: 'razao_social'
-      },
-      {
-        text: 'Descrição',
-        align: 'start',
-        sortable: true,
-        value: 'conteudo'
       },
       {
         text: 'Ciente Por',
