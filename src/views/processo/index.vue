@@ -1373,7 +1373,7 @@
                             block
                             color="warning"
                             @click="formularioLicenca.status_licenca_id === enumStatusLicenca.ativa ?
-                            (formularioLicenca.tipo_licenca_id === enumTipoLicenca.dispensa || formularioLicenca.tipo_licenca_id === enumTipoLicenca.declaracao ? $notificacao('Não é possível gerar RMAS para licenças do tipo dispensa ou declaração.', 'erro') : gerarRmaRegistro()) :
+                            (formularioLicenca.tipo_licenca_id === enumTipoLicenca.dispensa || formularioLicenca.tipo_licenca_id === enumTipoLicenca.declaracao ? $notificacao('Não é possível gerar RMAS para licenças do tipo dispensa ou declaração.', 'erro') : modalTempoRma = true) :
                             $notificacao('Só é possível gerar RMAS em licenças ATIVAS.', 'erro')"
                           >
                             <v-icon dark>
@@ -1752,6 +1752,57 @@
       </template>
     </modal>
 
+    <modal
+      v-model="modalTempoRma"
+      width="50%"
+      :titulo="'Tempo RMA'"
+      :mais-opcoes="false"
+      @fechar="modalTempoRma = false, formularioTempoRma.tempo_em_meses = 6"
+    >
+      <template slot="botoes">
+        <v-btn
+          :block="$vuetify.breakpoint.xsOnly"
+          :class="$vuetify.breakpoint.xsOnly ? 'my-1' : 'mx-1'"
+          color="success"
+          small
+          @click="gerarRmaRegistro()"
+        >
+          <v-icon
+            left
+            size="20"
+          >
+            mdi-content-save
+          </v-icon>
+          Gerar RMAS
+        </v-btn>
+      </template>
+      <template>
+        <v-form @submit.prevent="''">
+            <v-container
+              class="ma-0 pa-0"
+              fluid
+            >
+              <v-row dense>
+                <v-col
+                  cols="12"
+                >
+                  <v-autocomplete
+                    v-model="formularioTempoRma.tempo_em_meses"
+                    :items="dropdownTempoRma"
+                    hide-details
+                    dense
+                    item-value="item"
+                    item-text="descricao"
+                    label="Selecione o período que você deseja para gerar os RMA"
+                    outlined
+                  />
+                </v-col>
+              </v-row>
+            </v-container>
+        </v-form>
+      </template>
+    </modal>
+
     <anexo
       :value="formularioAnexo.value"
       :titulo="formularioAnexo.titulo"
@@ -1777,11 +1828,22 @@ export default {
     modalBuscarEmpresa: false,
     modalLicenca: false,
     modalRma: false,
+    modalTempoRma: false,
     aviso: {
       modal: false,
       conteudo: '',
       acao: ''
     },
+    dropdownTempoRma: [
+      {
+        descricao: '6 Meses',
+        item: 6
+      },
+      {
+        descricao: '12 Meses',
+        item: 12
+      }
+    ],
     colunasRma: [
       {
         text: 'Ação',
@@ -2039,6 +2101,9 @@ export default {
       empresa_endereco: null,
       estado_empresa: null,
       cidade_empresa: null
+    },
+    formularioTempoRma: {
+      tempo_em_meses: 6,
     },
     formularioJustificativa: {
       modal: false,
@@ -2541,11 +2606,14 @@ export default {
       } else {
         const res = await this.gerarRma({
           id: this.formularioLicenca.id,
+          tempo_em_meses: this.formularioTempoRma.tempo_em_meses || null,
           data_inicial_licenca: this.formularioLicenca.data_saida ? this.$day(this.formularioLicenca.data_saida, 'DD/MM/YYYY').format('YYYY-MM-DD') : null,
           data_final_licenca: this.formularioLicenca.data_vencimento ? this.$day(this.formularioLicenca.data_vencimento, 'DD/MM/YYYY').format('YYYY-MM-DD') : null
         })
         if (res && !res.erro) {
           this.exibirLicencaRegistro(this.formularioLicenca.id)
+          this.modalTempoRma = false
+          this.formularioTempoRma.tempo_em_meses = 6
         }
       }
       this.loading = false

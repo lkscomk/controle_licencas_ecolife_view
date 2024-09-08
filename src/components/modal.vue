@@ -3,6 +3,7 @@
     v-model="value"
     transition="dialog-bottom-transition"
     scrollable
+    persistent
     :width="width"
   >
     <v-card>
