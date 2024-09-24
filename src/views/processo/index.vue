@@ -95,7 +95,7 @@
                         xl="1"
                         lg="1"
                         md="4"
-                        sm="3"
+                        sm="4"
                         cols="12"
                       >
                         <v-text-field
@@ -110,7 +110,7 @@
                       <v-col
                         xl="2"
                         lg="2"
-                        md="4"
+                        md="8"
                         sm="8"
                         cols="12"
                       >
@@ -127,8 +127,8 @@
                       <v-col
                         xl="2"
                         lg="2"
-                        md="4"
-                        sm="4"
+                        md="6"
+                        sm="6"
                         cols="12"
                       >
                         <selecao-all
@@ -146,8 +146,8 @@
                       <v-col
                         xl="2"
                         lg="2"
-                        md="4"
-                        sm="4"
+                        md="6"
+                        sm="6"
                         cols="12"
                       >
                         <v-text-field
@@ -162,8 +162,8 @@
                       <v-col
                         xl="3"
                         lg="3"
-                        md="5"
-                        sm="5"
+                        md="9"
+                        sm="9"
                         cols="12"
                       >
                         <v-text-field
@@ -1481,10 +1481,10 @@
           </v-list-item-content>
         </v-list-item>
         <v-list-item
-          v-if="Number(formularioRma.status_rma_id) === Number(enumStatusRma.digitacao)"
-          @click="Number(formularioRma.status_rma_id) === Number(enumStatusRma.digitacao) ?
+          v-if="Number(formularioRma.status_rma_id) === Number(enumStatusRma.digitacao) || Number(formularioRma.status_rma_id) === Number(enumStatusRma.naoEntregue)"
+          @click="Number(formularioRma.status_rma_id) === Number(enumStatusRma.digitacao) || Number(formularioRma.status_rma_id) === Number(enumStatusRma.naoEntregue) ?
           aviso = { modal: true, text: 'Essa ação não poderá ser desfeita. Deseja continuar?', key: 'ativarRmaRegistro'} :
-          $notificacao('Só é possível entregar RMA em digitação.', 'erro')"
+          $notificacao('Só é possível entregar RMA em digitação ou RMA não entregues.', 'erro')"
         >
           <v-list-item-icon class="mr-3">
             <v-icon :color="'primary'">
@@ -1505,8 +1505,8 @@
             tabelaId: formularioRma.id,
             tipoGrupoId: 8,
             subTipoGrupoId: 2,
-            excluir: formularioRma.status_rma_id === enumStatusRma.digitacao,
-            adicionar: formularioRma.status_rma_id === enumStatusRma.digitacao
+            excluir: formularioRma.status_rma_id === enumStatusRma.digitacao || Number(formularioRma.status_rma_id) === Number(enumStatusRma.naoEntregue),
+            adicionar: formularioRma.status_rma_id === enumStatusRma.digitacao || Number(formularioRma.status_rma_id) === Number(enumStatusRma.naoEntregue)
           }"
         >
           <v-list-item-icon class="mr-3">
@@ -1544,9 +1544,9 @@
           :class="$vuetify.breakpoint.xsOnly ? 'my-1' : 'mx-1'"
           color="success"
           small
-          @click="Number(formularioRma.status_rma_id) === Number(enumStatusRma.digitacao) ?
+          @click="Number(formularioRma.status_rma_id) === Number(enumStatusRma.digitacao) || Number(formularioRma.status_rma_id) === Number(enumStatusRma.naoEntregue)?
           (controleRma.editar = true, controleRma.exibir = false) :
-          $notificacao('Só é possível editar Rma em digitação.', 'erro')"
+          $notificacao('Só é possível editar Rma em digitação ou RMA não entregues.', 'erro')"
         >
           <v-icon
             left
@@ -2107,7 +2107,7 @@ export default {
       cidade_empresa: null
     },
     formularioTempoRma: {
-      tempo_em_meses: 6,
+      tempo_em_meses: 6
     },
     formularioJustificativa: {
       modal: false,
@@ -2176,7 +2176,8 @@ export default {
       ativa: 2
     },
     enumStatusRma: {
-      digitacao: 1
+      digitacao: 1,
+      naoEntregue: 3
     },
     enumStatusEmpresas: {
       digitacao: 1,

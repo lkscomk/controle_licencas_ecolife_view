@@ -402,6 +402,20 @@
                   titulo="Listagem de Notificações"
                   @paginacao="paginacaoNotificacoes = $event"
                 >
+                  <template v-slot:botoes>
+                    <v-btn
+                      class="mx-1"
+                      color="primary"
+                      small
+                      text
+                      @click="gerarRelatorioRegistros"
+                    >
+                      <v-icon>
+                        mdi-printer
+                      </v-icon>
+                      IMPRIMIR
+                    </v-btn>
+                  </template>
                   <template v-slot:acao="{ registro }">
                     <v-btn
                       :color="registro.cor"
@@ -630,8 +644,58 @@ export default {
       'buscarAcessos',
       'buscarPathImagem',
       'buscarNotificacoes',
-      'registrarCiencia'
+      'registrarCiencia',
+      'gerarRelatorio'
     ]),
+    async gerarRelatorioRegistros () {
+      this.loading = true
+      const colunas = [
+        {
+          text: 'Código',
+          value: 'id'
+        },
+        {
+          text: 'Título',
+          value: 'descricao'
+        },
+        {
+          text: 'Descrição',
+          value: 'conteudo'
+        },
+        {
+          text: 'CNPJ/CPF',
+          value: 'cnpj'
+        },
+        {
+          text: 'Razão Social',
+          value: 'razao_social'
+        },
+        {
+          text: 'Ciente Por',
+          value: 'ciente_por'
+        },
+        {
+          text: 'Ciente Em',
+          value: 'ciente_em'
+        },
+        {
+          text: 'Criado Em',
+          value: 'created_at'
+        }
+      ]
+      const res = await this.gerarRelatorio({
+        colunas: colunas.map(coluna => coluna.text),
+        dados: this.registrosNotificacoes && this.registrosNotificacoes.length ? this.registrosNotificacoes.map(item => colunas.map(coluna => item[coluna.value] || '')) : null
+      })
+
+      const buffer = Buffer.from(res, 'binary')
+      const blob = new Blob([buffer], { type: 'application/pdf' })
+      const url = URL.createObjectURL(blob)
+
+      // Abre o PDF em uma nova aba
+      window.open(url, '_blank')
+      this.loading = false
+    },
     async buscarImagem () {
       const res = await this.buscarPathImagem(this.perfil)
       let foto = null

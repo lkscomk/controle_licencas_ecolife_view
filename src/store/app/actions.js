@@ -1,5 +1,19 @@
 import axios from '@/plugins/axios_local'
 
+export const gerarRelatorio = async ({ commit }, dados) => {
+  try {
+    const res = await axios.post('/notificacoes/relatorio-pdf', dados)
+    // , {
+    //   headers: {
+    //     'Content-Type': 'multipart/form-data'
+    //   }
+    // })
+    return res.data
+  } catch (error) {
+    return null
+  }
+}
+
 export const login = async ({ commit }, dados) => {
   try {
     const res = await axios.post('/sistema/login', dados)
