@@ -204,7 +204,6 @@
                     <v-btn
                       color="primary"
                       x-small
-                      text
                       @click="gerarRelatorioRegistros"
                     >
                       <v-icon>
