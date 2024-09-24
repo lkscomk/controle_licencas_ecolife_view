@@ -655,6 +655,10 @@ export default {
           value: 'id'
         },
         {
+          text: 'Título',
+          value: 'descricao'
+        },
+        {
           text: 'Descrição',
           value: 'conteudo'
         },
