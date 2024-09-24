@@ -214,20 +214,20 @@
                 @paginacao="paginacao = $event"
                 @exibir="exibirRegistro($event)"
                 @dblclick="exibirRegistro($event.id)"
-                >
+              >
                <template v-slot:botoes>
-                    <v-btn
-                      color="primary"
-                      small
-                      @click="gerarRelatorioRegistros"
-                    >
-                      <v-icon>
-                        mdi-printer
-                      </v-icon>
-                      IMPRIMIR
-                    </v-btn>
-                  </template>
-                </tabela>
+                  <v-btn
+                    color="primary"
+                    small
+                    @click="gerarRelatorioRegistros"
+                  >
+                    <v-icon>
+                      mdi-printer
+                    </v-icon>
+                    IMPRIMIR
+                  </v-btn>
+                </template>
+              </tabela>
             </v-col>
           </v-row>
         </v-container>
@@ -2397,34 +2397,34 @@ export default {
     async gerarRelatorioRegistros () {
       this.loading = true
       const colunas = [
-      {
-        text: 'Código',
-        value: 'id'
-      },
-      {
-        text: 'CNPJ/CPF',
-        value: 'cnpj'
-      },
-      {
-        text: 'Status',
-        value: 'status_descricao'
-      },
-      {
-        text: 'N. Processo',
-        value: 'processo'
-      },
-      {
-        text: 'Razão Social/Nome',
-        value: 'razao_social'
-      },
-      {
-        text: 'Criado Por',
-        value: 'created_by'
-      },
-      {
-        text: 'Criado Em',
-        value: 'created_at'
-      }
+        {
+          text: 'Código',
+          value: 'id'
+        },
+        {
+          text: 'CNPJ/CPF',
+          value: 'cnpj'
+        },
+        {
+          text: 'Status',
+          value: 'status_descricao'
+        },
+        {
+          text: 'N. Processo',
+          value: 'processo'
+        },
+        {
+          text: 'Razão Social/Nome',
+          value: 'razao_social'
+        },
+        {
+          text: 'Criado Por',
+          value: 'created_by'
+        },
+        {
+          text: 'Criado Em',
+          value: 'created_at'
+        }
       ]
       const res = await this.gerarRelatorio({
         colunas: colunas.map(coluna => coluna.text),
