@@ -685,7 +685,7 @@ export default {
       ]
       const res = await this.gerarRelatorio({
         colunas: colunas.map(coluna => coluna.text),
-        dados: this.registrosNotificacoes && this.registrosNotificacoes.length ? this.registrosNotificacoes.map(item => colunas.map(coluna => item[coluna.value] || '')) : null
+        dados: this.registrosNotificacoes && this.registrosNotificacoes.length ? this.registrosNotificacoes.map(item => colunas.map(coluna => (item[coluna.value] || '').length > 50 ? item[coluna.value].slice(0, 50) + '[...]' : item[coluna.value] || '')) : null
       })
 
       const buffer = Buffer.from(res, 'binary')
