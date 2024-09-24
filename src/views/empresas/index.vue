@@ -203,7 +203,7 @@
                <template v-slot:botoes>
                     <v-btn
                       color="primary"
-                      x-small
+                      small
                       @click="gerarRelatorioRegistros"
                     >
                       <v-icon>
@@ -1036,7 +1036,7 @@ export default {
       const res = await this.gerarRelatorio({
         colunas: colunas.map(coluna => coluna.text),
         titulo: 'Relatório de Empresas',
-        dados: this.registros && this.registros.length ? this.registros.map(item => colunas.map(coluna => (coluna.value === 'razao_social' || coluna.value === 'nome_fantasia') && (item[coluna.value] || '').length > 30 ? item[coluna.value].slice(0, 30) + '[...]' : item[coluna.value] || '')) : null
+        dados: this.registros && this.registros.length ? this.registros.map(item => colunas.map(coluna => (coluna.value === 'razao_social' || coluna.value === 'nome_fantasia') && (item[coluna.value] || '').length > 50 ? item[coluna.value].slice(0, 50) + '[...]' : item[coluna.value] || '')) : null
       })
 
       const buffer = Buffer.from(res, 'binary')

@@ -214,7 +214,20 @@
                 @paginacao="paginacao = $event"
                 @exibir="exibirRegistro($event)"
                 @dblclick="exibirRegistro($event.id)"
-              />
+                >
+               <template v-slot:botoes>
+                    <v-btn
+                      color="primary"
+                      small
+                      @click="gerarRelatorioRegistros"
+                    >
+                      <v-icon>
+                        mdi-printer
+                      </v-icon>
+                      IMPRIMIR
+                    </v-btn>
+                  </template>
+                </tabela>
             </v-col>
           </v-row>
         </v-container>
@@ -2378,8 +2391,55 @@ export default {
       'excluirRma',
       'gerarRma',
       'ativarRma',
-      'buscarDropdownStatusRma'
+      'buscarDropdownStatusRma',
+      'gerarRelatorio'
     ]),
+    async gerarRelatorioRegistros () {
+      this.loading = true
+      const colunas = [
+      {
+        text: 'Código',
+        value: 'id'
+      },
+      {
+        text: 'CNPJ/CPF',
+        value: 'cnpj'
+      },
+      {
+        text: 'Status',
+        value: 'status_descricao'
+      },
+      {
+        text: 'N. Processo',
+        value: 'processo'
+      },
+      {
+        text: 'Razão Social/Nome',
+        value: 'razao_social'
+      },
+      {
+        text: 'Criado Por',
+        value: 'created_by'
+      },
+      {
+        text: 'Criado Em',
+        value: 'created_at'
+      }
+      ]
+      const res = await this.gerarRelatorio({
+        colunas: colunas.map(coluna => coluna.text),
+        titulo: 'Relatório de Processos',
+        dados: this.registros && this.registros.length ? this.registros.map(item => colunas.map(coluna => (coluna.value === 'razao_social' || coluna.value === 'nome_fantasia') && (item[coluna.value] || '').length > 30 ? item[coluna.value].slice(0, 30) + '[...]' : item[coluna.value] || '')) : null
+      })
+
+      const buffer = Buffer.from(res, 'binary')
+      const blob = new Blob([buffer], { type: 'application/pdf' })
+      const url = URL.createObjectURL(blob)
+
+      // Abre o PDF em uma nova aba
+      window.open(url, '_blank')
+      this.loading = false
+    },
     async listarRegistro () {
       this.loading = true
       await this.listar({
