@@ -631,8 +631,8 @@ export default {
       this.atualizarData()
     }, 200)
     setTimeout(async () => {
-       await this.buscarAcessos(this.perfil)
-       this.listarRegistroNotificacoes()
+      await this.buscarAcessos(this.perfil)
+      this.listarRegistroNotificacoes()
     }, 200)
   },
 
