@@ -199,7 +199,21 @@
                 @paginacao="paginacao = $event"
                 @exibir="exibirRegistro($event)"
                 @dblclick="exibirRegistro($event.id)"
-              />
+              >
+               <template v-slot:botoes>
+                    <v-btn
+                      color="primary"
+                      x-small
+                      text
+                      @click="gerarRelatorioRegistros"
+                    >
+                      <v-icon>
+                        mdi-printer
+                      </v-icon>
+                      IMPRIMIR
+                    </v-btn>
+                  </template>
+                </tabela>
             </v-col>
           </v-row>
         </v-container>
@@ -989,8 +1003,51 @@ export default {
       'buscarDropdownPortesEmpresa',
       'buscarDropdownStatusEmpresa',
       'buscarDropdownEstados',
-      'buscarDropdownCidade'
+      'buscarDropdownCidade',
+      'gerarRelatorio'
     ]),
+    async gerarRelatorioRegistros () {
+      this.loading = true
+      const colunas = [
+        {
+          text: 'Código',
+          value: 'id'
+        },
+        {
+          text: 'CNPJ/CPF',
+          value: 'cnpj'
+        },
+        {
+          text: 'Razão Social',
+          value: 'razao_social'
+        },
+        {
+          text: 'Nome Fantasia',
+          value: 'nome_fantasia'
+        },
+        {
+          text: 'Data Cadastro',
+          value: 'data_cadastro'
+        },
+        {
+          text: 'Cidade',
+          value: 'cidade'
+        }
+      ]
+      const res = await this.gerarRelatorio({
+        colunas: colunas.map(coluna => coluna.text),
+        titulo: 'Relatório de Empresas',
+        dados: this.registrosNotificacoes && this.registrosNotificacoes.length ? this.registrosNotificacoes.map(item => colunas.map(coluna => (coluna.value === 'razao_social' || coluna.value === 'nome_fantasia') && (item[coluna.value] || '').length > 30 ? item[coluna.value].slice(0, 30) + '[...]' : item[coluna.value] || '')) : null
+      })
+
+      const buffer = Buffer.from(res, 'binary')
+      const blob = new Blob([buffer], { type: 'application/pdf' })
+      const url = URL.createObjectURL(blob)
+
+      // Abre o PDF em uma nova aba
+      window.open(url, '_blank')
+      this.loading = false
+    },
     async listarRegistro () {
       this.loading = true
       await this.listar({

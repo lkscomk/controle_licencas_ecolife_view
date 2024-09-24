@@ -1,5 +1,14 @@
 import axios from '@/plugins/axios_local'
 
+export const gerarRelatorio = async ({ commit }, dados) => {
+  try {
+    const res = await axios.post('/sistema/gerar-relatorio', dados)
+    return res.data
+  } catch (error) {
+    return null
+  }
+}
+
 export const buscarDropdownStatusEmpresa = async ({ commit }) => {
   try {
     const res = await axios.get('/sistema/opcoes/4')

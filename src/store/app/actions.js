@@ -2,12 +2,7 @@ import axios from '@/plugins/axios_local'
 
 export const gerarRelatorio = async ({ commit }, dados) => {
   try {
-    const res = await axios.post('/notificacoes/relatorio-pdf', dados)
-    // , {
-    //   headers: {
-    //     'Content-Type': 'multipart/form-data'
-    //   }
-    // })
+    const res = await axios.post('/sistema/gerar-relatorio', dados)
     return res.data
   } catch (error) {
     return null

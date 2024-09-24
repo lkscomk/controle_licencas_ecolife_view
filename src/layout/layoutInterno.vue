@@ -404,9 +404,8 @@
                 >
                   <template v-slot:botoes>
                     <v-btn
-                      class="mx-1"
                       color="primary"
-                      small
+                      x-small
                       text
                       @click="gerarRelatorioRegistros"
                     >
@@ -685,6 +684,7 @@ export default {
       ]
       const res = await this.gerarRelatorio({
         colunas: colunas.map(coluna => coluna.text),
+        titulo: 'Relatório de Notificações',
         dados: this.registrosNotificacoes && this.registrosNotificacoes.length ? this.registrosNotificacoes.map(item => colunas.map(coluna => coluna.value === 'razao_social' && (item[coluna.value] || '').length > 30 ? item[coluna.value].slice(0, 30) + '[...]' : item[coluna.value] || '')) : null
       })
 
