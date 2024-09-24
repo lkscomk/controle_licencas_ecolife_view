@@ -630,10 +630,10 @@ export default {
     setTimeout(() => {
       this.atualizarData()
     }, 200)
-    // setTimeout(async () => {
-    //   await this.buscarAcessos(this.perfil)
-    //   this.listarRegistroNotificacoes()
-    // }, 200)
+    setTimeout(async () => {
+       await this.buscarAcessos(this.perfil)
+       this.listarRegistroNotificacoes()
+    }, 200)
   },
 
   methods: {
