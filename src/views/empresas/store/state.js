@@ -5,5 +5,5 @@ export default {
   dropdownEstados: [],
   dropdownCidades: [],
   dropdownPortesEmpresa: [],
-  dropdownPeriodicidadeEmpresa: []
+  dropdownPrioridadeEmpresa: []
 }

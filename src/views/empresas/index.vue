@@ -186,13 +186,13 @@
                         cols="12"
                       >
                         <selecao-all
-                          v-model="filtro.periodicidade"
-                          :items="dropdownPeriodicidadeEmpresa"
+                          v-model="filtro.prioridade"
+                          :items="dropdownPrioridadeEmpresa"
                           hide-details
                           dense
                           item-value="item"
                           item-text="descricao"
-                          label="Periodicidade"
+                          label="Prioridade"
                           outlined
                           @keydown.enter="!loading ? listarRegistro() : null"
                         />
@@ -483,20 +483,20 @@
               >
                 <validation-provider
                   v-slot="{ errors }"
-                  name="Periodicidade"
+                  name="Prioridade"
                   rules="required"
-                  vid="periodicidade"
+                  vid="prioridade"
                 >
                   <v-autocomplete
-                    v-model="formulario.periodicidade"
-                    :items="dropdownPeriodicidadeEmpresa"
+                    v-model="formulario.prioridade"
+                    :items="dropdownPrioridadeEmpresa"
                     :disabled="controle.exibir"
                     :error-messages="errors"
                     :hide-details="!errors.length"
                     dense
                     item-value="item"
                     item-text="descricao"
-                    label="Periodicidade"
+                    label="Prioridade"
                     class="required"
                     outlined
                   />
@@ -920,10 +920,10 @@ export default {
         value: 'cidade'
       },
       {
-        text: 'Periodicidade',
+        text: 'Prioridade',
         align: 'start',
         sortable: true,
-        value: 'periodicidade_descricao'
+        value: 'prioridade_descricao'
       },
       {
         text: 'Porte',
@@ -945,7 +945,7 @@ export default {
       nomeFantasia: null,
       razaoSocial: null,
       porte: [],
-      periodicidade: []
+      prioridade: []
     },
     controle: {
       exibir: false,
@@ -962,7 +962,7 @@ export default {
       inscricaoEstadual: null,
       inscricaoMunicipal: null,
       porte: null,
-      periodicidade: null,
+      prioridade: null,
       cep: null,
       logradouro: null,
       enderecoNumero: null,
@@ -987,7 +987,7 @@ export default {
       'registros',
       'dropdownStatusEmpresa',
       'dropdownPortesEmpresa',
-      'dropdownPeriodicidadeEmpresa',
+      'dropdownPrioridadeEmpresa',
       'dropdownEstados',
       'dropdownCidades'
     ]),
@@ -1006,8 +1006,8 @@ export default {
         (this.filtro.porte
           ? this.filtro.porte.length
           : null) ||
-        (this.filtro.periodicidade
-          ? this.filtro.periodicidade.length
+        (this.filtro.prioridade
+          ? this.filtro.prioridade.length
           : null)
       )
     },
@@ -1044,7 +1044,7 @@ export default {
   async created () {
     this.listarRegistro()
     await this.buscarDropdownPortesEmpresa()
-    await this.buscarDropdownPeriodicidadeEmpresa()
+    await this.buscarDropdownPrioridadeEmpresa()
     await this.buscarDropdownStatusEmpresa()
     await this.buscarDropdownEstados()
     this.buscarDropdownCidade('RO')
@@ -1060,7 +1060,7 @@ export default {
       'excluir',
       'buscarCep',
       'buscarDropdownPortesEmpresa',
-      'buscarDropdownPeriodicidadeEmpresa',
+      'buscarDropdownPrioridadeEmpresa',
       'buscarDropdownStatusEmpresa',
       'buscarDropdownEstados',
       'buscarDropdownCidade',
@@ -1094,8 +1094,8 @@ export default {
           value: 'cidade'
         },
         {
-          text: 'Periodicidade',
-          value: 'periodicidade_descricao'
+          text: 'Prioridade',
+          value: 'prioridade_descricao'
         }
       ]
       const res = await this.gerarRelatorio({
@@ -1118,7 +1118,7 @@ export default {
         id: this.filtro.id || null,
         cnpj: this.filtro.cnpj ? String(this.filtro.cnpj).match(/\d/g).join('') : undefined,
         cidade: this.filtro.cidade && this.filtro.cidade.length ? this.filtro.cidade : null,
-        periodicidade: this.filtro.periodicidade && this.filtro.periodicidade.length ? this.filtro.periodicidade : null,
+        prioridade: this.filtro.prioridade && this.filtro.prioridade.length ? this.filtro.prioridade : null,
         status: this.filtro.status && this.filtro.status.length ? this.filtro.status : null,
         nomeFantasia: this.filtro.nomeFantasia || null,
         razaoSocial: this.filtro.razaoSocial || null,
@@ -1140,7 +1140,7 @@ export default {
           inscricaoEstadual: res.inscricao_estadual || null,
           inscricaoMunicipal: res.inscricao_municipal || null,
           porte: res.porte_empresa_id || null,
-          periodicidade: res.periodicidade_empresa_id || null,
+          prioridade: res.prioridade_empresa_id || null,
           cep: res.cep || null,
           logradouro: res.logradouro || null,
           enderecoNumero: res.numero || null,
@@ -1174,7 +1174,7 @@ export default {
           razaoSocial: this.formulario.razaoSocial || undefined,
           inscricaoEstadual: this.formulario.inscricaoEstadual || undefined,
           inscricaoMunicipal: this.formulario.inscricaoMunicipal || undefined,
-          periodicidade: this.formulario.periodicidade || undefined,
+          prioridade: this.formulario.prioridade || undefined,
           porte: this.formulario.porte || undefined,
           dataCadastro: this.formulario.dataCadastro ? this.$day(this.formulario.dataCadastro, 'DD/MM/YYYY').format('YYYY-MM-DD') : undefined,
           cep: this.formulario.cep ? String(this.formulario.cep).match(/\d/g).join('') : undefined,
@@ -1252,7 +1252,7 @@ export default {
         inscricaoEstadual: null,
         inscricaoMunicipal: null,
         porte: null,
-        periodicidade: null,
+        prioridade: null,
         cep: null,
         logradouro: null,
         enderecoNumero: null,

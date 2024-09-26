@@ -2,8 +2,8 @@ import day from '@/plugins/dayjs'
 import { filter } from 'vue-input-facade'
 
 export default {
-  dropdownPeriodicidadeEmpresa (state, param) {
-    state.dropdownPeriodicidadeEmpresa = param
+  dropdownPrioridadeEmpresa (state, param) {
+    state.dropdownPrioridadeEmpresa = param
   },
   dropdownPortesEmpresa (state, param) {
     state.dropdownPortesEmpresa = param
