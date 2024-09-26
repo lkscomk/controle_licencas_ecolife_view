@@ -23,6 +23,7 @@ const routes = [
         name: 'Perfil',
         component: () => import('@/views/informacoes_perfil/index.vue'),
         beforeEnter: (to, from, next) => {
+          if (temAcesso('/perfil')) {
             next()
           } else {
             next('/proibido')
