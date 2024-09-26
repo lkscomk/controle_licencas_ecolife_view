@@ -37,6 +37,20 @@ export const buscarDropdownPortesEmpresa = async ({ commit }) => {
   }
 }
 
+export const buscarDropdownPeriodicidadeEmpresa = async ({ commit }) => {
+  try {
+    const res = await axios.get('/sistema/opcoes/11')
+
+    if (!res.data.erro) {
+      commit('dropdownPeriodicidadeEmpresa', res.data)
+    }
+
+    return res.data
+  } catch (error) {
+    return null
+  }
+}
+
 export const buscarDropdownEstados = async ({ commit }) => {
   try {
     const res = await axios.get('/sistema/estados')

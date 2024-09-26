@@ -1,6 +1,12 @@
 import Vue from 'vue'
+import store from '@/store/'
 import VueRouter from 'vue-router'
 Vue.use(VueRouter)
+
+function temAcesso (urlNecessaria) {
+  const acessosUsuario = JSON.parse(window.atob(localStorage.getItem('umbrella:acessos_usuario'))) || []
+  return acessosUsuario.some(acesso => acesso.url === urlNecessaria)
+}
 
 const routes = [
   {
@@ -15,41 +21,78 @@ const routes = [
       {
         path: '/perfil',
         name: 'Perfil',
-        component: () => import('@/views/informacoes_perfil/index.vue')
+        component: () => import('@/views/informacoes_perfil/index.vue'),
+        beforeEnter: (to, from, next) => {
+            next()
+          } else {
+            next('/proibido')
+          }
+        }
       },
       {
         path: '/opcoes',
         name: 'Opções Globais',
-        component: () => import('@/views/opcoes/index.vue')
+        component: () => import('@/views/opcoes/index.vue'),
+        beforeEnter: (to, from, next) => {
+          if (temAcesso('/opcoes')) {
+            next()
+          } else {
+            next('/proibido')
+          }
+        }
       },
       {
         path: '/usuarios',
         name: 'Usuários',
-        component: () => import('../views/usuarios/index.vue')
-      },
-      {
-        path: '/licencas',
-        name: 'Licenças',
-        component: () => import('../views/licencas/index.vue')
+        component: () => import('../views/usuarios/index.vue'),
+        beforeEnter: (to, from, next) => {
+          if (temAcesso('/usuarios')) {
+            next()
+          } else {
+            next('/proibido')
+          }
+        }
       },
       {
         path: '/processo',
         name: 'Processo',
-        component: () => import('../views/processo/index.vue')
+        component: () => import('../views/processo/index.vue'),
+        beforeEnter: (to, from, next) => {
+          if (temAcesso('/processo')) {
+            next()
+          } else {
+            next('/proibido')
+          }
+        }
       },
       {
         path: '/empresas',
         name: 'Empresas',
-        component: () => import('../views/empresas/index.vue')
+        component: () => import('../views/empresas/index.vue'),
+        beforeEnter: (to, from, next) => {
+          if (temAcesso('/empresas')) {
+            next()
+          } else {
+            next('/proibido')
+          }
+        }
       },
       {
         path: '/acessos',
         name: 'Acessos',
-        component: () => import('../views/acessos/index.vue')
+        component: () => import('../views/acessos/index.vue'),
+        beforeEnter: (to, from, next) => {
+          if (temAcesso('/acessos')) {
+            next()
+          } else {
+            next('/proibido')
+          }
+        }
       }
     ],
     beforeEnter: (to, from, next) => {
       if (localStorage.getItem('umbrella:token')) {
+        window.console.log(store.state.app)
         next()
       } else {
         Vue.prototype.$notificacao('Usuário não autenticado', 'atencao')
@@ -76,6 +119,7 @@ const routes = [
         localStorage.removeItem('umbrella:login')
         localStorage.removeItem('umbrella:email')
         localStorage.removeItem('umbrella:perfil')
+        localStorage.removeItem('umbrella:acessos_usuario')
         next()
       }
     }

@@ -485,7 +485,6 @@ export default {
   name: 'App',
 
   data: () => ({
-    perfil: window.atob(localStorage.getItem('umbrella:perfil')),
     modalNotificacoes: false,
     notificacaoRegistro: null,
     loading: false,
@@ -602,9 +601,11 @@ export default {
 
   computed: {
     ...mapState('app', [
-      'acessos_usuario',
       'registrosNotificacoes'
     ]),
+    acessos_usuario () {
+      return JSON.parse(window.atob(localStorage.getItem('umbrella:acessos_usuario')))
+    },
     optionsFilterModalNotificacoes () {
       return {
         adicionar: false,
@@ -626,12 +627,11 @@ export default {
     }
   },
 
-  created () {
+  async created () {
     setTimeout(() => {
       this.atualizarData()
     }, 200)
     setTimeout(async () => {
-      await this.buscarAcessos(this.perfil)
       this.listarRegistroNotificacoes()
     }, 200)
   },
@@ -639,7 +639,6 @@ export default {
   methods: {
     ...mapActions('app', [
       'logout',
-      'buscarAcessos',
       'buscarPathImagem',
       'buscarNotificacoes',
       'registrarCiencia',

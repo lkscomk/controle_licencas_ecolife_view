@@ -173,7 +173,8 @@ export default {
   },
   methods: {
     ...mapActions('app', [
-      'login'
+      'login',
+      'buscarAcessos'
     ]),
     async fazerLogin () {
       if (await this.$refs.observer.validate()) {
@@ -183,6 +184,7 @@ export default {
           senha: this.formulario.senha ? this.$crypto(this.formulario.senha, 'sha256') : undefined
         })
         if (res && !res.erro) {
+          await this.buscarAcessos(res.id)
           this.abrirJenela('/')
         }
         this.loading = false

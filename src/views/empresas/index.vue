@@ -270,7 +270,7 @@
                   <v-text-field
                     v-model="formulario.cnpj"
                     v-mask="['###.###.###-##', '##.###.###/####-##']"
-                    :disabled="controle.exibir"
+                    :disabled="controle.exibir || controle.editar"
                     :error-messages="errors"
                     :hide-details="!errors.length"
                     dense
@@ -450,6 +450,34 @@
                     item-value="item"
                     item-text="descricao"
                     label="Porte"
+                    class="required"
+                    outlined
+                  />
+                </validation-provider>
+              </v-col>
+              <v-col
+                xl="3"
+                lg="3"
+                md="6"
+                sm="12"
+                cols="12"
+              >
+                <validation-provider
+                  v-slot="{ errors }"
+                  name="Periodicidade"
+                  rules="required"
+                  vid="periodicidade"
+                >
+                  <v-autocomplete
+                    v-model="formulario.periodicidade"
+                    :items="dropdownPeriodicidadeEmpresa"
+                    :disabled="controle.exibir"
+                    :error-messages="errors"
+                    :hide-details="!errors.length"
+                    dense
+                    item-value="item"
+                    item-text="descricao"
+                    label="Periodicidade"
                     class="required"
                     outlined
                   />
@@ -775,7 +803,7 @@
         Salvar
       </v-btn>
       <v-btn
-        v-if="!!(controle.exibir && !controle.inserir) && formulario.status === enumStatusEmpresas.digitacao"
+        v-if="!!(controle.exibir && !controle.inserir) && (formulario.status === enumStatusEmpresas.digitacao || formulario.status === enumStatusEmpresas.ativa)"
         :block="$vuetify.breakpoint.xsOnly"
         :class="$vuetify.breakpoint.xsOnly ? 'my-1' : 'mx-1'"
         color="success"
@@ -873,6 +901,12 @@ export default {
         value: 'cidade'
       },
       {
+        text: 'Periodicidade',
+        align: 'start',
+        sortable: true,
+        value: 'periodicidade_descricao'
+      },
+      {
         text: 'Porte',
         align: 'start',
         sortable: true,
@@ -908,6 +942,7 @@ export default {
       inscricaoEstadual: null,
       inscricaoMunicipal: null,
       porte: null,
+      periodicidade: null,
       cep: null,
       logradouro: null,
       enderecoNumero: null,
@@ -932,6 +967,7 @@ export default {
       'registros',
       'dropdownStatusEmpresa',
       'dropdownPortesEmpresa',
+      'dropdownPeriodicidadeEmpresa',
       'dropdownEstados',
       'dropdownCidades'
     ]),
@@ -985,6 +1021,7 @@ export default {
   async created () {
     this.listarRegistro()
     await this.buscarDropdownPortesEmpresa()
+    await this.buscarDropdownPeriodicidadeEmpresa()
     await this.buscarDropdownStatusEmpresa()
     await this.buscarDropdownEstados()
     this.buscarDropdownCidade('RO')
@@ -1000,6 +1037,7 @@ export default {
       'excluir',
       'buscarCep',
       'buscarDropdownPortesEmpresa',
+      'buscarDropdownPeriodicidadeEmpresa',
       'buscarDropdownStatusEmpresa',
       'buscarDropdownEstados',
       'buscarDropdownCidade',
@@ -1031,6 +1069,10 @@ export default {
         {
           text: 'Cidade',
           value: 'cidade'
+        },
+        {
+          text: 'Periodicidade',
+          value: 'periodicidade_descricao'
         }
       ]
       const res = await this.gerarRelatorio({
@@ -1074,6 +1116,7 @@ export default {
           inscricaoEstadual: res.inscricao_estadual || null,
           inscricaoMunicipal: res.inscricao_municipal || null,
           porte: res.porte_empresa_id || null,
+          periodicidade: res.periodicidade_empresa_id || null,
           cep: res.cep || null,
           logradouro: res.logradouro || null,
           enderecoNumero: res.numero || null,
@@ -1107,7 +1150,8 @@ export default {
           razaoSocial: this.formulario.razaoSocial || undefined,
           inscricaoEstadual: this.formulario.inscricaoEstadual || undefined,
           inscricaoMunicipal: this.formulario.inscricaoMunicipal || undefined,
-          porte: this.formulario.porte || undefined,
+          periodicidade: this.formulario.porte || undefined,
+          porte: this.formulario.periodicidade || undefined,
           dataCadastro: this.formulario.dataCadastro ? this.$day(this.formulario.dataCadastro, 'DD/MM/YYYY').format('YYYY-MM-DD') : undefined,
           cep: this.formulario.cep ? String(this.formulario.cep).match(/\d/g).join('') : undefined,
           logradouro: this.formulario.logradouro || undefined,
@@ -1184,6 +1228,7 @@ export default {
         inscricaoEstadual: null,
         inscricaoMunicipal: null,
         porte: null,
+        periodicidade: null,
         cep: null,
         logradouro: null,
         enderecoNumero: null,
