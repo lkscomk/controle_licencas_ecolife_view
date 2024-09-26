@@ -190,8 +190,8 @@
                           :items="dropdownPeriodicidadeEmpresa"
                           hide-details
                           dense
-                          item-value="codigo"
-                          item-text="nome"
+                          item-value="item"
+                          item-text="descricao"
                           label="Periodicidade"
                           outlined
                           @keydown.enter="!loading ? listarRegistro() : null"
