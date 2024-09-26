@@ -1118,7 +1118,7 @@ export default {
         id: this.filtro.id || null,
         cnpj: this.filtro.cnpj ? String(this.filtro.cnpj).match(/\d/g).join('') : undefined,
         cidade: this.filtro.cidade && this.filtro.cidade.length ? this.filtro.cidade : null,
-        cidade: this.filtro.cidade && this.filtro.cidade.length ? this.filtro.cidade : null,
+        periodicidade: this.filtro.periodicidade && this.filtro.periodicidade.length ? this.filtro.periodicidade : null,
         status: this.filtro.status && this.filtro.status.length ? this.filtro.status : null,
         nomeFantasia: this.filtro.nomeFantasia || null,
         razaoSocial: this.filtro.razaoSocial || null,
