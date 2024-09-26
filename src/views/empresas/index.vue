@@ -178,6 +178,25 @@
                           @keydown.enter="!loading ? listarRegistro() : null"
                         />
                       </v-col>
+                      <v-col
+                        xl="2"
+                        lg="2"
+                        md="4"
+                        sm="12"
+                        cols="12"
+                      >
+                        <selecao-all
+                          v-model="filtro.periodicidade"
+                          :items="dropdownPeriodicidadeEmpresa"
+                          hide-details
+                          dense
+                          item-value="codigo"
+                          item-text="nome"
+                          label="Periodicidade"
+                          outlined
+                          @keydown.enter="!loading ? listarRegistro() : null"
+                        />
+                      </v-col>
                     </v-row>
                   </v-container>
                 </template>
@@ -925,7 +944,8 @@ export default {
       cidade: [],
       nomeFantasia: null,
       razaoSocial: null,
-      porte: []
+      porte: [],
+      periodicidade: []
     },
     controle: {
       exibir: false,
@@ -985,6 +1005,9 @@ export default {
         this.filtro.razaoSocial ||
         (this.filtro.porte
           ? this.filtro.porte.length
+          : null) ||
+        (this.filtro.periodicidade
+          ? this.filtro.periodicidade.length
           : null)
       )
     },
@@ -1094,6 +1117,7 @@ export default {
       await this.listar({
         id: this.filtro.id || null,
         cnpj: this.filtro.cnpj ? String(this.filtro.cnpj).match(/\d/g).join('') : undefined,
+        cidade: this.filtro.cidade && this.filtro.cidade.length ? this.filtro.cidade : null,
         cidade: this.filtro.cidade && this.filtro.cidade.length ? this.filtro.cidade : null,
         status: this.filtro.status && this.filtro.status.length ? this.filtro.status : null,
         nomeFantasia: this.filtro.nomeFantasia || null,
