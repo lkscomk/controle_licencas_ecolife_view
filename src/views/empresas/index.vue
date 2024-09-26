@@ -1140,7 +1140,7 @@ export default {
           inscricaoEstadual: res.inscricao_estadual || null,
           inscricaoMunicipal: res.inscricao_municipal || null,
           porte: res.porte_empresa_id || null,
-          prioridade: res.prioridade_empresa_id || null,
+          prioridade: res.periodicidade_empresa_id || null,
           cep: res.cep || null,
           logradouro: res.logradouro || null,
           enderecoNumero: res.numero || null,
