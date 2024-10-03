@@ -7,6 +7,7 @@ import usuarios from '../views/usuarios/store'
 import acessos from '../views/acessos/store'
 import empresa from '../views/empresas/store'
 import processo from '../views/processo/store'
+import home from '../views/home/store'
 
 Vue.use(Vuex)
 
@@ -26,6 +27,7 @@ export default new Vuex.Store({
     usuarios,
     acessos,
     empresa,
-    processo
+    processo,
+    home
   }
 })
