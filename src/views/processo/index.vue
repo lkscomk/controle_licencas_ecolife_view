@@ -1518,8 +1518,8 @@
             tabelaId: formularioRma.id,
             tipoGrupoId: 8,
             subTipoGrupoId: 2,
-            excluir: formularioRma.status_rma_id === enumStatusRma.digitacao || Number(formularioRma.status_rma_id) === Number(enumStatusRma.naoEntregue),
-            adicionar: formularioRma.status_rma_id === enumStatusRma.digitacao || Number(formularioRma.status_rma_id) === Number(enumStatusRma.naoEntregue)
+            excluir: true,
+            adicionar: true
           }"
         >
           <v-list-item-icon class="mr-3">
