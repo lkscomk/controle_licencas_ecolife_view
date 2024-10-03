@@ -17,7 +17,13 @@
           >
             Processos
           </v-col>
-          <v-col cols="2">
+          <v-col
+            xl="2"
+            lg="2"
+            md="4"
+            sm="4"
+            cols="12"
+          >
             <v-card
               height="270"
               outlined
@@ -43,7 +49,13 @@
               </v-row>
             </v-card>
           </v-col>
-          <v-col cols="2">
+          <v-col
+            xl="2"
+            lg="2"
+            md="4"
+            sm="4"
+            cols="12"
+          >
             <v-card
               height="270"
               outlined
@@ -69,7 +81,13 @@
               </v-row>
             </v-card>
           </v-col>
-          <v-col cols="2">
+          <v-col
+            xl="2"
+            lg="2"
+            md="4"
+            sm="4"
+            cols="12"
+          >
             <v-card
               height="270"
               outlined
@@ -95,7 +113,13 @@
               </v-row>
             </v-card>
           </v-col>
-          <v-col cols="2">
+          <v-col
+            xl="2"
+            lg="2"
+            md="4"
+            sm="4"
+            cols="12"
+          >
             <v-card
               height="270"
               outlined
@@ -121,7 +145,13 @@
               </v-row>
             </v-card>
           </v-col>
-          <v-col cols="2">
+          <v-col
+            xl="2"
+            lg="2"
+            md="4"
+            sm="4"
+            cols="12"
+          >
             <v-card
               height="270"
               outlined
@@ -162,7 +192,13 @@
           >
             Licenças
           </v-col>
-          <v-col cols="2">
+          <v-col
+            xl="2"
+            lg="2"
+            md="4"
+            sm="4"
+            cols="12"
+          >
             <v-card
               height="270"
               outlined
@@ -188,7 +224,13 @@
               </v-row>
             </v-card>
           </v-col>
-          <v-col cols="2">
+          <v-col
+            xl="2"
+            lg="2"
+            md="4"
+            sm="4"
+            cols="12"
+          >
             <v-card
               height="270"
               outlined
@@ -214,7 +256,13 @@
               </v-row>
             </v-card>
           </v-col>
-          <v-col cols="2">
+          <v-col
+            xl="2"
+            lg="2"
+            md="4"
+            sm="4"
+            cols="12"
+          >
             <v-card
               height="270"
               outlined
@@ -240,7 +288,13 @@
               </v-row>
             </v-card>
           </v-col>
-          <v-col cols="2">
+          <v-col
+            xl="2"
+            lg="2"
+            md="4"
+            sm="4"
+            cols="12"
+          >
             <v-card
               height="270"
               outlined
