@@ -93,7 +93,6 @@ const routes = [
     ],
     beforeEnter: (to, from, next) => {
       if (localStorage.getItem('umbrella:token')) {
-        window.console.log(store.state.app)
         next()
       } else {
         Vue.prototype.$notificacao('Usuário não autenticado', 'atencao')
