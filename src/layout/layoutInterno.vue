@@ -259,7 +259,6 @@
       :mais-opcoes="false"
       @fechar="limparFiltroNotificacoes(), modalNotificacoes = false"
     >
-      {{ $vuetify.breakpoint.name }}
       <template>
         <v-form @submit.prevent="''">
           <v-container
@@ -311,6 +310,7 @@
                             item-value="item"
                             item-text="descricao"
                             label="Vencendo em/Vencida"
+                            clearable
                             outlined
                           />
                         </v-col>
