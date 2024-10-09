@@ -96,9 +96,10 @@
                     <v-text-field
                       v-model="formulario.nome"
                       v-uppercase
+                      :disabled="controle.exibir || controle.editar"
                       :error-messages="errors"
-                      :hide-details="!errors.length"
-                      :disabled="controle.exibir"
+                      :hide-details="!(errors.length || (formulario.nome && formulario.nome.length > 0) && !(controle.exibir || controle.editar))"
+                      :counter="100"
                       dense
                       label="Nome"
                       class="required"

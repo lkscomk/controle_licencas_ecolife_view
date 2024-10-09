@@ -2,6 +2,9 @@ import day from '@/plugins/dayjs'
 import { filter } from 'vue-input-facade'
 
 export default {
+  dropdownCaracteristicaNotificacao (state, param) {
+    state.dropdownCaracteristicaNotificacao = param
+  },
   setRegistrosAnexos (state, param) {
     state.registrosAnexos = param
   },

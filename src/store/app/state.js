@@ -2,6 +2,7 @@ export default {
   login: '',
   acessos_usuario: '',
   registrosNotificacoes: [],
+  dropdownCaracteristicaNotificacao: [],
   registrosAnexos: [],
   notificacao: {
     ativo: false,

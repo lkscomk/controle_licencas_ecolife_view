@@ -259,6 +259,7 @@
       :mais-opcoes="false"
       @fechar="limparFiltroNotificacoes(), modalNotificacoes = false"
     >
+      {{ $vuetify.breakpoint.name }}
       <template>
         <v-form @submit.prevent="''">
           <v-container
@@ -298,6 +299,24 @@
                         <v-col
                           xl="3"
                           lg="3"
+                          md="5"
+                          sm="5"
+                          cols="12"
+                        >
+                          <v-autocomplete
+                            v-model="filtroNotificacoes.caracteristica_notificacao"
+                            :items="dropdownCaracteristicaNotificacao"
+                            hide-details
+                            dense
+                            item-value="item"
+                            item-text="descricao"
+                            label="Vencendo em/Vencida"
+                            outlined
+                          />
+                        </v-col>
+                        <v-col
+                          xl="3"
+                          lg="3"
                           md="4"
                           sm="5"
                           cols="12"
@@ -315,8 +334,8 @@
                         <v-col
                           xl="3"
                           lg="3"
-                          md="5"
-                          sm="5"
+                          md="8"
+                          sm="8"
                           cols="12"
                         >
                           <v-text-field
@@ -330,44 +349,44 @@
                           />
                         </v-col>
                         <v-col
-                        xl="2"
-                        lg="2"
-                        md="3"
-                        sm="4"
-                        cols="12"
-                      >
-                        <v-text-field
-                          v-model="filtroNotificacoes.cnpj"
-                          v-mask="['###.###.###-##', '##.###.###/####-##']"
-                          hide-details
-                          dense
-                          label="CNPJ/CPF"
-                          outlined
-                          @keydown.enter="!loading ? listarRegistro() : null"
-                        />
-                      </v-col>
-                      <v-col
-                        xl="3"
-                        lg="3"
-                        md="6"
-                        sm="6"
-                        cols="12"
-                      >
-                        <v-text-field
-                          v-model="filtroNotificacoes.razaoSocial"
-                          v-uppercase
-                          hide-details
-                          dense
-                          label="Razão Social"
-                          outlined
-                          @keydown.enter="!loading ? listarRegistro() : null"
-                        />
-                      </v-col>
+                          xl="2"
+                          lg="2"
+                          md="4"
+                          sm="4"
+                          cols="12"
+                        >
+                          <v-text-field
+                            v-model="filtroNotificacoes.cnpj"
+                            v-mask="['###.###.###-##', '##.###.###/####-##']"
+                            hide-details
+                            dense
+                            label="CNPJ/CPF"
+                            outlined
+                            @keydown.enter="!loading ? listarRegistro() : null"
+                          />
+                        </v-col>
+                        <v-col
+                          xl="3"
+                          lg="3"
+                          md="8"
+                          sm="8"
+                          cols="12"
+                        >
+                          <v-text-field
+                            v-model="filtroNotificacoes.razaoSocial"
+                            v-uppercase
+                            hide-details
+                            dense
+                            label="Razão Social"
+                            outlined
+                            @keydown.enter="!loading ? listarRegistro() : null"
+                          />
+                        </v-col>
                         <v-col
                           xl="2"
                           lg="2"
-                          md="3"
-                          sm="2"
+                          md="4"
+                          sm="4"
                           cols="12"
                         >
                           <v-autocomplete
@@ -422,7 +441,7 @@
                       icon
                       small
                       @click="aviso = { modal: true, text: 'Ao dá ciencia nesta notificação, a mesma permanecerá aqui por três dias. Depois não será mais notificado. Deseja continuar? \n \n <br>IMPORTANTE: Essa notificação só irá parar de ser notificada se o problema for resolvido!</br>', key: 'registrarCienciaRegistro'}
-                      notificacaoRegistro = registro"
+                              notificacaoRegistro = registro"
                     >
                       <v-icon :color="registro.cor">
                         {{ !registro.ciente_em ? 'mdi-checkbox-blank-outline' : 'mdi-checkbox-marked' }}
@@ -520,7 +539,8 @@ export default {
       razaoSocial: null,
       descricao: null,
       conteudo: null,
-      ciente: null
+      ciente: null,
+      caracteristica_notificacao: null
     },
     colunasNotificacoes: [
       {
@@ -601,7 +621,8 @@ export default {
 
   computed: {
     ...mapState('app', [
-      'registrosNotificacoes'
+      'registrosNotificacoes',
+      'dropdownCaracteristicaNotificacao'
     ]),
     acessos_usuario () {
       return JSON.parse(window.atob(localStorage.getItem('umbrella:acessos_usuario')))
@@ -613,6 +634,7 @@ export default {
           this.filtroNotificacoes.id ||
           this.filtroNotificacoes.descricao ||
           this.filtroNotificacoes.conteudo ||
+          this.filtroNotificacoes.caracteristica_notificacao ||
           this.filtroNotificacoes.cnpj ||
           this.filtroNotificacoes.razaoSocial ||
           this.filtroNotificacoes.ciente
@@ -628,6 +650,7 @@ export default {
   },
 
   async created () {
+    await this.buscarDropdownCaracteristicaNotificacao()
     setTimeout(() => {
       this.atualizarData()
     }, 200)
@@ -642,7 +665,8 @@ export default {
       'buscarPathImagem',
       'buscarNotificacoes',
       'registrarCiencia',
-      'gerarRelatorio'
+      'gerarRelatorio',
+      'buscarDropdownCaracteristicaNotificacao'
     ]),
     async gerarRelatorioRegistros () {
       this.loading = true
@@ -723,7 +747,8 @@ export default {
         conteudo: this.filtroNotificacoes.conteudo || null,
         cnpj: this.filtroNotificacoes.cnpj ? String(this.filtroNotificacoes.cnpj).match(/\d/g).join('') : undefined,
         razaoSocial: this.filtroNotificacoes.razaoSocial || null,
-        ciente: this.filtroNotificacoes.ciente || null
+        ciente: this.filtroNotificacoes.ciente || null,
+        caracteristica_notificacao: this.filtroNotificacoes.caracteristica_notificacao || null
       })
       this.loading = false
     },
@@ -769,9 +794,12 @@ export default {
     limparFiltroNotificacoes () {
       this.filtroNotificacoes = {
         id: null,
+        cnpj: null,
+        razaoSocial: null,
         descricao: null,
         conteudo: null,
-        ciente: null
+        ciente: null,
+        caracteristica_notificacao: null
       }
     }
   }

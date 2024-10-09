@@ -9,6 +9,8 @@
     @voltar="resetFormulario()"
     @excluir="aviso = { modal: true, text: 'Deseja excluir esse registro?', key: 'excluirRegistro'}"
     @resetSenha="aviso = { modal: true, text: 'Deseja resetar a senha desse usuário?', key: 'resetSenhaRegistro'}"
+    @ativar="aviso = { modal: true, text: 'Deseja ativar este usuário?', key: 'ativarUsuarioRegistro'}"
+    @desativar="aviso = { modal: true, text: 'Deseja desativar este usuário?', key: 'desativarUsuarioRegistro'}"
   >
     <aviso
       v-model="aviso.modal"
@@ -28,6 +30,16 @@
         text: '',
         key: ''
       }, resetSenhaRegistro()"
+      @ativarUsuarioRegistro="aviso = {
+        modal: false,
+        text: '',
+        key: ''
+      }, ativarUsuarioRegistro()"
+      @desativarUsuarioRegistro="aviso = {
+        modal: false,
+        text: '',
+        key: ''
+      }, desativarUsuarioRegistro()"
     />
     <template slot="listagem">
       <v-form @submit.prevent="''">
@@ -39,7 +51,7 @@
             <v-col cols="12">
               <filtro
                 :options="optionsFilter"
-                @adicionar="modal = true, controle.inserir = true"
+                @adicionar="modal = true, controle.inserir = true, formulario.status_usuario_id = enumStatusUsuario.digitacao"
                 @clearFilters="limparFiltros()"
                 @pesquisar="listarRegistro()"
               >
@@ -182,6 +194,25 @@
                 />
               </v-col>
               <v-col
+                xl="2"
+                lg="2"
+                md="3"
+                sm="4"
+                cols="12"
+              >
+                <v-autocomplete
+                  v-model="formulario.status_usuario_id"
+                  :items="dropdownStatusUsuario"
+                  disabled
+                  hide-details
+                  dense
+                  item-value="item"
+                  item-text="descricao"
+                  label="Status Usuário"
+                  outlined
+                />
+              </v-col>
+              <v-col
                 :xl="formulario.id ? 4 : 3"
                 :lg="formulario.id ? 4 : 3"
                 :md="formulario.id ? 4 : 4"
@@ -197,9 +228,9 @@
                   <v-text-field
                     v-model="formulario.nome"
                     v-uppercase
-                    :disabled="controle.exibir"
+                    :disabled="controle.exibir || controle.editar"
                     :error-messages="errors"
-                    :hide-details="!(errors.length || (formulario.nome && formulario.nome.length > 0) && !controle.exibir)"
+                    :hide-details="!(errors.length || (formulario.nome && formulario.nome.length > 0) && !(controle.exibir || controle.editar))"
                     :counter="100"
                     dense
                     label="Nome"
@@ -483,6 +514,12 @@ export default {
         value: 'id'
       },
       {
+        text: 'Status',
+        align: 'start',
+        sortable: false,
+        value: 'status'
+      },
+      {
         text: 'Nome',
         align: 'start',
         sortable: false,
@@ -537,6 +574,7 @@ export default {
       login: null,
       tipo_usuario_id: null,
       data_nascimento: null,
+      status_usuario_id: null,
       email: null,
       cpf: null,
       ultimo_login: null,
@@ -544,6 +582,11 @@ export default {
       created_by: null,
       updated_at: null,
       updated_by: null
+    },
+    enumStatusUsuario: {
+      digitacao: 1,
+      ativo: 2,
+      desativado: 3
     },
     paginacao: {
       pagina: 1,
@@ -556,7 +599,8 @@ export default {
     ...mapState('usuarios', [
       'registros',
       'registrosRelacionamento',
-      'dropdownTiposUsuarios'
+      'dropdownTiposUsuarios',
+      'dropdownStatusUsuario'
     ]),
     filtroValor () {
       return !!(
@@ -576,7 +620,7 @@ export default {
       }
     },
     maisOpcoes () {
-      return [
+      const opcoes = [
         {
           acao: 'excluir',
           color: 'error',
@@ -590,11 +634,32 @@ export default {
           titulo: 'Resetar Senha'
         }
       ]
+
+      if (this.formulario.status_usuario_id === this.enumStatusUsuario.digitacao) {
+        opcoes.push({
+          acao: 'ativar',
+          color: 'success',
+          icone: 'mdi-account-arrow-right',
+          titulo: 'Ativar Usuário'
+        })
+      }
+
+      if (this.formulario.status_usuario_id === this.enumStatusUsuario.ativo) {
+        opcoes.push({
+          acao: 'desativar',
+          color: 'error',
+          icone: 'mdi-account-remove',
+          titulo: 'Desativar Usuário'
+        })
+      }
+
+      return opcoes
     }
   },
   async created () {
     this.listarRegistro()
-    await this.buscarDropdownTiposUsuarios(2) // TIPOS USUARIOS
+    await this.buscarDropdownTiposUsuarios()
+    await this.buscarDropdownStatusUsuarios()
   },
   methods: {
     ...mapMutations('usuarios', [
@@ -607,7 +672,10 @@ export default {
       'salvar',
       'excluir',
       'resetSenha',
-      'buscarDropdownTiposUsuarios'
+      'buscarDropdownTiposUsuarios',
+      'buscarDropdownStatusUsuarios',
+      'ativarUsuario',
+      'desativarUsuario'
     ]),
     async listarRegistro () {
       this.loading = true
@@ -629,6 +697,7 @@ export default {
           nome: res.nome || null,
           login: `${res.id}-${res.nome.split(' ')[0]}`,
           tipo_usuario_id: res.tipo_usuario_id || null,
+          status_usuario_id: res.status_usuario_id || null,
           data_nascimento: res.data_nascimento ? this.$day(res.data_nascimento).format('DD/MM/YYYY') : null,
           email: res.email || null,
           cpf: res.cpf || null,
@@ -688,6 +757,22 @@ export default {
       this.resetSenha(this.formulario.id)
       this.loading = false
     },
+    async ativarUsuarioRegistro () {
+      this.loading = true
+      const res = await this.ativarUsuario(this.formulario)
+      if (res && !res.erro) {
+        this.exibirRegistro(this.formulario.id)
+      }
+      this.loading = false
+    },
+    async desativarUsuarioRegistro () {
+      this.loading = true
+      const res = await this.desativarUsuario(this.formulario)
+      if (res && !res.erro) {
+        this.exibirRegistro(this.formulario.id)
+      }
+      this.loading = false
+    },
     resetFormulario () {
       this.$refs.observer.reset()
       this.formulario = {
@@ -696,9 +781,14 @@ export default {
         login: null,
         tipo_usuario_id: null,
         data_nascimento: null,
+        status_usuario_id: null,
         email: null,
         cpf: null,
-        created_at: null
+        ultimo_login: null,
+        created_at: null,
+        created_by: null,
+        updated_at: null,
+        updated_by: null
       }
       this.controle = {
         exibir: false,

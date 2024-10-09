@@ -1,5 +1,6 @@
 export default {
   registros: [],
   registrosRelacionamento: [],
-  dropdownTiposUsuarios: []
+  dropdownTiposUsuarios: [],
+  dropdownStatusUsuario: []
 }

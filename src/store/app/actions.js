@@ -1,5 +1,19 @@
 import axios from '@/plugins/axios_local'
 
+export const buscarDropdownCaracteristicaNotificacao = async ({ commit }) => {
+  try {
+    const res = await axios.get('/sistema/opcoes/13')
+
+    if (!res.data.erro) {
+      commit('dropdownCaracteristicaNotificacao', res.data)
+    }
+
+    return res.data
+  } catch (error) {
+    return null
+  }
+}
+
 export const gerarRelatorio = async ({ commit }, dados) => {
   try {
     const res = await axios.post('/sistema/gerar-relatorio', dados)
