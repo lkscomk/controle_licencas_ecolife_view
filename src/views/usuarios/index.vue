@@ -7,7 +7,7 @@
     :mais-opcoes="formulario.id ? maisOpcoes : null"
     :titulo-formulario="controle.editar ? 'Editar Registro' : controle.inserir ? 'Adicionar Registro' : 'Exibir Registro'"
     @voltar="resetFormulario()"
-    @excluir="aviso = { modal: true, text: 'Deseja excluir esse registro?', key: 'excluirRegistro'}"
+    @excluir="formulario.status_usuario_id === enumStatusUsuario.digitacao ? aviso = { modal: true, text: 'Deseja excluir esse registro?', key: 'excluirRegistro'} : $notificacao('É possível excluir apenas registros em digitação', 'erro')"
     @resetSenha="aviso = { modal: true, text: 'Deseja resetar a senha desse usuário?', key: 'resetSenhaRegistro'}"
     @ativar="aviso = { modal: true, text: 'Deseja ativar este usuário?', key: 'ativarUsuarioRegistro'}"
     @desativar="aviso = { modal: true, text: 'Deseja desativar este usuário?', key: 'desativarUsuarioRegistro'}"

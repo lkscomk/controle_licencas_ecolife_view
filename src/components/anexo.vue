@@ -860,7 +860,7 @@ export default {
           reader.readAsDataURL(this.selectedFile)
         }
       } else {
-        this.$notificacao('Por favor, selecione um arquivo de até 5MB.', 'error')
+        this.$notificacao('Por favor, selecione um arquivo de até 5MB.', 'erro')
         this.selectedFile = null
         event.target.files[0] = null
         event.target.value = null
