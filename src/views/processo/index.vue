@@ -9,6 +9,7 @@
     @excluir="aviso = { modal: true, text: 'Deseja excluir esse registro?', key: 'excluirRegistro'}"
     @desativar="aviso = { modal: true, text: 'Deseja desativar esse registro?', key: 'desativarRegistro'}"
     @arquivoMorto="aviso = { modal: true, text: 'Deseja incluir este processo em arquivo morto?', key: 'arquivoMortoRegistro'}"
+    @reativar="aviso = { modal: true, text: 'Deseja reativar este processo?', key: 'reativarRegistro'}"
     @anexos="formularioAnexo = {
       value: true,
       titulo: 'do Processo',
@@ -64,12 +65,17 @@
         modal: false,
         text: '',
         key: ''
-      }, formularioJustificativa.modal = true"
+      }, formularioJustificativa.modal = true, formularioJustificativa.tipo = 'desativar'"
       @arquivoMortoRegistro="aviso = {
         modal: false,
         text: '',
         key: ''
       }, arquivoMortoRegistro()"
+      @reativarRegistro="aviso = {
+        modal: false,
+        text: '',
+        key: ''
+      }, formularioJustificativa.modal = true, formularioJustificativa.tipo = 'reativar'"
     />
     <template slot="listagem">
       <v-form @submit.prevent="''">
@@ -770,7 +776,7 @@
           color="success"
           small
           @click="formularioJustificativa.conteudo && formularioJustificativa.conteudo.length ?
-            desativarRegistro() :
+            (formularioJustificativa.tipo === 'desativar' ? desativarRegistro() : reativarRegistro()) :
             $notificacao('Por favor, escreva uma justificativa.', 'erro')"
         >
           <v-icon
@@ -798,7 +804,7 @@
                   :hide-details="!(formularioJustificativa.conteudo && formularioJustificativa.conteudo.length > 0)"
                   :counter="500"
                   dense
-                  label="Poque você está desativando este processo?"
+                  :label="`Poque você está ${formularioJustificativa.tipo === 'desativar' ? 'desativando' : 'reativando'} este processo?`"
                   outlined
                   rows="3"
                   spellcheck="false"
@@ -2300,6 +2306,14 @@ export default {
           titulo: 'Excluir'
         })
       }
+      if (this.formulario.status_processo_id === this.enumStatusProcesso.desativado) {
+        res.push({
+          acao: 'reativar',
+          color: 'warning',
+          icone: 'mdi-file-document-arrow-right-outline',
+          titulo: 'Reativar'
+        })
+      }
       return res
     }
   },
@@ -2362,6 +2376,7 @@ export default {
       'editar',
       'excluir',
       'desativar',
+      'reativar',
       'buscarDropdownStatusLicencas',
       'buscarDropdownTiposLicencas',
       'buscarDropdownPorteLicencas',
@@ -2527,11 +2542,28 @@ export default {
       this.loading = true
       const res = await this.desativar({
         id: this.formulario.id,
-        justificativa: `${this.formulario.observacao && this.formulario.observacao.length ? `${this.formulario.observacao}\n` : ''}[${window.atob(localStorage.getItem('umbrella:login'))}] MOTIVO DESATIVAÇÃO: ${this.formularioJustificativa.conteudo}`
+        justificativa: `${this.formulario.observacao && this.formulario.observacao.length ? `${this.formulario.observacao}\n` : ''}[${window.atob(localStorage.getItem('umbrella:login'))} - ${this.$day().format('DD/MM/YYYY HH:mm')}] MOTIVO DESATIVAÇÃO: ${this.formularioJustificativa.conteudo}`
       })
       if (res && !res.erro) {
         this.formularioJustificativa = {
           modal: false,
+          tipo: null,
+          conteudo: null
+        }
+        this.exibirRegistro(this.formulario.id)
+      }
+      this.loading = false
+    },
+    async reativarRegistro () {
+      this.loading = true
+      const res = await this.reativar({
+        id: this.formulario.id,
+        justificativa: `${this.formulario.observacao && this.formulario.observacao.length ? `${this.formulario.observacao}\n` : ''}[${window.atob(localStorage.getItem('umbrella:login'))} - ${this.$day().format('DD/MM/YYYY HH:mm')}] MOTIVO DA REATIVAÇÃO: ${this.formularioJustificativa.conteudo}`
+      })
+      if (res && !res.erro) {
+        this.formularioJustificativa = {
+          modal: false,
+          tipo: null,
           conteudo: null
         }
         this.exibirRegistro(this.formulario.id)
