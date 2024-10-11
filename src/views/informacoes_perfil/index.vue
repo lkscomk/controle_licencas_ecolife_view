@@ -40,14 +40,7 @@
                   mdi-account
                 </v-icon>
               </v-avatar>
-              <!-- <v-btn
-                v-if="controle.editar"
-                color="success"
-                small
-                @click="openFilePicker"
-              >
-                {{ imagemPerfil ? 'Substituir Imagem' : 'Escolher Imagem' }}
-              </v-btn> -->
+
               <input
                 ref="fileInput"
                 type="file"
@@ -55,6 +48,31 @@
                 accept="image/*"
                 @change="handleFileSelect"
               >
+            </v-col>
+            <v-col
+              class="d-flex justify-end align-end flex-column"
+              xl="6"
+            >
+              <v-btn
+                color="success"
+                small
+                @click="openFilePicker"
+              >
+                {{ imagemPerfil ? 'Substituir Imagem' : 'Escolher Imagem' }}
+              </v-btn>
+            </v-col>
+            <v-col
+              class="d-flex justify-start align-start flex-column"
+              xl="6"
+            >
+              <v-btn
+                :disabled="!imagemPerfil || loading"
+                color="success"
+                small
+                @click="salvarImagem()"
+              >
+                {{ 'Salvar Imagem' }}
+              </v-btn>
             </v-col>
             <v-col
               xl="8"
@@ -427,6 +445,11 @@ export default {
       senhaNova: null,
       senhaNovaConfirmacao: null
     },
+    controleImagem: {
+      exibir: true,
+      editar: false,
+      inserir: false
+    },
     controle: {
       exibir: true,
       editar: false,
@@ -536,9 +559,15 @@ export default {
       this.loading = true
       const res = await this.buscarPathImagem(this.formulario.id)
       let foto = null
-      if (res && !res.erro && res.checksum) {
+      if (res && !res.erro) {
+        if (!res.nome || !res.extensao) {
+          this.$notificacao('Não foi possível carregar a imagem do usuário', 'erro')
+          return
+        }
+        const nome = `${res.nome}${res.extensao}`
+
         await axios
-          .get(`https://servidor-arquivos-umbrella.lukasrocha.repl.co/download${res.checksum}`, {
+          .get(`https://servidor-arquivos-umbrella.lukasrocha.repl.co/download/${nome}`, {
             responseType: 'arraybuffer'
           })
           .then(function (response) {
@@ -549,18 +578,21 @@ export default {
           })
         const buffer = Buffer.from(foto, 'binary')
         const blob = new Blob([buffer], { type: 'image/png' })
-        const imageUrl = URL.createObjectURL(blob)
-        this.imagemPerfil = imageUrl
+        this.imagemPerfil = URL.createObjectURL(blob)
       }
       this.loading = false
     },
     async salvarImagem () {
+      this.loading = true
       const form = new FormData()
       form.append('tabela', 'usuario')
       form.append('tabela_id', this.formulario.id)
+      form.append('tipo_grupo_id', 8) // GRUPO 8 - ITEM 4 - IMGAGENS DOS USUARIOS
+      form.append('subtipo_item_id', 4) // GRUPO 8 - ITEM 4 - IMGAGENS DOS USUARIOS
       form.append('file', this.selectedFile)
 
       await this.salvarImagemUsuario(form)
+      this.loading = false
     },
     openFilePicker () {
       this.$refs.fileInput.click()

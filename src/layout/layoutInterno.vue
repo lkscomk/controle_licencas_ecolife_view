@@ -657,6 +657,7 @@ export default {
     setTimeout(async () => {
       this.listarRegistroNotificacoes()
     }, 200)
+    this.buscarImagem()
   },
 
   methods: {
@@ -721,9 +722,14 @@ export default {
     async buscarImagem () {
       const res = await this.buscarPathImagem(this.perfil)
       let foto = null
-      if (res && !res.erro && res.checksum) {
+      if (res && !res.erro) {
+        if (!res.nome || !res.extensao) {
+          this.$notificacao('Não foi possível carregar a imagem do usuário', 'erro')
+          return
+        }
+        const nome = `${res.nome}${res.extensao}`
         await axios
-          .get(`https://servidor-arquivos-umbrella.lukasrocha.repl.co/download${res.checksum}`, {
+          .get(`https://servidor-arquivos-umbrella.lukasrocha.repl.co/download/${nome}`, {
             responseType: 'arraybuffer'
           })
           .then(function (response) {
