@@ -2356,6 +2356,7 @@ export default {
   async created () {
     if (this.$route.query && this.$route.query.id) {
       this.filtro.id = this.$route.query.id
+      this.exibirRegistro(this.filtro.id)
     }
     await this.buscarDropdownTiposLicencas()
     await this.buscarDropdownPorteLicencas()
