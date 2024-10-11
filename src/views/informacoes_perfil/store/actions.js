@@ -67,3 +67,15 @@ export const editarSenhaUsuario = async ({ commit }, dados) => {
     return null
   }
 }
+
+export const exibirAnexo = async ({ commit }, arquivo) => {
+  try {
+    const res = await axios.get('/anexos/download/' + arquivo, {
+      responseType: 'arraybuffer'
+    })
+
+    return res.data
+  } catch (error) {
+    return null
+  }
+}

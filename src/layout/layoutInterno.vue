@@ -146,108 +146,6 @@
       </v-list>
     </v-navigation-drawer>
 
-    <!-- <v-navigation-drawer
-      v-model="modalNotificacoes"
-      :color="$vuetify.theme.dark
-        ? ''
-        : 'white'"
-      app
-      disable-resize-watcher
-      hide-overlay
-      right
-      temporary
-      width="420"
-    >
-      <v-row class="pt-2 pb-2">
-        <v-col
-          cols="12"
-          xl="8"
-          lg="8"
-          md="8"
-          xs="12"
-          class="d-flex justify-center align-center"
-        >
-          <v-list-item>
-            <v-list-item-content>
-              <v-list-item-title class="title">
-                Notificações do Sistema
-              </v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-        </v-col>
-      </v-row>
-      <v-divider />
-      <v-list
-        class="mt-2"
-        nav
-      >
-        <v-row
-          class="pa-0"
-          dense
-        >
-          <v-col
-            v-for="notificacao in registrosNotificacoes"
-            :key="notificacao.id"
-            cols="12"
-            class="text-start"
-          >
-            <v-alert
-              :color="notificacao.cor"
-              :icon="notificacao.icone && notificacao.icone.toLowerCase()"
-              border="left"
-              colored-border
-              elevation="2"
-              prominent
-              style="cursor: pointer;"
-              class="pl-1 ml-0 cardNotificacao"
-            >
-              <h3 class="text-h6">
-                {{ notificacao.descricao }}
-              </h3>
-              <span>
-                {{ notificacao.conteudo }}
-              </span>
-              <v-spacer />
-              <v-col>
-                <v-btn
-                  :color="notificacao.cor"
-                  class="mx-1"
-                  outlined
-                  small
-                  @click="openUrlNew(notificacao.url)"
-                >
-                  <v-icon :color="notificacao.cor">
-                    mdi-open-in-new
-                  </v-icon>
-                  Abrir
-                </v-btn>
-                <v-btn
-                  :color="notificacao.cor"
-                  :disabled="!!notificacao.ciente_em"
-                  class="mx-1"
-                  outlined
-                  small
-                  @click="aviso = { modal: true, text: 'Ao dá ciencia nesta notificação, a mesma permanecerá aqui por três dias. Depois não será mais notificado. Deseja continuar? \n \n <br>IMPORTANTE: Essa notificação só irá parar de ser notificada se o problema for resolvido!</br>', key: 'registrarCienciaRegistro'}
-                  notificacaoRegistro = notificacao"
-                >
-                  <v-icon :color="notificacao.cor">
-                    {{ !notificacao.ciente_em ? 'mdi-checkbox-blank-outline' : 'mdi-checkbox-marked' }}
-                  </v-icon>
-                  Ciencia
-                </v-btn>
-              </v-col>
-              <span
-                v-if="notificacao.ciente_por"
-                class="font-weight-medium text-caption"
-              >
-                Ciente: {{ notificacao.ciente_por }} - {{ $day(notificacao.ciente_em).format('DD/MM/YYYY HH:mm:ss') }}
-              </span>
-            </v-alert>
-          </v-col>
-        </v-row>
-      </v-list>
-    </v-navigation-drawer> -->
-
     <v-main>
       <router-view />
     </v-main>
@@ -498,7 +396,6 @@
 
 <script>
 import { mapActions, mapState } from 'vuex'
-import axios from '@/plugins/axios_local'
 
 export default {
   name: 'App',
@@ -511,6 +408,7 @@ export default {
     drawer: false,
     group: null,
     nome: window.atob(localStorage.getItem('umbrella:nome')),
+    perfil: window.atob(localStorage.getItem('umbrella:perfil')),
     email: window.atob(localStorage.getItem('umbrella:email')),
     imagemPerfil: null,
     enumImportancia: {
@@ -650,6 +548,7 @@ export default {
   },
 
   async created () {
+    this.buscarImagem()
     await this.buscarDropdownCaracteristicaNotificacao()
     setTimeout(() => {
       this.atualizarData()
@@ -657,7 +556,6 @@ export default {
     setTimeout(async () => {
       this.listarRegistroNotificacoes()
     }, 200)
-    this.buscarImagem()
   },
 
   methods: {
@@ -667,7 +565,8 @@ export default {
       'buscarNotificacoes',
       'registrarCiencia',
       'gerarRelatorio',
-      'buscarDropdownCaracteristicaNotificacao'
+      'buscarDropdownCaracteristicaNotificacao',
+      'exibirAnexo'
     ]),
     async gerarRelatorioRegistros () {
       this.loading = true
@@ -720,29 +619,33 @@ export default {
       this.loading = false
     },
     async buscarImagem () {
-      const res = await this.buscarPathImagem(this.perfil)
-      let foto = null
+      this.loading = true
+      const dados = await this.buscarPathImagem(this.perfil)
+      const nome = `${dados.nome}${dados.extensao}`
+      const res = await this.exibirAnexo(nome)
+
       if (res && !res.erro) {
-        if (!res.nome || !res.extensao) {
-          this.$notificacao('Não foi possível carregar a imagem do usuário', 'erro')
-          return
+        const type = dados.extensao === '.pdf' ? 'application/pdf'
+          : dados.extensao === '.jpeg' ? 'image/jpeg'
+            : dados.extensao === '.jpg' ? 'image/jpg'
+              : dados.extensao === '.png' ? 'image/png'
+                : dados.extensao === '.bmp' ? 'image/bmp'
+                  : dados.extensao === '.gif' ? 'image/gif' : null
+
+        if (type) {
+          const buffer = Buffer.from(res)
+          const blob = new Blob([buffer], { type })
+          this.imagemPerfil = URL.createObjectURL(blob)
+        } else {
+          this.aviso = {
+            modal: true,
+            key: 'baixarRegistroAnexo',
+            text: 'Não será possível abrir este aquivo pelo navegador. Deseja baixar o arquivo?'
+          }
         }
-        const nome = `${res.nome}${res.extensao}`
-        await axios
-          .get(`https://servidor-arquivos-umbrella.lukasrocha.repl.co/download/${nome}`, {
-            responseType: 'arraybuffer'
-          })
-          .then(function (response) {
-            foto = response.data
-          })
-          .catch(function (error) {
-            window.console.log(error)
-          })
-        const buffer = Buffer.from(foto, 'binary')
-        const blob = new Blob([buffer], { type: 'image/png' })
-        const imageUrl = URL.createObjectURL(blob)
-        this.imagemPerfil = imageUrl
       }
+
+      this.loading = false
     },
     async listarRegistroNotificacoes () {
       this.loading = true

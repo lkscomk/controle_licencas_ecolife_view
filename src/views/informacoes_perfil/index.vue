@@ -52,6 +52,10 @@
             <v-col
               class="d-flex justify-end align-end flex-column"
               xl="6"
+              lg="6"
+              md="6"
+              sm="6"
+              cols="12"
             >
               <v-btn
                 color="success"
@@ -64,12 +68,16 @@
             <v-col
               class="d-flex justify-start align-start flex-column"
               xl="6"
+              lg="6"
+              md="6"
+              sm="6"
+              cols="12"
             >
               <v-btn
-                :disabled="!imagemPerfil || loading"
+                :disabled="!imagemPerfil || !imagemMudando || loading "
                 color="success"
                 small
-                @click="salvarImagem()"
+                @click="imagemMudando && imagemPerfil ? salvarImagem() : $notificacao('Não teve alteração da imagem para ser salva.', 'erro')"
               >
                 {{ 'Salvar Imagem' }}
               </v-btn>
@@ -418,7 +426,6 @@
 
 <script>
 import { mapActions, mapState } from 'vuex'
-import axios from '@/plugins/axios_local'
 
 export default {
   name: 'Perfil',
@@ -430,6 +437,7 @@ export default {
     mostrarSenhaNova: false,
     mostrarAntigaSenha: false,
     modalAlterarSenha: false,
+    imagemMudando: false,
     formulario: {
       id: null,
       login: null,
@@ -479,7 +487,8 @@ export default {
       'salvarUsuario',
       'salvarImagemUsuario',
       'buscarDropdownTipoUsuario',
-      'editarSenhaUsuario'
+      'editarSenhaUsuario',
+      'exibirAnexo'
     ]),
     ...mapActions('app', [
       'buscarPathImagem'
@@ -557,29 +566,31 @@ export default {
     },
     async buscarImagem () {
       this.loading = true
-      const res = await this.buscarPathImagem(this.formulario.id)
-      let foto = null
-      if (res && !res.erro) {
-        if (!res.nome || !res.extensao) {
-          this.$notificacao('Não foi possível carregar a imagem do usuário', 'erro')
-          return
-        }
-        const nome = `${res.nome}${res.extensao}`
+      const dados = await this.buscarPathImagem(this.formulario.id)
+      const nome = `${dados.nome}${dados.extensao}`
+      const res = await this.exibirAnexo(nome)
 
-        await axios
-          .get(`https://servidor-arquivos-umbrella.lukasrocha.repl.co/download/${nome}`, {
-            responseType: 'arraybuffer'
-          })
-          .then(function (response) {
-            foto = response.data
-          })
-          .catch(function (error) {
-            window.console.log(error)
-          })
-        const buffer = Buffer.from(foto, 'binary')
-        const blob = new Blob([buffer], { type: 'image/png' })
-        this.imagemPerfil = URL.createObjectURL(blob)
+      if (res && !res.erro) {
+        const type = dados.extensao === '.pdf' ? 'application/pdf'
+          : dados.extensao === '.jpeg' ? 'image/jpeg'
+            : dados.extensao === '.jpg' ? 'image/jpg'
+              : dados.extensao === '.png' ? 'image/png'
+                : dados.extensao === '.bmp' ? 'image/bmp'
+                  : dados.extensao === '.gif' ? 'image/gif' : null
+
+        if (type) {
+          const buffer = Buffer.from(res)
+          const blob = new Blob([buffer], { type })
+          this.imagemPerfil = URL.createObjectURL(blob)
+        } else {
+          this.aviso = {
+            modal: true,
+            key: 'baixarRegistroAnexo',
+            text: 'Não será possível abrir este aquivo pelo navegador. Deseja baixar o arquivo?'
+          }
+        }
       }
+
       this.loading = false
     },
     async salvarImagem () {
@@ -592,6 +603,7 @@ export default {
       form.append('file', this.selectedFile)
 
       await this.salvarImagemUsuario(form)
+      this.imagemMudando = false
       this.loading = false
     },
     openFilePicker () {
@@ -602,6 +614,7 @@ export default {
       if (this.selectedFile) {
         const reader = new FileReader()
         reader.onload = () => {
+          this.imagemMudando = true
           this.imagemPerfil = reader.result
         }
         reader.readAsDataURL(this.selectedFile)
