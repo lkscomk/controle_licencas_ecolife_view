@@ -2061,6 +2061,12 @@ export default {
         value: 'razao_social'
       },
       {
+        text: 'Última Alteração Em',
+        align: 'start',
+        sortable: true,
+        value: 'updated_at'
+      },
+      {
         text: 'Criado Por',
         align: 'start',
         sortable: true,
