@@ -19,3 +19,13 @@ export const buscarDadosLicencasRegistro = async ({ commit }, id) => {
     return null
   }
 }
+
+export const buscarDadosRmasRegistro = async ({ commit }, id) => {
+  try {
+    const res = await axios.get('/dashboard/rmas')
+
+    return res.data
+  } catch (error) {
+    return null
+  }
+}

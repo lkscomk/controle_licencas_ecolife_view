@@ -6,13 +6,22 @@
     <v-row class="ma-0 pa-0 d-flex justify-center">
       <v-col
         cols="12"
-        class="ma-0 pa-0 grey lighten-4"
-        style="color: grey;"
+        class="pt-10 d-flex justify-center align-center"
+      >
+        <v-img
+          max-width="10%"
+          :src="require('@/assets/logoEcolife.png')"
+          class="my-3"
+        />
+      </v-col>
+      <v-col
+        cols="12"
+        class="ma-0 pa-0 grey lighten-5"
       >
         <v-row class="ma-0 pa-0 d-flex justify-center">
           <v-col
             cols="12"
-            class="pt-10 pl-10 d-flex justify-start align-start text-h4 font-weight-black"
+            class="pt-10 pl-10 d-flex justify-start align-start text-h4 font-weight-black primary--text"
             style="color: grey;"
           >
             Processos
@@ -25,7 +34,7 @@
             cols="12"
           >
             <v-card
-              height="270"
+              height="250"
               outlined
               class="d-flex justify-center align-center"
             >
@@ -35,14 +44,14 @@
               >
                 <v-col
                   cols="12"
-                  class="d-flex justify-center align-center text-h2 font-weight-black"
+                  class="d-flex justify-center align-center text-h3 font-weight-black"
                   style="color: gray;"
                 >
                   {{ dados.cadastrado }}
                 </v-col>
                 <v-col
                   cols="12"
-                  class="d-flex justify-center align-center text-h5"
+                  class="d-flex justify-center align-center text-h6"
                 >
                   Cadastrados
                 </v-col>
@@ -57,7 +66,7 @@
             cols="12"
           >
             <v-card
-              height="270"
+              height="250"
               outlined
               class="d-flex justify-center align-center"
             >
@@ -67,14 +76,14 @@
               >
                 <v-col
                   cols="12"
-                  class="d-flex justify-center align-center text-h2 font-weight-black"
+                  class="d-flex justify-center align-center text-h3 font-weight-black"
                   style="color: #FCBF6B;"
                 >
                   {{ dados.digitacao }}
                 </v-col>
                 <v-col
                   cols="12"
-                  class="d-flex justify-center align-center text-h5"
+                  class="d-flex justify-center align-center text-h6"
                 >
                   Em Digitação
                 </v-col>
@@ -89,7 +98,7 @@
             cols="12"
           >
             <v-card
-              height="270"
+              height="250"
               outlined
               class="d-flex justify-center align-center"
             >
@@ -99,14 +108,14 @@
               >
                 <v-col
                   cols="12"
-                  class="d-flex justify-center align-center text-h2 font-weight-black"
+                  class="d-flex justify-center align-center text-h3 font-weight-black"
                   style="color: #0B8770;"
                 >
                   {{ dados.ativo }}
                 </v-col>
                 <v-col
                   cols="12"
-                  class="d-flex justify-center align-center text-h5"
+                  class="d-flex justify-center align-center text-h6"
                 >
                   Ativos
                 </v-col>
@@ -121,7 +130,7 @@
             cols="12"
           >
             <v-card
-              height="270"
+              height="250"
               outlined
               class="d-flex justify-center align-center"
             >
@@ -131,14 +140,14 @@
               >
                 <v-col
                   cols="12"
-                  class="d-flex justify-center align-center text-h2 font-weight-black"
+                  class="d-flex justify-center align-center text-h3 font-weight-black"
                   style="color: #D32F2F;"
                 >
                   {{ dados.desativado }}
                 </v-col>
                 <v-col
                   cols="12"
-                  class="d-flex justify-center align-center text-h5"
+                  class="d-flex justify-center align-center text-h6"
                 >
                   Desativados
                 </v-col>
@@ -153,7 +162,7 @@
             cols="12"
           >
             <v-card
-              height="270"
+              height="250"
               outlined
               class="d-flex justify-center align-center"
             >
@@ -163,14 +172,14 @@
               >
                 <v-col
                   cols="12"
-                  class="d-flex justify-center align-center text-h2 font-weight-black"
+                  class="d-flex justify-center align-center text-h3 font-weight-black"
                   style="color: #8B0000;"
                 >
                   {{ dados.arquivo_morto }}
                 </v-col>
                 <v-col
                   cols="12"
-                  class="d-flex justify-center align-center text-h5"
+                  class="d-flex justify-center align-center text-h6"
                 >
                   Arquivo Morto
                 </v-col>
@@ -180,27 +189,28 @@
         </v-row>
       </v-col>
       <v-col
-        cols="12"
+        xl="6"
+        lg="6"
+        md="12"
+        sm="12"
         class="ma-0 pa-0 grey lighten-4"
-        style="color: grey;"
       >
         <v-row class="ma-0 pa-0 d-flex justify-center">
           <v-col
             cols="12"
-            class="pt-10 pl-10 d-flex justify-start align-start text-h4 font-weight-black"
-            style="color: grey;"
+            class="pt-10 pl-10 d-flex justify-start align-start text-h4 font-weight-black primary--text"
           >
             Licenças
           </v-col>
           <v-col
-            xl="2"
-            lg="2"
-            md="4"
-            sm="4"
+            xl="3"
+            lg="6"
+            md="6"
+            sm="6"
             cols="12"
           >
             <v-card
-              height="270"
+              height="250"
               outlined
               class="d-flex justify-center align-center"
             >
@@ -210,14 +220,14 @@
               >
                 <v-col
                   cols="12"
-                  class="d-flex justify-center align-center text-h2 font-weight-black"
+                  class="d-flex justify-center align-center text-h3 font-weight-black"
                   style="color: gray;"
                 >
                   {{ dadosLicencas.cadastrado }}
                 </v-col>
                 <v-col
                   cols="12"
-                  class="d-flex justify-center align-center text-h5"
+                  class="d-flex justify-center align-center text-h6"
                 >
                   Cadastrados
                 </v-col>
@@ -225,14 +235,14 @@
             </v-card>
           </v-col>
           <v-col
-            xl="2"
-            lg="2"
-            md="4"
-            sm="4"
+            xl="3"
+            lg="6"
+            md="6"
+            sm="6"
             cols="12"
           >
             <v-card
-              height="270"
+              height="250"
               outlined
               class="d-flex justify-center align-center"
             >
@@ -242,14 +252,14 @@
               >
                 <v-col
                   cols="12"
-                  class="d-flex justify-center align-center text-h2 font-weight-black"
+                  class="d-flex justify-center align-center text-h3 font-weight-black"
                   style="color: #FCBF6B;"
                 >
                   {{ dadosLicencas.digitacao }}
                 </v-col>
                 <v-col
                   cols="12"
-                  class="d-flex justify-center align-center text-h5"
+                  class="d-flex justify-center align-center text-h6"
                 >
                   Em Digitação
                 </v-col>
@@ -257,14 +267,14 @@
             </v-card>
           </v-col>
           <v-col
-            xl="2"
-            lg="2"
-            md="4"
-            sm="4"
+            xl="3"
+            lg="6"
+            md="6"
+            sm="6"
             cols="12"
           >
             <v-card
-              height="270"
+              height="250"
               outlined
               class="d-flex justify-center align-center"
             >
@@ -274,14 +284,14 @@
               >
                 <v-col
                   cols="12"
-                  class="d-flex justify-center align-center text-h2 font-weight-black"
+                  class="d-flex justify-center align-center text-h3 font-weight-black"
                   style="color: #0B8770;"
                 >
                   {{ dadosLicencas.ativo }}
                 </v-col>
                 <v-col
                   cols="12"
-                  class="d-flex justify-center align-center text-h5"
+                  class="d-flex justify-center align-center text-h6"
                 >
                   Ativos
                 </v-col>
@@ -289,14 +299,14 @@
             </v-card>
           </v-col>
           <v-col
-            xl="2"
-            lg="2"
-            md="4"
-            sm="4"
+            xl="3"
+            lg="6"
+            md="6"
+            sm="6"
             cols="12"
           >
             <v-card
-              height="270"
+              height="250"
               outlined
               class="d-flex justify-center align-center"
             >
@@ -306,14 +316,14 @@
               >
                 <v-col
                   cols="12"
-                  class="d-flex justify-center align-center text-h2 font-weight-black"
+                  class="d-flex justify-center align-center text-h3 font-weight-black"
                   style="color: #D32F2F;"
                 >
                   {{ dadosLicencas.vencido }}
                 </v-col>
                 <v-col
                   cols="12"
-                  class="d-flex justify-center align-center text-h5"
+                  class="d-flex justify-center align-center text-h6"
                 >
                   Vencidos
                 </v-col>
@@ -323,14 +333,149 @@
         </v-row>
       </v-col>
       <v-col
-        cols="12"
-        class="pt-10 d-flex justify-center align-center"
+        xl="6"
+        lg="6"
+        md="12"
+        sm="12"
+        class="ma-0 pa-0 grey lighten-3"
       >
-        <v-img
-          max-width="10%"
-          :src="require('@/assets/logoEcolife.png')"
-          class="my-3"
-        />
+        <v-row class="ma-0 pa-0 d-flex justify-center">
+          <v-col
+            cols="12"
+            class="pt-10 pl-10 d-flex justify-start align-start text-h4 font-weight-black primary--text"
+            style="color: grey;"
+          >
+            Relatórios de Monitoramento Ambiental
+          </v-col>
+          <v-col
+            xl="3"
+            lg="6"
+            md="6"
+            sm="6"
+            cols="12"
+          >
+            <v-card
+              height="250"
+              outlined
+              class="d-flex justify-center align-center"
+            >
+              <v-row
+                dense
+                class="hover-card"
+              >
+                <v-col
+                  cols="12"
+                  class="d-flex justify-center align-center text-h3 font-weight-black"
+                  style="color: gray;"
+                >
+                  {{ dadosRmas.cadastrado }}
+                </v-col>
+                <v-col
+                  cols="12"
+                  class="d-flex justify-center align-center text-h6"
+                >
+                  Cadastrados
+                </v-col>
+              </v-row>
+            </v-card>
+          </v-col>
+          <v-col
+            xl="3"
+            lg="6"
+            md="6"
+            sm="6"
+            cols="12"
+          >
+            <v-card
+              height="250"
+              outlined
+              class="d-flex justify-center align-center"
+            >
+              <v-row
+                dense
+                class="hover-card"
+              >
+                <v-col
+                  cols="12"
+                  class="d-flex justify-center align-center text-h3 font-weight-black"
+                  style="color: #FCBF6B;"
+                >
+                  {{ dadosRmas.digitacao }}
+                </v-col>
+                <v-col
+                  cols="12"
+                  class="d-flex justify-center align-center text-h6"
+                >
+                  Em Digitação
+                </v-col>
+              </v-row>
+            </v-card>
+          </v-col>
+          <v-col
+            xl="3"
+            lg="6"
+            md="6"
+            sm="6"
+            cols="12"
+          >
+            <v-card
+              height="250"
+              outlined
+              class="d-flex justify-center align-center"
+            >
+              <v-row
+                dense
+                class="hover-card"
+              >
+                <v-col
+                  cols="12"
+                  class="d-flex justify-center align-center text-h3 font-weight-black"
+                  style="color: #0B8770;"
+                >
+                  {{ dadosRmas.entregue }}
+                </v-col>
+                <v-col
+                  cols="12"
+                  class="d-flex justify-center align-center text-h6"
+                >
+                  Entregues
+                </v-col>
+              </v-row>
+            </v-card>
+          </v-col>
+          <v-col
+            xl="3"
+            lg="6"
+            md="6"
+            sm="6"
+            cols="12"
+          >
+            <v-card
+              height="250"
+              outlined
+              class="d-flex justify-center align-center"
+            >
+              <v-row
+                dense
+                class="hover-card"
+              >
+                <v-col
+                  cols="12"
+                  class="d-flex justify-center align-center text-h3 font-weight-black"
+                  style="color: #D32F2F;"
+                >
+                  {{ dadosRmas.nao_entregue }}
+                </v-col>
+                <v-col
+                  cols="12"
+                  class="d-flex justify-center align-center text-h6"
+                >
+                  Não Entregue
+                </v-col>
+              </v-row>
+            </v-card>
+          </v-col>
+        </v-row>
       </v-col>
     </v-row>
   </v-container>
@@ -355,16 +500,24 @@ export default {
       ativo: 0,
       vencido: 0,
       digitacao: 0
+    },
+    dadosRmas: {
+      cadastrado: 0,
+      entregue: 0,
+      nao_entregue: 0,
+      digitacao: 0
     }
   }),
   async created () {
     await this.buscarDadosProcessos()
     await this.buscarDadosLicencas()
+    await this.buscarDadosRmas()
   },
   methods: {
     ...mapActions('home', [
       'buscarDadosProcessosRegistro',
-      'buscarDadosLicencasRegistro'
+      'buscarDadosLicencasRegistro',
+      'buscarDadosRmasRegistro'
     ]),
     async buscarDadosProcessos () {
       this.loading = true
@@ -473,6 +626,56 @@ export default {
         } else {
           this.dadosLicencas.vencido = res.vencido
           clearInterval(intervaloAnimacaoVencidoLicenca)
+        }
+      }, 20)
+    },
+    async buscarDadosRmas () {
+      this.loading = true
+      const res = await this.buscarDadosRmasRegistro()
+      if (res && !res.erro) {
+        this.animarCrescimentoRma(res[0])
+      }
+      this.loading = false
+    },
+    animarCrescimentoRma (res) {
+      const incrementoCadastrado = Math.ceil(res.cadastrado / 100)
+
+      const intervaloAnimacaoCadastradoRmas = setInterval(() => {
+        if (this.dadosRmas.cadastrado < res.cadastrado) {
+          this.dadosRmas.cadastrado += incrementoCadastrado
+        } else {
+          this.dadosRmas.cadastrado = res.cadastrado
+          clearInterval(intervaloAnimacaoCadastradoRmas)
+        }
+      }, 20)
+
+      const incrementoEntregue = Math.ceil(res.entregue / 100)
+      const intervaloAnimacaoEntregueRma = setInterval(() => {
+        if (this.dadosRmas.entregue < res.entregue) {
+          this.dadosRmas.entregue += incrementoEntregue
+        } else {
+          this.dadosRmas.entregue = res.entregue
+          clearInterval(intervaloAnimacaoEntregueRma)
+        }
+      }, 20)
+
+      const incrementoDigitacao = Math.ceil(res.digitacao / 100)
+      const intervaloAnimacaoDigitacaoRma = setInterval(() => {
+        if (this.dadosRmas.digitacao < res.digitacao) {
+          this.dadosRmas.digitacao += incrementoDigitacao
+        } else {
+          this.dadosRmas.digitacao = res.digitacao
+          clearInterval(intervaloAnimacaoDigitacaoRma)
+        }
+      }, 20)
+
+      const incrementoNaoEntregue = Math.ceil(res.nao_entregue / 100)
+      const intervaloAnimacaoNaoEntregueRma = setInterval(() => {
+        if (this.dadosRmas.nao_entregue < res.nao_entregue) {
+          this.dadosRmas.nao_entregue += incrementoNaoEntregue
+        } else {
+          this.dadosRmas.nao_entregue = res.nao_entregue
+          clearInterval(intervaloAnimacaoNaoEntregueRma)
         }
       }, 20)
     }
