@@ -636,12 +636,6 @@ export default {
           const buffer = Buffer.from(res)
           const blob = new Blob([buffer], { type })
           this.imagemPerfil = URL.createObjectURL(blob)
-        } else {
-          this.aviso = {
-            modal: true,
-            key: 'baixarRegistroAnexo',
-            text: 'Não será possível abrir este aquivo pelo navegador. Deseja baixar o arquivo?'
-          }
         }
       }
 
