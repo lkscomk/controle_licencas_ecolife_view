@@ -1484,9 +1484,9 @@
     >
       <template slot="maisOpcoes">
         <v-list-item
-          @click="Number(formularioRma.status_rma_id) === Number(enumStatusRma.digitacao) ?
+          @click="Number(formularioRma.status_rma_id) === Number(enumStatusRma.digitacao) || Number(formularioRma.status_rma_id) === Number(enumStatusRma.naoEntregue)?
             aviso = { modal: true, text: 'Deseja excluir esse registro?', key: 'excluirRmaRegistro'} :
-            $notificacao('Só é possível excluir rma em digitação.', 'erro')"
+            $notificacao('Só é possível excluir rma em digitação ou não entregue.', 'erro')"
         >
           <v-list-item-icon class="mr-3">
             <v-icon :color="'error'">
@@ -1911,6 +1911,44 @@ export default {
         value: 'created_at'
       }
     ],
+    colunasPendencias: [
+      {
+        text: 'Ação',
+        align: 'start',
+        sortable: false,
+        value: 'acao'
+      },
+      {
+        text: 'Código',
+        align: 'start',
+        sortable: false,
+        value: 'id'
+      },
+      {
+        text: 'Descrição',
+        align: 'start',
+        sortable: false,
+        value: 'tipo'
+      },
+      {
+        text: 'Status',
+        align: 'start',
+        sortable: false,
+        value: 'status'
+      },
+      {
+        text: 'Criado Por',
+        align: 'start',
+        sortable: false,
+        value: 'created_by'
+      },
+      {
+        text: 'Criado Em',
+        align: 'start',
+        sortable: false,
+        value: 'created_at'
+      }
+    ],
     colunasLicencas: [
       {
         text: 'Ação',
@@ -2210,6 +2248,11 @@ export default {
       empresaFechada: 3
     },
     paginacao: {
+      pagina: 1,
+      registros: 100,
+      totalRegistros: 0
+    },
+    paginacaoPendencias: {
       pagina: 1,
       registros: 100,
       totalRegistros: 0
