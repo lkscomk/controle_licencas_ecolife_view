@@ -712,6 +712,92 @@
       </v-card>
     </template>
 
+    <template
+      v-if="formulario.id"
+      slot="relacionamento"
+    >
+      <v-card
+        class="elevation-0 ma-2 pa-2"
+        outlined
+      >
+        <v-form @submit.prevent="''">
+          <v-container
+            fluid
+            grid-list-xs
+          >
+            <v-row dense>
+              <v-col
+                xl="8"
+                lg="8"
+                md="7"
+                sm="6"
+                cols="12"
+              >
+                Listagem de Pendências
+              </v-col>
+              <v-col
+                xl="1"
+                lg="1"
+                md="1"
+                sm="1"
+                cols="12"
+              >
+                <v-btn
+                  small
+                  block
+                  color="primary"
+                  @click="listarPendenciasRegistros()"
+                >
+                  <v-icon dark>
+                    mdi-refresh
+                  </v-icon>
+                </v-btn>
+              </v-col>
+              <v-col
+                xl="3"
+                lg="3"
+                md="4"
+                sm="5"
+                cols="12"
+              >
+                <v-btn
+                  small
+                  block
+                  color="primary"
+                  @click="Number(formulario.status_processo_id) === Number(enumStatusProcesso.desativado) ?
+                    $notificacao('Só é possível adicionar nova licença em processo ativo ou em digitação.', 'erro') :
+                    (modalLicenca = true, controleLicenca.inserir = true, formularioLicenca.status_licenca_id = enumStatusLicenca.digitacao)"
+                >
+                  <v-icon dark>
+                    mdi-plus
+                  </v-icon>
+                  Adicionar Nova Licença
+                </v-btn>
+              </v-col>
+              <v-col
+                xl="12"
+                lg="12"
+                md="12"
+                sm="12"
+                cols="12"
+              >
+                <tabela
+                  :colunas="colunasPendencias"
+                  :registros="registrosPendencias"
+                  :paginacao="paginacaoPendencias"
+                  :registros-por-pagina="100"
+                  :sort-by-cli="['id']"
+                  :sort-desc-cli="true"
+                  height-auto
+                  @paginacao="paginacaoPendencias = $event"
+                />
+              </v-col>
+            </v-row>
+          </v-container>
+        </v-form>
+      </v-card>
+    </template>
+
     <template slot="botoes">
       <v-btn
         v-if="!!(!controle.exibir && (controle.inserir || controle.editar))"
