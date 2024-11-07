@@ -486,6 +486,12 @@ export default {
         value: 'razao_social'
       },
       {
+        text: 'Prioridade',
+        align: 'start',
+        sortable: true,
+        value: 'prioridade_descricao'
+      },
+      {
         text: 'Ciente Por',
         align: 'start',
         sortable: true,
@@ -590,6 +596,10 @@ export default {
         {
           text: 'Razão Social',
           value: 'razao_social'
+        },
+        {
+          text: 'Prioridade',
+          value: 'prioridade_descricao'
         },
         {
           text: 'Ciente Por',
