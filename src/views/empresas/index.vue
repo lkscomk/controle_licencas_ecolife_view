@@ -219,19 +219,19 @@
                 @exibir="exibirRegistro($event)"
                 @dblclick="exibirRegistro($event.id)"
               >
-               <template v-slot:botoes>
-                    <v-btn
-                      color="primary"
-                      small
-                      @click="gerarRelatorioRegistros"
-                    >
-                      <v-icon>
-                        mdi-printer
-                      </v-icon>
-                      IMPRIMIR
-                    </v-btn>
-                  </template>
-                </tabela>
+                <template v-slot:botoes>
+                  <v-btn
+                    color="primary"
+                    small
+                    @click="gerarRelatorioRegistros"
+                  >
+                    <v-icon>
+                      mdi-printer
+                    </v-icon>
+                    IMPRIMIR
+                  </v-btn>
+                </template>
+              </tabela>
             </v-col>
           </v-row>
         </v-container>

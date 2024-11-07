@@ -300,6 +300,25 @@
                             @keydown.enter="!loading ? listarRegistroNotificacoes() : null"
                           />
                         </v-col>
+                        <v-col
+                          xl="2"
+                          lg="2"
+                          md="4"
+                          sm="12"
+                          cols="12"
+                        >
+                          <selecao-all
+                            v-model="filtroNotificacoes.prioridade"
+                            :items="dropdownPrioridadeEmpresa"
+                            hide-details
+                            dense
+                            item-value="item"
+                            item-text="descricao"
+                            label="Prioridade"
+                            outlined
+                            @keydown.enter="!loading ? listarRegistro() : null"
+                          />
+                        </v-col>
                       </v-row>
                     </v-container>
                   </template>
@@ -438,7 +457,8 @@ export default {
       descricao: null,
       conteudo: null,
       ciente: null,
-      caracteristica_notificacao: null
+      caracteristica_notificacao: null,
+      prioridade: null
     },
     colunasNotificacoes: [
       {
@@ -524,6 +544,9 @@ export default {
   }),
 
   computed: {
+    ...mapState('empresa', [
+      'dropdownPrioridadeEmpresa'
+    ]),
     ...mapState('app', [
       'registrosNotificacoes',
       'dropdownCaracteristicaNotificacao'
@@ -541,7 +564,8 @@ export default {
           this.filtroNotificacoes.caracteristica_notificacao ||
           this.filtroNotificacoes.cnpj ||
           this.filtroNotificacoes.razaoSocial ||
-          this.filtroNotificacoes.ciente
+          this.filtroNotificacoes.ciente ||
+          this.filtroNotificacoes.prioridade
         )
       }
     }
@@ -556,6 +580,7 @@ export default {
   async created () {
     this.buscarImagem()
     await this.buscarDropdownCaracteristicaNotificacao()
+    await this.buscarDropdownPrioridadeEmpresa()
     setTimeout(() => {
       this.atualizarData()
     }, 200)
@@ -573,6 +598,9 @@ export default {
       'gerarRelatorio',
       'buscarDropdownCaracteristicaNotificacao',
       'exibirAnexo'
+    ]),
+    ...mapActions('empresa', [
+      'buscarDropdownPrioridadeEmpresa'
     ]),
     async gerarRelatorioRegistros () {
       this.loading = true
@@ -657,7 +685,8 @@ export default {
         cnpj: this.filtroNotificacoes.cnpj ? String(this.filtroNotificacoes.cnpj).match(/\d/g).join('') : undefined,
         razaoSocial: this.filtroNotificacoes.razaoSocial || null,
         ciente: this.filtroNotificacoes.ciente || null,
-        caracteristica_notificacao: this.filtroNotificacoes.caracteristica_notificacao || null
+        caracteristica_notificacao: this.filtroNotificacoes.caracteristica_notificacao || null,
+        prioridade: this.filtroNotificacoes.prioridade && this.filtroNotificacoes.prioridade.length ? this.filtroNotificacoes.prioridade : null
       })
       this.loading = false
     },
@@ -708,7 +737,8 @@ export default {
         descricao: null,
         conteudo: null,
         ciente: null,
-        caracteristica_notificacao: null
+        caracteristica_notificacao: null,
+        prioridade: null
       }
     }
   }
