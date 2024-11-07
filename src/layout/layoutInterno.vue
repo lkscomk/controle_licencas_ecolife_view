@@ -608,10 +608,6 @@ export default {
         {
           text: 'Ciente Em',
           value: 'ciente_em'
-        },
-        {
-          text: 'Criado Em',
-          value: 'created_at'
         }
       ]
       const res = await this.gerarRelatorio({
