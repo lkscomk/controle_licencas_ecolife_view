@@ -12,5 +12,8 @@ export default {
   dropdownEstados: [],
   dropdownCidadesEmpresa: [],
   dropdownCidades: [],
-  dropdownPortesEmpresa: []
+  dropdownPendenciasProcesso: [],
+  registrosPendencias: [],
+  dropdownPortesEmpresa: [],
+  dropdownPendenciasStatus: []
 }

@@ -190,7 +190,6 @@
                   v-slot="{ errors }"
                   name="Cor"
                   vid="cor"
-                  rules="required|max:7"
                 >
                   <v-text-field
                     v-model="formulario.cor"
@@ -493,7 +492,7 @@ export default {
         this.loading = true
         const form = {
           id: this.formulario.id || undefined,
-          cor: this.formulario.cor || null,
+          cor: this.formulario.cor || '#000000',
           item: this.formulario.item || null,
           grupo: this.formulario.grupo || null,
           descricao: this.formulario.descricao || null

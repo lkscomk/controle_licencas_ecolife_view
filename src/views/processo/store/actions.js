@@ -23,6 +23,33 @@ export const buscarDropdownStatusProcesso = async ({ commit }) => {
   }
 }
 
+export const buscarDropdownPendenciasProcesso = async ({ commit }) => {
+  try {
+    const res = await axios.get('/sistema/opcoes/14')
+
+    if (!res.data.erro) {
+      commit('dropdownPendenciasProcesso', res.data)
+    }
+
+    return res.data
+  } catch (error) {
+    return null
+  }
+}
+export const buscarDropdownPendenciasStatus = async ({ commit }) => {
+  try {
+    const res = await axios.get('/sistema/opcoes/15')
+
+    if (!res.data.erro) {
+      commit('dropdownPendenciasStatus', res.data)
+    }
+
+    return res.data
+  } catch (error) {
+    return null
+  }
+}
+
 export const buscarDropdownStatusRma = async ({ commit }) => {
   try {
     const res = await axios.get('/sistema/opcoes/9')
@@ -409,6 +436,53 @@ export const gerarRma = async ({ commit }, dados) => {
 export const ativarRma = async ({ commit }, dados) => {
   try {
     const res = await axios.put('/rma/ativar/' + dados.id, dados)
+
+    return res.data
+  } catch (error) {
+    return null
+  }
+}
+// licenca
+
+export const listarPendencias = async ({ commit }, filtros) => {
+  try {
+    const res = await axios.get('/pendencia', {
+      params: filtros
+    })
+
+    if (!res.data.erro) {
+      commit('setRegistrosPendencias', res.data)
+    }
+
+    return res.data
+  } catch (error) {
+    return null
+  }
+}
+
+export const salvarPendencia = async ({ commit }, dados) => {
+  try {
+    const res = await axios.post('/pendencia', dados)
+
+    return res.data
+  } catch (error) {
+    return null
+  }
+}
+
+export const excluirPendencia = async ({ commit }, id) => {
+  try {
+    const res = await axios.delete('/pendencia/' + id)
+
+    return res.data
+  } catch (error) {
+    return null
+  }
+}
+
+export const resolverPendencia = async ({ commit }, dados) => {
+  try {
+    const res = await axios.put('/pendencia/resolver/' + dados.id, dados)
 
     return res.data
   } catch (error) {

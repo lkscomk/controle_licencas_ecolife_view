@@ -88,8 +88,9 @@
               <filtro
                 :options="optionsFilter"
                 @clearFilters="limparFiltros()"
+                @modalPendencias="modalPendencias = true, listarPendenciasRegistro()"
                 @adicionar="controle.inserir = true, modal = true, formulario.status_processo_id === enumStatusProcesso.digitacao"
-                @pesquisar="listarRegistro()"
+                @pesquisar="!loading ? listarRegistro() : null"
               >
                 <template slot="filtros">
                   <v-container
@@ -169,7 +170,7 @@
                         xl="3"
                         lg="3"
                         md="9"
-                        sm="9"
+                        sm="12"
                         cols="12"
                       >
                         <v-text-field
@@ -186,7 +187,26 @@
                         xl="2"
                         lg="2"
                         md="3"
-                        sm="3"
+                        sm="5"
+                        cols="12"
+                      >
+                        <selecao-all
+                          v-model="filtro.prioridade"
+                          :items="dropdownPrioridadeEmpresa"
+                          hide-details
+                          dense
+                          item-value="item"
+                          item-text="descricao"
+                          label="Prioridade"
+                          outlined
+                          @keydown.enter="!loading ? listarRegistro() : null"
+                        />
+                      </v-col>
+                      <v-col
+                        xl="2"
+                        lg="2"
+                        md="3"
+                        sm="5"
                         cols="12"
                       >
                         <v-text-field
@@ -721,79 +741,77 @@
         outlined
       >
         <v-form @submit.prevent="''">
-          <v-container
-            fluid
-            grid-list-xs
-          >
-            <v-row dense>
-              <v-col
-                xl="8"
-                lg="8"
-                md="7"
-                sm="6"
-                cols="12"
-              >
-                Listagem de Pendências
-              </v-col>
-              <v-col
-                xl="1"
-                lg="1"
-                md="1"
-                sm="1"
-                cols="12"
-              >
-                <v-btn
-                  small
-                  block
-                  color="primary"
-                  @click="listarPendenciasRegistros()"
+          <validation-observer ref="observePendencia">
+            <v-container
+              fluid
+              grid-list-xs
+            >
+              <v-row dense>
+                <v-col
+                  cols="12"
                 >
-                  <v-icon dark>
-                    mdi-refresh
-                  </v-icon>
-                </v-btn>
-              </v-col>
-              <v-col
-                xl="3"
-                lg="3"
-                md="4"
-                sm="5"
-                cols="12"
-              >
-                <v-btn
-                  small
-                  block
-                  color="primary"
-                  @click="Number(formulario.status_processo_id) === Number(enumStatusProcesso.desativado) ?
-                    $notificacao('Só é possível adicionar nova licença em processo ativo ou em digitação.', 'erro') :
-                    (modalLicenca = true, controleLicenca.inserir = true, formularioLicenca.status_licenca_id = enumStatusLicenca.digitacao)"
+                  Listagem de Pendências
+                </v-col>
+                <v-col
+                  class="body-2 font-weight-bold"
+                  cols="12"
                 >
-                  <v-icon dark>
-                    mdi-plus
-                  </v-icon>
-                  Adicionar Nova Licença
-                </v-btn>
-              </v-col>
-              <v-col
-                xl="12"
-                lg="12"
-                md="12"
-                sm="12"
-                cols="12"
-              >
-                <tabela
-                  :colunas="colunasPendencias"
-                  :registros="registrosPendencias"
-                  :paginacao="paginacaoPendencias"
-                  :registros-por-pagina="100"
-                  :sort-by-cli="['id']"
-                  :sort-desc-cli="true"
-                  height-auto
-                  @paginacao="paginacaoPendencias = $event"
-                />
-              </v-col>
-            </v-row>
-          </v-container>
+                  Qual pendência esse processo tem?
+                </v-col>
+                <v-col cols="3">
+                  <validation-provider
+                    v-slot="{ errors }"
+                    name="Tipo Pendência"
+                    vid="tipo_pendencia_id"
+                    rules="required"
+                  >
+                    <v-autocomplete
+                      v-model="formularioPendencia.tipo_pendencia_id"
+                      :error-messages="errors"
+                      :hide-details="!errors.length"
+                      :items="dropdownPendenciasProcesso"
+                      dense
+                      item-value="item"
+                      item-text="descricao"
+                      label="Tipo Pendência"
+                      class="required"
+                      outlined
+                    />
+                  </validation-provider>
+                </v-col>
+                <v-col cols="3">
+                  <v-btn
+                    v-if="controle.exibir || controle.editar"
+                    color="primary"
+                    @click="!loading ? salvarRegistroPendencia() : null"
+                  >
+                    Adicionar
+                  </v-btn>
+                </v-col>
+                <v-col
+                  cols="12"
+                >
+                  <tabela
+                    :colunas="colunasPendencias"
+                    :registros="registrosPendencias"
+                    :paginacao="paginacaoPendencias"
+                    :registros-por-pagina="100"
+                    :sort-by-cli="['id']"
+                    :sort-desc-cli="true"
+                    height-auto
+                    excluir
+                    selecionar-linha
+                    class="mt-2"
+                    toolbar-grid
+                    titulo="Listagem de Pendências"
+                    @paginacao="paginacaoPendencias = $event"
+                    @excluir="excluirPendenciaRegistro($event)"
+                    @selecionarLinha="resolverPendenciaRegistro($event)"
+                  />
+                </v-col>
+              </v-row>
+            </v-container>
+          </validation-observer>
         </v-form>
       </v-card>
     </template>
@@ -1050,6 +1068,215 @@
                   @paginacao="paginacaoEmpresas = $event"
                   @escolher="resetModalEmpresa(), exibirRegistroEmpresa($event)"
                 />
+              </v-col>
+            </v-row>
+          </v-container>
+        </v-form>
+      </template>
+    </modal>
+
+    <modal
+      v-model="modalPendencias"
+      width="100%"
+      :mais-opcoes="false"
+      :titulo="'Pendências'"
+      @fechar="resetModalPendencias()"
+    >
+      <template>
+        <v-form @submit.prevent="''">
+          <v-container
+            class="ma-0 pa-0"
+            fluid
+          >
+            <v-row dense>
+              <v-col cols="12">
+                <filtro
+                  :options="optionsFilterPendencia"
+                  @clearFilters="limparFiltrosPendencia()"
+                  @pesquisar="!loading ? listarPendenciasRegistro() : null"
+                >
+                  <template slot="filtros">
+                    <v-container
+                      class="my-0 py-0"
+                      fluid
+                    >
+                      <v-row dense>
+                        <v-col
+                          xl="1"
+                          lg="1"
+                          md="4"
+                          sm="4"
+                          cols="12"
+                        >
+                          <v-text-field
+                            v-model="filtroPendencia.id"
+                            hide-details
+                            dense
+                            label="Código"
+                            outlined
+                            @keydown.enter="!loading ? listarPendenciasRegistro() : null"
+                          />
+                        </v-col>
+                        <v-col
+                          xl="2"
+                          lg="2"
+                          md="8"
+                          sm="8"
+                          cols="12"
+                        >
+                          <selecao-all
+                            v-model="filtroPendencia.tipo_pendencia_id"
+                            :items="dropdownPendenciasProcesso"
+                            hide-details
+                            dense
+                            item-value="item"
+                            item-text="descricao"
+                            label="Tipos Pendências"
+                            outlined
+                            @keydown.enter="!loading ? listarPendenciasRegistro() : null"
+                          />
+                        </v-col>
+                        <v-col
+                          xl="2"
+                          lg="2"
+                          md="4"
+                          sm="4"
+                          cols="12"
+                        >
+                          <selecao-all
+                            v-model="filtroPendencia.status_pendencia_id"
+                            :items="dropdownPendenciasStatus"
+                            hide-details
+                            dense
+                            item-value="item"
+                            item-text="descricao"
+                            label="Status Pendências"
+                            outlined
+                            @keydown.enter="!loading ? listarPendenciasRegistro() : null"
+                          />
+                        </v-col>
+                        <v-col
+                          xl="2"
+                          lg="2"
+                          md="8"
+                          sm="8"
+                          cols="12"
+                        >
+                          <v-text-field
+                            v-model="filtroPendencia.processo_id"
+                            hide-details
+                            dense
+                            label="Código Processo"
+                            outlined
+                            @keydown.enter="!loading ? listarPendenciasRegistro() : null"
+                          />
+                        </v-col>
+                        <v-col
+                          xl="3"
+                          lg="3"
+                          md="6"
+                          sm="6"
+                          cols="12"
+                        >
+                          <v-text-field
+                            v-model="filtroPendencia.processo"
+                            v-uppercase
+                            hide-details
+                            dense
+                            label="Processo"
+                            outlined
+                            @keydown.enter="!loading ? listarPendenciasRegistro() : null"
+                          />
+                        </v-col>
+                        <v-col
+                          xl="2"
+                          lg="2"
+                          md="6"
+                          sm="6"
+                          cols="12"
+                        >
+                          <v-text-field
+                            v-model="filtroPendencia.cnpj"
+                            v-mask="['###.###.###-##', '##.###.###/####-##']"
+                            hide-details
+                            dense
+                            label="CNPJ/CPF"
+                            outlined
+                            @keydown.enter="!loading ? listarPendenciasRegistro() : null"
+                          />
+                        </v-col>
+                        <v-col
+                          xl="3"
+                          lg="3"
+                          md="8"
+                          sm="8"
+                          cols="12"
+                        >
+                          <v-text-field
+                            v-model="filtroPendencia.razaoSocial"
+                            v-uppercase
+                            hide-details
+                            dense
+                            label="Razão Social"
+                            outlined
+                            @keydown.enter="!loading ? listarPendenciasRegistro() : null"
+                          />
+                        </v-col>
+                        <v-col
+                          xl="2"
+                          lg="2"
+                          md="4"
+                          sm="4"
+                          cols="12"
+                        >
+                          <selecao-all
+                            v-model="filtroPendencia.prioridade"
+                            :items="dropdownPrioridadeEmpresa"
+                            hide-details
+                            dense
+                            item-value="item"
+                            item-text="descricao"
+                            label="Prioridade"
+                            outlined
+                            @keydown.enter="!loading ? listarPendenciasRegistro() : null"
+                          />
+                        </v-col>
+                      </v-row>
+                    </v-container>
+                  </template>
+                </filtro>
+              </v-col>
+              <v-col cols="12">
+                <v-col
+                  cols="12"
+                >
+                  <tabela
+                    :colunas="colunasPendenciasModal"
+                    :registros="registrosPendencias"
+                    :paginacao="paginacaoPendencias"
+                    :registros-por-pagina="100"
+                    :sort-by-cli="['id']"
+                    :sort-desc-cli="true"
+                    height-auto
+                    class="mt-2"
+                    toolbar-grid
+                    titulo="Listagem de Pendências"
+                    @paginacao="paginacaoPendencias = $event"
+                  >
+                    <template v-slot:botoes>
+                      <v-btn
+                        color="primary"
+                        small
+                        @click="gerarRelatorioRegistrosPendencia"
+                      >
+                        <v-icon>
+                          mdi-printer
+                        </v-icon>
+                        IMPRIMIR
+                      </v-btn>
+                    </template>
+                  </tabela>
+                </v-col>
               </v-col>
             </v-row>
           </v-container>
@@ -1938,6 +2165,7 @@ export default {
     modalLicenca: false,
     modalRma: false,
     modalTempoRma: false,
+    modalPendencias: false,
     aviso: {
       modal: false,
       conteudo: '',
@@ -1997,6 +2225,68 @@ export default {
         value: 'created_at'
       }
     ],
+    colunasPendenciasModal: [
+      {
+        text: 'Código',
+        align: 'start',
+        sortable: false,
+        value: 'id'
+      },
+      {
+        text: 'Descrição',
+        align: 'start',
+        sortable: false,
+        value: 'tipo_descricao'
+      },
+      {
+        text: 'Status',
+        align: 'start',
+        sortable: false,
+        value: 'status'
+      },
+      {
+        text: 'Código Processo',
+        align: 'start',
+        sortable: true,
+        value: 'processo_id'
+      },
+      {
+        text: 'N. Processo',
+        align: 'start',
+        sortable: true,
+        value: 'processo'
+      },
+      {
+        text: 'CNPJ/CPF',
+        align: 'start',
+        sortable: true,
+        value: 'cnpj'
+      },
+      {
+        text: 'Razão Social/Nome',
+        align: 'start',
+        sortable: true,
+        value: 'razao_social'
+      },
+      {
+        text: 'Prioridade',
+        align: 'start',
+        sortable: true,
+        value: 'prioridade_descricao'
+      },
+      {
+        text: 'Criado Por',
+        align: 'start',
+        sortable: false,
+        value: 'created_by'
+      },
+      {
+        text: 'Criado Em',
+        align: 'start',
+        sortable: false,
+        value: 'created_at'
+      }
+    ],
     colunasPendencias: [
       {
         text: 'Ação',
@@ -2014,7 +2304,7 @@ export default {
         text: 'Descrição',
         align: 'start',
         sortable: false,
-        value: 'tipo'
+        value: 'tipo_descricao'
       },
       {
         text: 'Status',
@@ -2185,6 +2475,12 @@ export default {
         value: 'razao_social'
       },
       {
+        text: 'Prioridade',
+        align: 'start',
+        sortable: true,
+        value: 'prioridade_descricao'
+      },
+      {
         text: 'Última Alteração Em',
         align: 'start',
         sortable: true,
@@ -2218,7 +2514,18 @@ export default {
       tipo: null,
       razaoSocial: null,
       processo: null,
+      prioridade: null,
       created_by: null
+    },
+    filtroPendencia: {
+      id: null,
+      tipo_pendencia_id: null,
+      status_pendencia_id: null,
+      processo: null,
+      processo_id: null,
+      cnpj: null,
+      razaoSocial: null,
+      prioridade: null
     },
     controle: {
       exibir: false,
@@ -2311,6 +2618,12 @@ export default {
       updated_at: null,
       updated_by: null
     },
+    formularioPendencia: {
+      id: null,
+      processo_id: null,
+      tipo_pendencia_id: null,
+      status_pendencia_id: null
+    },
     enumStatusProcesso: {
       digitacao: 1,
       ativo: 2,
@@ -2361,6 +2674,9 @@ export default {
     modal: false
   }),
   computed: {
+    ...mapState('empresa', [
+      'dropdownPrioridadeEmpresa'
+    ]),
     ...mapState('processo', [
       'registros',
       'registrosRma',
@@ -2375,8 +2691,30 @@ export default {
       'dropdownPortesEmpresa',
       'dropdownEstados',
       'dropdownCidadesEmpresa',
-      'dropdownCidades'
+      'dropdownCidades',
+      'dropdownPendenciasProcesso',
+      'registrosPendencias',
+      'dropdownPendenciasStatus'
     ]),
+    optionsFilterPendencia () {
+      return {
+        adicionar: false,
+        values: !!(
+          this.filtroPendencia.id ||
+          (this.filtroPendencia.tipo_pendencia_id
+            ? this.filtroPendencia.tipo_pendencia_id.length
+            : null) ||
+          (this.filtroPendencia.status_pendencia_id
+            ? this.filtroPendencia.status_pendencia_id.length
+            : null) ||
+            this.filtroPendencia.processo_id ||
+          this.filtroPendencia.processo ||
+          this.filtroPendencia.cnpj ||
+          this.filtroPendencia.razaoSocial ||
+          this.filtroPendencia.prioridade
+        )
+      }
+    },
     optionsFilterModalBuscarEmpresa () {
       return {
         adicionar: false,
@@ -2403,8 +2741,15 @@ export default {
           (this.filtro.status ? this.filtro.status.length : null) ||
           this.filtro.razaoSocial ||
           this.filtro.processo ||
+          this.filtro.prioridade ||
           this.filtro.created_by
-        )
+        ),
+        maisOpcoes: [{
+          emit: 'modalPendencias',
+          color: 'success',
+          icon: 'mdi-printer',
+          title: 'Relatório de Pendências'
+        }]
       }
     },
     maisOpcoes () {
@@ -2487,7 +2832,10 @@ export default {
       this.filtro.id = this.$route.query.id
       this.exibirRegistro(this.filtro.id)
     }
+    await this.buscarDropdownPendenciasStatus()
     await this.buscarDropdownTiposLicencas()
+    await this.buscarDropdownPrioridadeEmpresa()
+    await this.buscarDropdownPendenciasProcesso()
     await this.buscarDropdownPorteLicencas()
     await this.buscarDropdownStatusLicencas()
     await this.buscarDropdownStatusRma()
@@ -2503,7 +2851,11 @@ export default {
       'setRegistrosEmpresas',
       'setRegistrosLicencas',
       'setRegistrosRma',
+      'setRegistrosPendencias',
       'setRegistro'
+    ]),
+    ...mapActions('empresa', [
+      'buscarDropdownPrioridadeEmpresa'
     ]),
     ...mapActions('processo', [
       'listar',
@@ -2543,8 +2895,73 @@ export default {
       'gerarRma',
       'ativarRma',
       'buscarDropdownStatusRma',
-      'gerarRelatorio'
+      'gerarRelatorio',
+
+      'listarPendencias',
+      'salvarPendencia',
+      'excluirPendencia',
+      'resolverPendencia',
+      'buscarDropdownPendenciasProcesso',
+      'buscarDropdownPendenciasStatus'
     ]),
+    async gerarRelatorioRegistrosPendencia () {
+      this.loading = true
+      const colunas = [
+        {
+          text: 'Código',
+          value: 'id'
+        },
+        {
+          text: 'Descrição',
+          value: 'tipo_descricao'
+        },
+        {
+          text: 'Status',
+          value: 'status_descricao'
+        },
+        {
+          text: 'Código Processo',
+          value: 'processo_id'
+        },
+        {
+          text: 'N. Processo',
+          value: 'processo'
+        },
+        {
+          text: 'CNPJ/CPF',
+          value: 'cnpj'
+        },
+        {
+          text: 'Razão Social/Nome',
+          value: 'razao_social'
+        },
+        {
+          text: 'Prioridade',
+          value: 'prioridade_descricao'
+        },
+        {
+          text: 'Criado Por',
+          value: 'created_by'
+        },
+        {
+          text: 'Criado Em',
+          value: 'created_at'
+        }
+      ]
+      const res = await this.gerarRelatorio({
+        colunas: colunas.map(coluna => coluna.text),
+        titulo: 'Relatório de Pendências',
+        dados: this.registrosPendencias && this.registrosPendencias.length ? this.registrosPendencias.map(item => colunas.map(coluna => (coluna.value === 'razao_social') && (item[coluna.value] || '').length > 30 ? item[coluna.value].slice(0, 30) + '[...]' : item[coluna.value] || '')) : null
+      })
+
+      const buffer = Buffer.from(res, 'binary')
+      const blob = new Blob([buffer], { type: 'application/pdf' })
+      const url = URL.createObjectURL(blob)
+
+      // Abre o PDF em uma nova aba
+      window.open(url, '_blank')
+      this.loading = false
+    },
     async gerarRelatorioRegistros () {
       this.loading = true
       const colunas = [
@@ -2567,6 +2984,10 @@ export default {
         {
           text: 'Razão Social/Nome',
           value: 'razao_social'
+        },
+        {
+          text: 'Prioridade',
+          value: 'prioridade_descricao'
         },
         {
           text: 'Criado Por',
@@ -2600,6 +3021,7 @@ export default {
         tipo: this.filtro.tipo || null,
         razaoSocial: this.filtro.razaoSocial || null,
         processo: this.filtro.processo || null,
+        prioridade: this.filtro.prioridade || null,
         created_by: this.filtro.created_by || null
       })
       this.loading = false
@@ -2630,6 +3052,7 @@ export default {
         }
 
         this.listarLicencasRegistros()
+        this.listarPendenciasRegistro(this.formulario.id)
       }
       this.loading = false
       this.modal = true
@@ -2709,11 +3132,9 @@ export default {
     // LICENCA
     async listarLicencasRegistros () {
       this.loading = true
-      const res = await this.listarLicencas({
+      await this.listarLicencas({
         processo_id: this.formulario.id
       })
-      if (res && !res.erro) {
-      }
       this.loading = false
     },
     async exibirLicencaRegistro (registro) {
@@ -2967,8 +3388,10 @@ export default {
         estado_empresa: null,
         cidade_empresa: null
       }
+      this.formularioPendencia.tipo_pendencia_id = null
       this.setRegistrosEmpresas([])
       this.setRegistrosLicencas([])
+      this.setRegistrosPendencias([])
       this.listarRegistro()
       this.loading = false
     },
@@ -2987,6 +3410,61 @@ export default {
         updated_at: null,
         updated_by: null
       }
+    },
+    // PENDENCIA
+    async listarPendenciasRegistro (processoId) {
+      this.loading = true
+      await this.listarPendencias({
+        id: this.filtroPendencia.id || null,
+        tipo_pendencia_id: this.filtroPendencia.tipo_pendencia_id && this.filtroPendencia.tipo_pendencia_id.length ? this.filtroPendencia.tipo_pendencia_id : null,
+        status_pendencia_id: this.filtroPendencia.status_pendencia_id && this.filtroPendencia.status_pendencia_id.length ? this.filtroPendencia.status_pendencia_id : null,
+        processo_id: processoId ? (this.filtroPendencia.processo_id) : processoId,
+        processo: this.filtroPendencia.processo || null,
+        cnpj: this.filtroPendencia.cnpj ? String(this.filtroPendencia.cnpj).match(/\d/g).join('') : null,
+        razaoSocial: this.filtroPendencia.razaoSocial || null,
+        prioridade: this.filtroPendencia.prioridade || null
+      })
+      this.loading = false
+    },
+    async salvarRegistroPendencia () {
+      if (await this.$refs.observePendencia.validate()) {
+        this.loading = true
+        const form = {
+          tipo_pendencia_id: this.formularioPendencia.tipo_pendencia_id || null,
+          processo_id: this.formulario.id || null
+        }
+
+        const res = await this.salvarPendencia(form)
+
+        if (res && !res.erro) {
+          this.listarPendenciasRegistro()
+          this.formularioPendencia.tipo_pendencia_id = null
+        }
+        this.loading = false
+      }
+    },
+    async resolverPendenciaRegistro (registro) {
+      this.loading = true
+      const res = await this.resolverPendencia(registro)
+      if (res && !res.erro) {
+        this.formularioPendencia.tipo_pendencia_id = null
+        this.listarPendenciasRegistro()
+      }
+      this.loading = false
+    },
+    async excluirPendenciaRegistro (registro) {
+      this.loading = true
+      const res = await this.excluirPendencia(registro.id)
+      if (res && !res.erro) {
+        this.formularioPendencia.tipo_pendencia_id = null
+        this.listarPendenciasRegistro()
+      }
+      this.loading = false
+    },
+    resetModalPendencias () {
+      this.modalPendencias = false
+      this.limparFiltrosPendencia()
+      this.setRegistrosPendencias([])
     },
     resetModalEmpresa () {
       this.modalBuscarEmpresa = false
@@ -3067,6 +3545,18 @@ export default {
         porte: []
       }
       this.listarRegistro()
+    },
+    limparFiltrosPendencia () {
+      this.filtroPendencia = {
+        id: null,
+        tipo_pendencia_id: null,
+        status_pendencia_id: null,
+        processo: null,
+        processo_id: null,
+        cnpj: null,
+        razaoSocial: null,
+        prioridade: null
+      }
     }
   }
 }
