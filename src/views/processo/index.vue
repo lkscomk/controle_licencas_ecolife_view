@@ -3418,7 +3418,7 @@ export default {
         id: this.filtroPendencia.id || null,
         tipo_pendencia_id: this.filtroPendencia.tipo_pendencia_id && this.filtroPendencia.tipo_pendencia_id.length ? this.filtroPendencia.tipo_pendencia_id : null,
         status_pendencia_id: this.filtroPendencia.status_pendencia_id && this.filtroPendencia.status_pendencia_id.length ? this.filtroPendencia.status_pendencia_id : null,
-        processo_id: processoId ? (this.filtroPendencia.processo_id) : processoId,
+        processo_id: processoId || this.filtroPendencia.processo_id,
         processo: this.filtroPendencia.processo || null,
         cnpj: this.filtroPendencia.cnpj ? String(this.filtroPendencia.cnpj).match(/\d/g).join('') : null,
         razaoSocial: this.filtroPendencia.razaoSocial || null,
