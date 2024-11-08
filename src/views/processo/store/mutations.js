@@ -10,6 +10,21 @@ export default {
     })
     state.registrosEmpresas = param
   },
+  setRegistrosPendencias (state, param) {
+    param.forEach(element => {
+      element.status = { chip: true, color: String(element.status_cor), text: element.status_descricao }
+      element.cnpj = element.cnpj ? (String(element.cnpj).length <= 11 ? filter(String(element.cnpj).padStart(11, '0'), ['###.###.###-##']) : filter(String(element.cnpj).padStart(14, '0'), ['##.###.###/####-##'])) : '-'
+      element.updated_at = element.updated_at ? day(element.updated_at).format('DD/MM/YYYY HH:mm:ss') : null
+      element.created_at = element.created_at ? day(element.created_at).format('DD/MM/YYYY HH:mm:ss') : null
+    })
+    state.registrosPendencias = param
+  },
+  dropdownPendenciasStatus (state, param) {
+    state.dropdownPendenciasStatus = param
+  },
+  dropdownPendenciasProcesso (state, param) {
+    state.dropdownPendenciasProcesso = param
+  },
   dropdownPorteLicencas (state, param) {
     state.dropdownPorteLicencas = param
   },
