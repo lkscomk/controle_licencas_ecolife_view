@@ -2938,14 +2938,6 @@ export default {
         {
           text: 'Prioridade',
           value: 'prioridade_descricao'
-        },
-        {
-          text: 'Criado Por',
-          value: 'created_by'
-        },
-        {
-          text: 'Criado Em',
-          value: 'created_at'
         }
       ]
       const res = await this.gerarRelatorio({
