@@ -2912,14 +2912,6 @@ export default {
           value: 'id'
         },
         {
-          text: 'Descrição',
-          value: 'tipo_descricao'
-        },
-        {
-          text: 'Status',
-          value: 'status_descricao'
-        },
-        {
           text: 'Código Processo',
           value: 'processo_id'
         },
@@ -2934,6 +2926,14 @@ export default {
         {
           text: 'Razão Social/Nome',
           value: 'razao_social'
+        },
+        {
+          text: 'Descrição',
+          value: 'tipo_descricao'
+        },
+        {
+          text: 'Status',
+          value: 'status_descricao'
         },
         {
           text: 'Prioridade',
