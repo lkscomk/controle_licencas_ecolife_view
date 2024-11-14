@@ -2951,6 +2951,7 @@ export default {
       const res = await this.gerarRelatorio({
         colunas: colunas.map(coluna => coluna.text),
         titulo: 'Relatório de Pendências',
+        colunas_para_mesclar: ['Código Processo', 'N. Processo', 'CNPJ/CPF', 'Razão Social/Nome', 'Prioridade'],
         dados: this.registrosPendencias && this.registrosPendencias.length ? this.registrosPendencias.map(item => colunas.map(coluna => (coluna.value === 'razao_social') && (item[coluna.value] || '').length > 30 ? item[coluna.value].slice(0, 30) + '[...]' : item[coluna.value] || '')) : null
       })
 
@@ -3437,7 +3438,7 @@ export default {
         const res = await this.salvarPendencia(form)
 
         if (res && !res.erro) {
-          this.listarPendenciasRegistro()
+          this.listarPendenciasRegistro(this.formulario.id)
           this.formularioPendencia.tipo_pendencia_id = null
         }
         this.loading = false
