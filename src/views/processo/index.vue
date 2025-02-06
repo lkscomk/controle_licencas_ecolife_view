@@ -2829,9 +2829,14 @@ export default {
   },
   async created () {
     if (this.$route.query && this.$route.query.id) {
-      window.console.log(this.$route.query.id)
+      const ids = this.$route.query.id.split(',').map(id => id.trim())
       this.filtro.id = this.$route.query.id
-      this.exibirRegistro(this.filtro.id)
+
+      if (ids.length > 1) {
+        this.listarRegistro()
+      } else {
+        this.exibirRegistro(ids[0])
+      }
     }
     await this.buscarDropdownPendenciasStatus()
     await this.buscarDropdownTiposLicencas()
