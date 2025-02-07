@@ -638,11 +638,16 @@ export default {
           value: 'ciente_em'
         }
       ]
+      const dados = this.registrosNotificacoes && this.registrosNotificacoes.length ? this.registrosNotificacoes.sort((a, b) => {
+        const razaoA = a.razao_social ? a.razao_social.toLowerCase() : ''
+        const razaoB = b.razao_social ? b.razao_social.toLowerCase() : ''
+        return razaoA.localeCompare(razaoB)
+      }) : null
       const res = await this.gerarRelatorio({
         colunas: colunas.map(coluna => coluna.text),
         colunas_para_mesclar: ['CNPJ/CPF', 'Razão Social'],
         titulo: 'Relatório de Notificações',
-        dados: this.registrosNotificacoes && this.registrosNotificacoes.length ? this.registrosNotificacoes.map(item => colunas.map(coluna => coluna.value === 'razao_social' && (item[coluna.value] || '').length > 35 ? item[coluna.value].slice(0, 35) + '[...]' : item[coluna.value] || '')) : null
+        dados: dados && dados.length ? dados.map(item => colunas.map(coluna => coluna.value === 'razao_social' && (item[coluna.value] || '').length > 35 ? item[coluna.value].slice(0, 35) + '[...]' : item[coluna.value] || '')) : null
       })
 
       const buffer = Buffer.from(res, 'binary')
