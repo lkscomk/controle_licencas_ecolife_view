@@ -606,7 +606,7 @@ export default {
       this.loading = true
       const colunas = [
         {
-          text: 'Código',
+          text: 'Cód.',
           value: 'id'
         },
         {
