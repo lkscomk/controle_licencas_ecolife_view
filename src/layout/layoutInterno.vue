@@ -661,21 +661,23 @@ export default {
     async buscarImagem () {
       this.loading = true
       const dados = await this.buscarPathImagem(this.perfil)
-      const nome = `${dados.nome}${dados.extensao}`
-      const res = await this.exibirAnexo(nome)
+      if (dados) {
+        const nome = `${dados.nome}${dados.extensao}`
+        const res = await this.exibirAnexo(nome)
 
-      if (res && !res.erro) {
-        const type = dados.extensao === '.pdf' ? 'application/pdf'
-          : dados.extensao === '.jpeg' ? 'image/jpeg'
-            : dados.extensao === '.jpg' ? 'image/jpg'
-              : dados.extensao === '.png' ? 'image/png'
-                : dados.extensao === '.bmp' ? 'image/bmp'
-                  : dados.extensao === '.gif' ? 'image/gif' : null
+        if (res && !res.erro) {
+          const type = dados.extensao === '.pdf' ? 'application/pdf'
+            : dados.extensao === '.jpeg' ? 'image/jpeg'
+              : dados.extensao === '.jpg' ? 'image/jpg'
+                : dados.extensao === '.png' ? 'image/png'
+                  : dados.extensao === '.bmp' ? 'image/bmp'
+                    : dados.extensao === '.gif' ? 'image/gif' : null
 
-        if (type) {
-          const buffer = Buffer.from(res)
-          const blob = new Blob([buffer], { type })
-          this.imagemPerfil = URL.createObjectURL(blob)
+          if (type) {
+            const buffer = Buffer.from(res)
+            const blob = new Blob([buffer], { type })
+            this.imagemPerfil = URL.createObjectURL(blob)
+          }
         }
       }
 
