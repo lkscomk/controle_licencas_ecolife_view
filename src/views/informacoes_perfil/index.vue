@@ -611,6 +611,7 @@ export default {
     if (this.$route.query.alterarSenha) {
       this.modalAlterarSenha = true
       this.$router.replace({ query: null })
+      this.controleSenha.inserir = true
     }
   },
   methods: {
