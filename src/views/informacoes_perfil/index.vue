@@ -1,3 +1,4 @@
+@ -1,642 +1,774 @@
 <template>
   <pagina
     :loading="loading"
@@ -297,6 +298,7 @@
           v-if="!!(!controleSenha.exibir && (controleSenha.inserir || controleSenha.editar))"
           :block="$vuetify.breakpoint.xsOnly"
           :class="$vuetify.breakpoint.xsOnly ? 'my-1' : 'mx-1'"
+          :disabled="!(formularioValidacaoSenha.tamanho && formularioValidacaoSenha.iguais && formularioValidacaoSenha.letra_minuscula && formularioValidacaoSenha.letra_maiuscula && formularioValidacaoSenha.simbolos && formularioValidacaoSenha.numeros)"
           color="success"
           small
           @click="salvarPerfilUsuarioSenha()"
@@ -415,6 +417,112 @@
                     />
                   </validation-provider>
                 </v-col>
+                <v-col
+                  xl="12"
+                  lg="12"
+                  md="12"
+                  sm="12"
+                  cols="12"
+                >
+                  <v-row dense>
+                    <v-col
+                      xl="12"
+                      lg="12"
+                      md="12"
+                      sm="12"
+                      cols="3"
+                      :class="formularioValidacaoSenha.iguais ? 'green--text' : 'error--text'"
+                    >
+                      <v-icon
+                        size="20"
+                        :color="formularioValidacaoSenha.iguais ? 'green' : 'error'"
+                      >
+                        {{ formularioValidacaoSenha.iguais ? 'mdi-check-circle' : 'mdi-close-circle' }}
+                      </v-icon>
+                      As senhas são iguais
+                    </v-col>
+                    <v-col
+                      xl="12"
+                      lg="12"
+                      md="12"
+                      sm="12"
+                      cols="3"
+                      :class="formularioValidacaoSenha.tamanho ? 'green--text' : 'error--text'"
+                    >
+                      <v-icon
+                        size="20"
+                        :color="formularioValidacaoSenha.tamanho ? 'green' : 'error'"
+                      >
+                        {{ formularioValidacaoSenha.tamanho ? 'mdi-check-circle' : 'mdi-close-circle' }}
+                      </v-icon>
+                      Deve ter no mínimo 8 caracteres
+                    </v-col>
+                    <v-col
+                      xl="12"
+                      lg="12"
+                      md="12"
+                      sm="12"
+                      cols="3"
+                      :class="formularioValidacaoSenha.numeros ? 'green--text' : 'error--text'"
+                    >
+                      <v-icon
+                        size="20"
+                        :color="formularioValidacaoSenha.numeros ? 'green' : 'error'"
+                      >
+                        {{ formularioValidacaoSenha.numeros ? 'mdi-check-circle' : 'mdi-close-circle' }}
+                      </v-icon>
+                      Caracteres numéricos
+                    </v-col>
+                    <v-col
+                      xl="12"
+                      lg="12"
+                      md="12"
+                      sm="12"
+                      cols="3"
+                      :class="formularioValidacaoSenha.simbolos ? 'green--text' : 'error--text'"
+                    >
+                      <v-icon
+                        size="20"
+                        :color="formularioValidacaoSenha.simbolos ? 'green' : 'error'"
+                      >
+                        {{ formularioValidacaoSenha.simbolos ? 'mdi-check-circle' : 'mdi-close-circle' }}
+                      </v-icon>
+                      Caracteres especiais
+                    </v-col>
+                    <v-col
+                      xl="12"
+                      lg="12"
+                      md="12"
+                      sm="12"
+                      cols="3"
+                      :class="formularioValidacaoSenha.letra_maiuscula ? 'green--text' : 'error--text'"
+                    >
+                      <v-icon
+                        size="20"
+                        :color="formularioValidacaoSenha.letra_maiuscula ? 'green' : 'error'"
+                      >
+                        {{ formularioValidacaoSenha.letra_maiuscula ? 'mdi-check-circle' : 'mdi-close-circle' }}
+                      </v-icon>
+                      Letras maiúsculas
+                    </v-col>
+                    <v-col
+                      xl="12"
+                      lg="12"
+                      md="12"
+                      sm="12"
+                      cols="3"
+                      :class="formularioValidacaoSenha.letra_minuscula ? 'green--text' : 'error--text'"
+                    >
+                      <v-icon
+                        size="20"
+                        :color="formularioValidacaoSenha.letra_minuscula ? 'green' : 'error'"
+                      >
+                        {{ formularioValidacaoSenha.letra_minuscula ? 'mdi-check-circle' : 'mdi-close-circle' }}
+                      </v-icon>
+                      Letras minúsculas
+                    </v-col>
+                  </v-row>
+                </v-col>
               </v-row>
             </v-container>
           </validation-observer>
@@ -469,16 +577,41 @@ export default {
       inserir: false
     },
     imagemPerfil: null,
-    selectedFile: null
+    selectedFile: null,
+    formularioValidacaoSenha: {
+      iguais: null,
+      tamanho: null,
+      letra_minuscula: null,
+      letra_maiuscula: null,
+      simbolos: null,
+      numeros: null
+    }
   }),
   computed: {
     ...mapState('perfil', [
       'dropdownTipoUsuario'
     ])
   },
+  watch: {
+    'formularioSenha.senhaNova' (val) {
+      this.formularioValidacaoSenha.tamanho = val.length >= 8
+      this.formularioValidacaoSenha.iguais = this.formularioSenha.senhaNova === this.formularioSenha.senhaNovaConfirmacao
+      this.formularioValidacaoSenha.letra_minuscula = /[a-z]/.test(val)
+      this.formularioValidacaoSenha.letra_maiuscula = /[A-Z]/.test(val)
+      this.formularioValidacaoSenha.simbolos = /[!@#$%^&*(),.?":{}|<>]/.test(val)
+      this.formularioValidacaoSenha.numeros = /[0-9]/.test(val)
+    },
+    'formularioSenha.senhaNovaConfirmacao' (val) {
+      this.formularioValidacaoSenha.iguais = this.formularioSenha.senhaNova === this.formularioSenha.senhaNovaConfirmacao
+    }
+  },
   async created () {
     this.buscarPerfilUsuario()
     await this.buscarDropdownTipoUsuario()
+    if (this.$route.query.alterarSenha) {
+      this.modalAlterarSenha = true
+      this.$router.replace({ query: null })
+    }
   },
   methods: {
     ...mapActions('perfil', [
