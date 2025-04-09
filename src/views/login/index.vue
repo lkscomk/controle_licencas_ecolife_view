@@ -186,12 +186,6 @@ export default {
         if (res && !res.erro) {
           await this.buscarAcessos(res.id)
           this.abrirJenela('/')
-          setTimeout(() => {
-            if (this.$crypto(this.formulario.senha, 'sha256') === 'ef797c8118f02dfb649607dd5d3f8c7623048c9c063d532cc95c5ed7a898a64f') {
-              this.abrirJenela('/perfil?alterarSenha=true')
-              this.$notificacao('Por favor, altere sua senha imediatamente!', 'erro')
-            }
-          }, '3000')
         }
         this.loading = false
       }
